@@ -1,20 +1,280 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#11233c"><meta name="description" content="Calculadoras de instrumentação industrial, instaláveis e disponíveis offline.">
-<link rel="manifest" href="./manifest.webmanifest"><link rel="icon" type="image/png" href="./icons/icon-192.png"><link rel="apple-touch-icon" href="./icons/icon-192.png"><link rel="stylesheet" href="./styles.css">
-<title>Instrumentação PRO</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f2d4f">
+  <meta name="description" content="Instrumentação PRO - cálculos de instrumentação industrial offline para computador e celular.">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" type="image/png" href="./icons/icon-192.png">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <link rel="stylesheet" href="./styles.css">
+  <title>Instrumentação PRO</title>
 </head>
 <body>
-<header class="top"><div class="brandmark">IP</div><div><div class="brand">Instrumentação <span>PRO</span></div><div class="tagline">Ferramentas de engenharia industrial</div></div><div class="connection" id="connection" aria-live="polite">Verificando...</div></header>
-<main class="layout">
-<section class="hero"><div><p class="eyebrow">CENTRAL TÉCNICA</p><h1>Cálculos de instrumentação</h1><p>Resultados instantâneos. Sem equações na tela. Funciona no computador e no celular.</p></div><button id="install" class="install" hidden>Instalar aplicativo</button></section>
-<div class="workspace"><nav class="navigation" aria-label="Calculadoras"><h2>Calculadoras</h2><button class="nav active" data-panel="pressure">◉ <span>Pressão e conversões</span></button><button class="nav" data-panel="flow">◉ <span>Vazão e placa de orifício</span></button><button class="nav" data-panel="temperature">◉ <span>Temperatura e sensores</span></button><button class="nav" data-panel="signal">◉ <span>Sinais de instrumentação</span></button><p class="nav-note">Os resultados são calculados no próprio dispositivo. Não é necessário criar uma conta.</p></nav>
-<div class="mainpanels">
-<section class="panel active" id="pressure" aria-labelledby="pressure-title"><div class="section-header"><div><p class="eyebrow">MÓDULO 01</p><h2 id="pressure-title">Pressão e conversões</h2><p>Conversão instantânea entre unidades de pressão.</p></div></div><div class="calculator"><div class="fields"><label>Valor de entrada<input id="p-value" type="number" inputmode="decimal" value="10" step="any"></label><label>Unidade de entrada<select id="p-unit"><option value="bar">bar</option><option value="kpa">kPa</option><option value="mpa">MPa</option><option value="psi">psi</option><option value="kgf">kgf/cm²</option><option value="pa">Pa</option><option value="mca">mca</option><option value="mmhg">mmHg</option></select></label></div><div id="p-results" class="result-grid" aria-live="polite"></div><div class="hint">Conversões de pressão diferencial ou manométrica; não realiza mudança automática entre referência manométrica e absoluta. mca considerada com densidade de água de 1.000 kg/m³ e gravidade padrão.</div></div></section>
-<section class="panel" id="flow" aria-labelledby="flow-title"><div class="section-header"><div><p class="eyebrow">MÓDULO 02</p><h2 id="flow-title">Vazão e placa de orifício</h2><p>Conversões de vazão e estimativa de escoamento para líquido.</p></div></div><div class="calculator"><h3>Conversão de vazão volumétrica</h3><div class="fields"><label>Vazão<input id="f-value" type="number" value="100" step="any"></label><label>Unidade<select id="f-unit"><option value="m3h">m³/h</option><option value="m3s">m³/s</option><option value="lh">L/h</option><option value="ls">L/s</option><option value="lmin">L/min</option></select></label></div><div id="f-results" class="result-grid" aria-live="polite"></div></div><div class="calculator"><div class="inline-title"><h3>Placa de orifício</h3><span class="status-warning">Estimativa preliminar</span></div><p class="small-text">Modelo simplificado para líquido incompressível, sem efeitos de expansibilidade, viscosidade ou verificação de instalação. Informe o coeficiente de descarga conhecido.</p><div class="fields"><label>Diâmetro interno da tubulação (mm)<input id="o-D" type="number" value="100" step="any" min="0"></label><label>Diâmetro do orifício (mm)<input id="o-d" type="number" value="60" step="any" min="0"></label><label>Pressão diferencial (kPa)<input id="o-dp" type="number" value="20" step="any" min="0"></label><label>Densidade do líquido (kg/m³)<input id="o-rho" type="number" value="998" step="any" min="0"></label><label>Coeficiente de descarga Cd<input id="o-cd" type="number" value="0.61" step="any" min="0" max="1"></label></div><div id="o-results" class="result-grid" aria-live="polite"></div><div class="hint important">Não é dimensionamento conforme ISO 5167. Não utilizar este resultado para especificar medidores, válvulas ou instrumentos críticos sem revisão de engenharia.</div></div></section>
-<section class="panel" id="temperature" aria-labelledby="temperature-title"><div class="section-header"><div><p class="eyebrow">MÓDULO 03</p><h2 id="temperature-title">Temperatura e sensores</h2><p>Conversões de temperatura, Pt100 e termopares.</p></div></div><div class="calculator"><h3>Conversão de temperatura</h3><div class="fields"><label>Temperatura<input id="t-value" type="number" value="100" step="any"></label><label>Unidade<select id="t-unit"><option value="c">°C</option><option value="f">°F</option><option value="k">K</option></select></label></div><div id="t-results" class="result-grid" aria-live="polite"></div></div><div class="calculator"><h3>Pt100 · IEC 60751</h3><div class="fields"><label>Modo<select id="r-mode"><option value="temp">Temperatura → resistência</option><option value="res">Resistência → temperatura</option></select></label><label id="r-input-label">Temperatura (°C)<input id="r-value" type="number" value="100" step="any"></label></div><div id="r-results" class="result-grid" aria-live="polite"></div><div class="hint">Pt100 nominal de 100 Ω a 0 °C. Faixa do modelo: −200 a 850 °C. Resistência dos condutores e classe de tolerância não consideradas.</div></div><div class="calculator"><div class="inline-title"><h3>Termopares K e J</h3><span class="status-warning">Interpolação aproximada</span></div><div class="fields"><label>Tipo<select id="tc-type"><option value="K">Tipo K</option><option value="J">Tipo J</option></select></label><label>Temperatura da junta quente (°C)<input id="tc-hot" type="number" value="200" step="any"></label><label>Temperatura da junta fria (°C)<input id="tc-cold" type="number" value="0" step="any"></label></div><div id="tc-results" class="result-grid" aria-live="polite"></div><div class="hint important">EMF aproximada por interpolação de pontos de referência, somente 0–500 °C para K e J. Não utilizar para calibração metrológica. Para calibração, aplicar as tabelas e polinômios ITS-90/NIST completos.</div></div></section>
-<section class="panel" id="signal" aria-labelledby="signal-title"><div class="section-header"><div><p class="eyebrow">MÓDULO 04</p><h2 id="signal-title">Sinais de instrumentação</h2><p>Escalonamento linear de 4–20 mA e 0–10 V.</p></div></div><div class="calculator"><h3>Escalonamento de transmissor</h3><div class="fields"><label>Tipo de sinal<select id="s-type"><option value="ma">4–20 mA</option><option value="volt">0–10 V</option></select></label><label>Modo<select id="s-mode"><option value="signal">Sinal → processo</option><option value="process">Processo → sinal</option></select></label><label id="s-input-label">Sinal medido (mA)<input id="s-value" type="number" value="12" step="any"></label><label>Limite inferior LRV<input id="s-lrv" type="number" value="0" step="any"></label><label>Limite superior URV<input id="s-urv" type="number" value="100" step="any"></label><label>Unidade de engenharia (opcional)<input id="s-engineering" type="text" maxlength="16" placeholder="Ex.: bar" value="bar"></label></div><div id="s-results" class="result-grid" aria-live="polite"></div><div class="meter"><div class="meter-track"><div id="s-fill"></div></div><div class="meter-labels"><span>0%</span><span id="s-percent">—</span><span>100%</span></div></div><div class="hint">Escala linear. Não inclui extração de raiz quadrada, alarmes NAMUR NE 43 nem conversão de sinais HART.</div></div></section>
-<footer class="foot">Instrumentação PRO · Versão 1.0 · Cálculos locais e offline · Confirme os dados e limites antes de qualquer uso em campo.</footer>
-</div></div></main><script src="./app.js" defer></script></body></html>
+  <header class="hero">
+    <div class="hero-inner container">
+      <div class="hero-topline">FERRAMENTA DE ENGENHARIA</div>
+      <div class="hero-row">
+        <div>
+          <h1>Instrumentação Pro</h1>
+          <p class="hero-subtitle" id="module-subtitle">Módulo 01 · Pressão e conversões</p>
+        </div>
+        <div class="hero-actions">
+          <span class="status-badge" id="connection-status">Verificando...</span>
+          <button id="installBtn" class="btn btn-secondary" hidden>Instalar app</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <div class="container app-body">
+      <p class="intro-text">Aplicativo de cálculos de instrumentação para uso no computador e no celular, inclusive offline. Resultados instantâneos e interface profissional, sem mostrar equações na tela.</p>
+
+      <div class="tabs" role="tablist" aria-label="Módulos do aplicativo">
+        <button class="tab active" data-panel="pressure" data-subtitle="Módulo 01 · Pressão e conversões" role="tab" aria-selected="true">Pressão e conversões</button>
+        <button class="tab" data-panel="flow" data-subtitle="Módulo 02 · Vazão e placa de orifício" role="tab" aria-selected="false">Vazão e placa de orifício</button>
+        <button class="tab" data-panel="temperature" data-subtitle="Módulo 03 · Temperatura, Pt100 e termopares" role="tab" aria-selected="false">Temperatura e sensores</button>
+        <button class="tab" data-panel="signal" data-subtitle="Módulo 04 · Sinais 4–20 mA e 0–10 V" role="tab" aria-selected="false">Sinais de instrumentação</button>
+      </div>
+
+      <section class="panel active" id="pressure" role="tabpanel">
+        <div class="module-grid module-grid-two">
+          <article class="card input-card">
+            <h2>Dados de entrada</h2>
+            <div class="form-grid two-cols">
+              <div class="field">
+                <label for="pValue">Valor de entrada</label>
+                <input id="pValue" type="number" inputmode="decimal" step="any" value="10">
+                <small>Informe o valor a ser convertido.</small>
+              </div>
+              <div class="field">
+                <label for="pUnit">Unidade de entrada</label>
+                <select id="pUnit">
+                  <option value="bar">bar</option>
+                  <option value="psi">psi</option>
+                  <option value="kgf">kgf/cm²</option>
+                  <option value="kpa">kPa</option>
+                  <option value="mpa">MPa</option>
+                  <option value="pa">Pa</option>
+                  <option value="mca">mca</option>
+                  <option value="mmhg">mmHg</option>
+                </select>
+                <small>Conversão linear entre unidades.</small>
+              </div>
+            </div>
+            <div class="button-row">
+              <button class="btn" id="pExampleBtn">Restaurar exemplo</button>
+            </div>
+            <p class="note">Observação: a conversão não altera automaticamente referência absoluta ou manométrica. Para mca, considera-se água a 1.000 kg/m³ e gravidade padrão.</p>
+          </article>
+
+          <article class="card output-card">
+            <h2>Resultados da conversão</h2>
+            <div class="result-grid" id="pressureResults"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel" id="flow" role="tabpanel" hidden>
+        <div class="module-grid">
+          <article class="card">
+            <h2>Conversão de vazão volumétrica</h2>
+            <div class="form-grid two-cols">
+              <div class="field">
+                <label for="fValue">Vazão</label>
+                <input id="fValue" type="number" inputmode="decimal" step="any" value="50">
+                <small>Informe a vazão de entrada.</small>
+              </div>
+              <div class="field">
+                <label for="fUnit">Unidade</label>
+                <select id="fUnit">
+                  <option value="m3h">m³/h</option>
+                  <option value="m3s">m³/s</option>
+                  <option value="lh">L/h</option>
+                  <option value="ls">L/s</option>
+                  <option value="lmin">L/min</option>
+                </select>
+                <small>Conversão de unidades volumétricas.</small>
+              </div>
+            </div>
+            <div class="result-grid" id="flowResults"></div>
+          </article>
+
+          <article class="card">
+            <div class="title-row">
+              <h2>Placa de orifício</h2>
+              <span class="pill pill-warning">Estimativa preliminar</span>
+            </div>
+            <div class="form-grid three-cols">
+              <div class="field">
+                <label for="oD">Diâmetro interno da tubulação (mm)</label>
+                <input id="oD" type="number" inputmode="decimal" step="any" value="100">
+              </div>
+              <div class="field">
+                <label for="od">Diâmetro do orifício (mm)</label>
+                <input id="od" type="number" inputmode="decimal" step="any" value="60">
+              </div>
+              <div class="field">
+                <label for="odp">Pressão diferencial (kPa)</label>
+                <input id="odp" type="number" inputmode="decimal" step="any" value="20">
+              </div>
+              <div class="field">
+                <label for="orho">Densidade do líquido (kg/m³)</label>
+                <input id="orho" type="number" inputmode="decimal" step="any" value="998">
+              </div>
+              <div class="field">
+                <label for="ocd">Coeficiente de descarga Cd</label>
+                <input id="ocd" type="number" inputmode="decimal" step="any" value="0.61">
+              </div>
+            </div>
+            <div class="result-grid result-grid-wide" id="orificeResults"></div>
+            <p class="note note-warning">Modelo simplificado para líquido incompressível, sem correções completas da ISO 5167, expansibilidade ou verificação de instalação. Use apenas como estimativa inicial de engenharia.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel" id="temperature" role="tabpanel" hidden>
+        <div class="module-grid">
+          <article class="card">
+            <h2>Conversão de temperatura</h2>
+            <div class="form-grid two-cols">
+              <div class="field">
+                <label for="tValue">Temperatura</label>
+                <input id="tValue" type="number" inputmode="decimal" step="any" value="100">
+              </div>
+              <div class="field">
+                <label for="tUnit">Unidade</label>
+                <select id="tUnit">
+                  <option value="c">°C</option>
+                  <option value="f">°F</option>
+                  <option value="k">K</option>
+                </select>
+              </div>
+            </div>
+            <div class="result-grid" id="tempResults"></div>
+          </article>
+
+          <article class="card">
+            <h2>Pt100 · IEC 60751</h2>
+            <div class="form-grid two-cols">
+              <div class="field">
+                <label for="rMode">Modo</label>
+                <select id="rMode">
+                  <option value="temp">Temperatura → resistência</option>
+                  <option value="res">Resistência → temperatura</option>
+                </select>
+              </div>
+              <div class="field">
+                <label id="rValueLabel" for="rValue">Temperatura (°C)</label>
+                <input id="rValue" type="number" inputmode="decimal" step="any" value="100">
+                <small>Faixa do modelo: −200 a 850 °C.</small>
+              </div>
+            </div>
+            <div class="result-grid" id="pt100Results"></div>
+            <p class="note">Resistência nominal de 100 Ω a 0 °C. Resistência dos condutores e classe de tolerância não consideradas.</p>
+          </article>
+
+          <article class="card">
+            <div class="title-row">
+              <h2>Termopares K e J</h2>
+              <span class="pill pill-warning">Interpolação aproximada</span>
+            </div>
+            <div class="form-grid three-cols">
+              <div class="field">
+                <label for="tcType">Tipo</label>
+                <select id="tcType">
+                  <option value="K">Tipo K</option>
+                  <option value="J">Tipo J</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="tcHot">Temperatura da junta quente (°C)</label>
+                <input id="tcHot" type="number" inputmode="decimal" step="any" value="200">
+              </div>
+              <div class="field">
+                <label for="tcCold">Temperatura da junta fria (°C)</label>
+                <input id="tcCold" type="number" inputmode="decimal" step="any" value="25">
+              </div>
+            </div>
+            <div class="result-grid" id="tcResults"></div>
+            <p class="note note-warning">Utiliza interpolação aproximada para visualização rápida. Não utilizar para calibração metrológica. Para calibração, empregar tabelas ITS-90/NIST completas.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel" id="signal" role="tabpanel" hidden>
+        <div class="module-grid module-grid-two">
+          <article class="card input-card">
+            <h2>Dados do instrumento</h2>
+            <div class="form-grid two-cols">
+              <div class="field">
+                <label for="sLrv">Valor inferior da faixa (LRV)</label>
+                <input id="sLrv" type="number" inputmode="decimal" step="any" value="0">
+                <small>Ex.: 0 bar, 0 °C ou 0 m³/h</small>
+              </div>
+              <div class="field">
+                <label for="sUrv">Valor superior da faixa (URV)</label>
+                <input id="sUrv" type="number" inputmode="decimal" step="any" value="100">
+                <small>Ex.: 10 bar, 150 °C ou 200 m³/h</small>
+              </div>
+              <div class="field">
+                <label for="sType">Tipo de sinal</label>
+                <select id="sType">
+                  <option value="ma">4–20 mA</option>
+                  <option value="volt">0–10 V</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="sUnit">Unidade de engenharia</label>
+                <input id="sUnit" type="text" value="unidade" maxlength="20">
+                <small>Ex.: bar, °C, %, m³/h</small>
+              </div>
+              <div class="field">
+                <label id="sSignalLabel" for="sSignal">Corrente medida (mA)</label>
+                <input id="sSignal" type="number" inputmode="decimal" step="any" value="12">
+                <small id="sSignalHelp">Faixa nominal: 4 a 20 mA</small>
+              </div>
+              <div class="field">
+                <label for="sProcess">Valor desejado (cálculo inverso)</label>
+                <input id="sProcess" type="number" inputmode="decimal" step="any" value="50">
+                <small>Use para encontrar o sinal necessário.</small>
+              </div>
+            </div>
+            <div class="button-row">
+              <button class="btn" id="sExampleBtn">Restaurar exemplo</button>
+            </div>
+            <p class="note">O cálculo considera uma relação linear entre o sinal de entrada e a variável de processo. Não inclui extração de raiz quadrada, HART ou alarmes NAMUR.</p>
+          </article>
+
+          <article class="card output-card">
+            <h2>Resultado da conversão</h2>
+            <div class="highlight-card">
+              <div class="result-label">Valor calculado</div>
+              <div class="big-result"><span id="sPv">50,00</span> <small id="sPvUnit">unidade</small></div>
+              <div class="big-result-status" id="sStatus">Dentro da faixa nominal</div>
+            </div>
+            <div class="mini-grid">
+              <div class="mini-card"><span>Percentual da escala</span><strong id="sPercent">50,00%</strong></div>
+              <div class="mini-card"><span>Entrada</span><strong id="sInputEcho">12,00 mA</strong></div>
+              <div class="mini-card"><span>Span</span><strong id="sSpan">100,00</strong></div>
+              <div class="mini-card"><span>Sinal equivalente</span><strong id="sReverse">12,00 mA</strong></div>
+            </div>
+            <div class="progress-block">
+              <div class="progress-head"><span>Escala do instrumento</span><span id="sScaleText">50,00%</span></div>
+              <div class="progress-track"><div id="sBar"></div></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <footer class="footer-note">
+        Instrumentação PRO · Versão 1.1 · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
+      </footer>
+    </div>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>
