@@ -1,4 +1,4 @@
-const CACHE_NAME = 'instrumentacao-pro-v1-6-5';
+const CACHE_NAME = 'instrumentacao-pro-v1-6-6';
 const CORE_ASSETS = [
   './index.html',
   './styles.css',
@@ -11,7 +11,8 @@ const OPTIONAL_ASSETS = [
   './optiflux_page2.png',
   './optiflux_page3.png',
   './range_hl_reference.png',
-  './transmitter_cell_reference.png'
+  './transmitter_cell_reference.png',
+  './pt100_wiring_reference.png'
 ];
 
 self.addEventListener('install', event => {

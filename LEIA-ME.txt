@@ -1,9 +1,13 @@
-Instrumentação PRO v1.6.5 - correção de atualização PWA
+Instrumentação PRO v1.6.6
 
-CAUSA IDENTIFICADA: no GitHub as imagens e os ícones foram publicados na raiz do repositório, mas o service worker procurava dentro de /assets e /icons. A instalação de novas versões podia falhar silenciosamente.
+Atualizações desta versão:
+- Módulo 03: substituição da ilustração anterior por uma imagem baseada no anexo fornecido pelo usuário.
+- Cabeçote do transmissor ajustado para a cor verde.
+- Ligação resistiva destacada em vermelho para melhor leitura.
+- Funcionamento offline mantido e cache atualizado.
 
-Esta versão coloca todos os arquivos diretamente na raiz e corrige os caminhos usados pelo service worker, pelo HTML e pelo manifesto.
-
-IMPORTANTE: envie TODOS os arquivos que estão dentro deste ZIP diretamente à pasta principal (raiz) do repositório, ao lado de index.html. Não envie o ZIP como um arquivo nem crie uma subpasta.
-
-Depois faça commit / push, confirme o GitHub Pages e abra o site conectado à internet para instalar o novo cache.
+Para atualizar no GitHub Pages:
+1) Extraia o ZIP.
+2) Substitua os arquivos do repositório.
+3) Aguarde a publicação do GitHub Pages.
+4) Abra o aplicativo com internet para atualizar o cache offline.
