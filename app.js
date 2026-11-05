@@ -355,83 +355,62 @@
     return mode === 'wet' ? 'Vaso fechado · Perna molhada' : mode === 'dry' ? 'Vaso fechado · Perna seca' : 'Tanque aberto / referência atmosférica';
   }
 
-  function rangeDiagram(mode, lrv, urv, density) {
-    const wet = mode === 'wet', closed = mode !== 'open';
-    const open = mode === 'open';
-    const top = closed ? '<rect x="65" y="32" width="225" height="190" rx="24" fill="#f8fafc" stroke="#64748b" stroke-width="3"/>' : '<path d="M65 32 V222 H290 V32" fill="none" stroke="#64748b" stroke-width="3"/>';
-    const fluid = '<path d="M68 115 H287 V219 H68 Z" fill="#b5e1f8" opacity=".86"/><path d="M68 115 H287" stroke="#3184bf" stroke-width="2" stroke-dasharray="6 4"/>';
-    const hp = '<path d="M65 205 H30 V260 H136" fill="none" stroke="#cb6a24" stroke-width="5" stroke-linejoin="round"/>';
-    const lp = wet ? '<path d="M290 55 H328 V260 H220" fill="none" stroke="#2074bc" stroke-width="5" stroke-linejoin="round"/>' : closed ? '<path d="M290 55 H328 V260 H220" fill="none" stroke="#2074bc" stroke-width="5" stroke-linejoin="round" stroke-dasharray="8 6"/>' : '<path d="M220 260 H285" fill="none" stroke="#2074bc" stroke-width="5" stroke-dasharray="8 6"/>';
-    const wetFill = wet ? '<path d="M328 56 V258" stroke="#9bdcf4" stroke-width="3"/>' : '';
-    const title = installationTitle(mode);
-    const leftX = open ? 6 : 18;
-    const topLabelBlock = open
-      ? `<text x="${leftX}" y="62" font-size="12.5" font-weight="700" fill="#0f2d4f">100% / URV</text>
-         <text x="${leftX}" y="81" font-size="14.5" font-weight="800" fill="#0f2d4f">${fmt(urv, 3)} mmH₂O</text>
-         <text x="${leftX}" y="102" font-size="11" fill="#64748b">sem densidade</text>
-         <text x="${leftX}" y="205" font-size="12.5" font-weight="700" fill="#0f2d4f">0% / LRV</text>
-         <text x="${leftX}" y="224" font-size="14.5" font-weight="800" fill="#0f2d4f">${fmt(lrv, 3)} mmH₂O</text>
-         <text x="${leftX}" y="245" font-size="11" fill="#64748b">sem densidade</text>`
-      : `<text x="18" y="96" font-size="11" fill="#0f2d4f">0% / LRV</text>
-         <text x="18" y="112" font-size="13" font-weight="700" fill="#0f2d4f">${fmt(lrv, 3)} mmH₂O</text>
-         <text x="18" y="132" font-size="10" fill="#64748b">sem densidade</text>
-         <text x="18" y="155" font-size="11" fill="#0f2d4f">100% / URV</text>
-         <text x="18" y="171" font-size="13" font-weight="700" fill="#0f2d4f">${fmt(urv, 3)} mmH₂O</text>
-         <text x="18" y="191" font-size="10" fill="#64748b">sem densidade</text>`;
-    const rightBlockY = open ? 70 : 95;
-    return `<svg viewBox="0 0 410 335" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${title}">
-      <text x="18" y="18" font-size="14" font-weight="700" fill="#0f2d4f">${title}</text>
-      ${top}${fluid}${hp}${lp}${wetFill}
-      <rect x="137" y="244" width="83" height="58" rx="12" fill="#e2ebf7" stroke="#213f65" stroke-width="3"/>
-      <circle cx="178.5" cy="273" r="16" fill="#fff" stroke="#213f65" stroke-width="2"/>
-      <text x="166.5" y="278" font-size="13" font-weight="700" fill="#213f65">DP</text>
-      <text x="108" y="109" font-size="12" font-weight="700" fill="#17629a">FAIXA</text>
-      <text x="24" y="197" font-size="11" fill="#a45112">HP</text>
-      <text x="332" y="197" font-size="11" fill="#2563a1">LP</text>
-      ${topLabelBlock}
-      <text x="236" y="${rightBlockY}" font-size="11" fill="#0f2d4f">Com densidade</text>
-      <text x="236" y="${rightBlockY + 17}" font-size="12" font-weight="700" fill="#0f2d4f">0% = ${fmt(lrv * density, 3)} mmH₂O</text>
-      <text x="236" y="${rightBlockY + 37}" font-size="12" font-weight="700" fill="#0f2d4f">100% = ${fmt(urv * density, 3)} mmH₂O</text>
-      ${wet ? '<text x="271" y="178" font-size="11" fill="#2563a1">Coluna molhada</text>' : ''}
-      <text x="76" y="233" font-size="10" fill="#0f2d4f">Tomada inferior</text>
+  // Desenhos de referência: separam o tanque dos resultados para nunca haver sobreposição.
+  function tankSvg(mode) {
+    const closed = mode !== 'open';
+    const wet = mode === 'wet';
+    const vessel = closed
+      ? '<rect x="78" y="28" width="230" height="180" rx="22" fill="#f8fbff" stroke="#597187" stroke-width="4"/>'
+      : '<path d="M78 28 V208 H308 V28" stroke="#597187" stroke-width="4" fill="none"/>';
+    const liquid = '<path d="M82 104 H304 V203 H82 Z" fill="#a6d8f2" opacity=".85"/><path d="M82 104 H304" stroke="#287ab3" stroke-width="2" stroke-dasharray="7 5"/>';
+    const high = '<path d="M78 185 H50 V248 H153" fill="none" stroke="#dd792b" stroke-width="6" stroke-linejoin="round"/>';
+    const low = wet
+      ? '<path d="M308 49 H350 V248 H234" fill="none" stroke="#1e78b6" stroke-width="6"/>'
+      : closed
+      ? '<path d="M308 49 H350 V248 H234" fill="none" stroke="#1e78b6" stroke-width="6" stroke-dasharray="8 6"/>'
+      : '<path d="M234 248 H318" fill="none" stroke="#1e78b6" stroke-width="6" stroke-dasharray="8 6"/>';
+    return `<svg viewBox="0 0 410 305" role="img" aria-label="${installationTitle(mode)}">
+      ${vessel}${liquid}${high}${low}
+      <rect x="154" y="224" width="80" height="56" rx="11" fill="#e5eef9" stroke="#163a5e" stroke-width="3"/>
+      <circle cx="194" cy="250" r="17" fill="#fff" stroke="#163a5e" stroke-width="2"/>
+      <text x="194" y="255" text-anchor="middle" font-size="13" font-weight="700" fill="#163a5e">DP</text>
+      <text x="12" y="179" fill="#a85c1b" font-size="15" font-weight="700">HP</text>
+      <text x="353" y="179" fill="#1a659d" font-size="15" font-weight="700">LP</text>
+      <text x="198" y="94" fill="#144c75" font-size="13" text-anchor="middle" font-weight="700">100% · URV</text>
+      <text x="198" y="180" fill="#144c75" font-size="13" text-anchor="middle" font-weight="700">0% · LRV</text>
+      <text x="194" y="295" fill="#597187" font-size="12" text-anchor="middle">Transmissor diferencial</text>
+      ${wet ? '<text x="308" y="17" font-size="11" fill="#287ab3">LP molhada</text>' : ''}
     </svg>`;
   }
 
+  function diagramFact(label, value, cssClass = '') {
+    return `<div class="diagram-fact ${cssClass}"><span class="df-label">${label}</span><strong>${value}</strong></div>`;
+  }
+
+  function rangeDiagram(mode, lrv, urv, density) {
+    return `<div class="tech-diagram">
+      ${tankSvg(mode)}
+      <div class="diagram-facts">
+        ${diagramFact('100% · URV sem densidade', `${fmt(urv, 3)} mmH₂O`)}
+        ${diagramFact('0% · LRV sem densidade', `${fmt(lrv, 3)} mmH₂O`)}
+        ${diagramFact('100% · URV com densidade', `${fmt(urv*density, 3)} mmH₂O`, 'muted')}
+        ${diagramFact('0% · LRV com densidade', `${fmt(lrv*density, 3)} mmH₂O`, 'muted')}
+        <p class="diagram-caption">${installationTitle(mode)}. Esquema conceitual, sem escala.</p>
+      </div>
+    </div>`;
+  }
+
   function hlDiagram(mode, dp0, dp100, density) {
-    const wet = mode === 'wet', closed = mode !== 'open';
-    const open = mode === 'open';
-    const top = closed ? '<rect x="60" y="30" width="200" height="175" rx="22" fill="#f8fafc" stroke="#64748b" stroke-width="3"/>' : '<path d="M60 30 V205 H260 V30" fill="none" stroke="#64748b" stroke-width="3"/>';
-    const fluid = '<path d="M63 112 H257 V202 H63 Z" fill="#b5e1f8" opacity=".86"/><path d="M63 112 H257" stroke="#3184bf" stroke-width="2" stroke-dasharray="6 4"/>';
-    const hp = '<path d="M60 188 H26 V243 H128" fill="none" stroke="#cb6a24" stroke-width="5" stroke-linejoin="round"/>';
-    const lp = wet ? '<path d="M260 52 H296 V243 H208" fill="none" stroke="#2074bc" stroke-width="5" stroke-linejoin="round"/>' : closed ? '<path d="M260 52 H296 V243 H208" fill="none" stroke="#2074bc" stroke-width="5" stroke-linejoin="round" stroke-dasharray="8 6"/>' : '<path d="M208 243 H275" fill="none" stroke="#2074bc" stroke-width="5" stroke-dasharray="8 6"/>';
-    const title = installationTitle(mode);
-    const leftX = open ? 4 : 16;
-    const leftInfo = open
-      ? `<text x="${leftX}" y="55" font-size="12.5" font-weight="700" fill="#0f2d4f">100% · URV</text>
-         <text x="${leftX}" y="74" font-size="14.5" font-weight="800" fill="#0f2d4f">${fmt(dp100, 3)} mmH₂O</text>
-         <text x="${leftX}" y="95" font-size="11" fill="#64748b">com densidade: ${fmt(dp100 * density, 3)} mmH₂O</text>
-         <text x="${leftX}" y="190" font-size="12.5" font-weight="700" fill="#0f2d4f">0% · LRV</text>
-         <text x="${leftX}" y="209" font-size="14.5" font-weight="800" fill="#0f2d4f">${fmt(dp0, 3)} mmH₂O</text>
-         <text x="${leftX}" y="230" font-size="11" fill="#64748b">com densidade: ${fmt(dp0 * density, 3)} mmH₂O</text>`
-      : `<text x="16" y="80" font-size="11" fill="#0f2d4f">0% · LRV</text>
-         <text x="16" y="98" font-size="13" font-weight="700" fill="#0f2d4f">${fmt(dp0, 3)} mmH₂O</text>
-         <text x="16" y="116" font-size="10" fill="#64748b">com densidade: ${fmt(dp0 * density, 3)} mmH₂O</text>
-         <text x="16" y="150" font-size="11" fill="#0f2d4f">100% · URV</text>
-         <text x="16" y="168" font-size="13" font-weight="700" fill="#0f2d4f">${fmt(dp100, 3)} mmH₂O</text>
-         <text x="16" y="186" font-size="10" fill="#64748b">com densidade: ${fmt(dp100 * density, 3)} mmH₂O</text>`;
-    const spanBlockY = open ? 76 : 92;
-    return `<svg viewBox="0 0 405 310" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Critério H e L - ${title}">
-      <text x="16" y="18" font-size="14" font-weight="700" fill="#0f2d4f">Critério H e L · ${title}</text>
-      ${top}${fluid}${hp}${lp}
-      <rect x="129" y="226" width="79" height="55" rx="12" fill="#e2ebf7" stroke="#213f65" stroke-width="3"/>
-      <text x="160" y="259" text-anchor="middle" font-size="13" font-weight="700" fill="#213f65">DP</text>
-      ${leftInfo}
-      <text x="250" y="${spanBlockY}" font-size="11" fill="#0f2d4f">Span sem densidade</text>
-      <text x="250" y="${spanBlockY + 18}" font-size="13" font-weight="700" fill="#0f2d4f">${fmt(dp100 - dp0, 3)} mmH₂O</text>
-      <text x="250" y="${spanBlockY + 49}" font-size="11" fill="#0f2d4f">Span com densidade</text>
-      <text x="250" y="${spanBlockY + 67}" font-size="13" font-weight="700" fill="#0f2d4f">${fmt((dp100 - dp0) * density, 3)} mmH₂O</text>
-      ${wet ? '<text x="272" y="194" font-size="11" fill="#2563a1">Coluna molhada</text>' : ''}
-    </svg>`;
+    return `<div class="tech-diagram">
+      ${tankSvg(mode)}
+      <div class="diagram-facts">
+        ${diagramFact('100% · URV (H − L)', `${fmt(dp100, 3)} mmH₂O`)}
+        ${diagramFact('0% · LRV (H − L)', `${fmt(dp0, 3)} mmH₂O`)}
+        ${diagramFact('Span sem densidade', `${fmt(dp100-dp0, 3)} mmH₂O`)}
+        ${diagramFact('Span com densidade', `${fmt((dp100-dp0)*density, 3)} mmH₂O`, 'muted')}
+        <p class="diagram-caption">${installationTitle(mode)}. Valores do critério H e L.</p>
+      </div>
+    </div>`;
   }
 
   function updateRange() {
@@ -554,6 +533,117 @@
     $('sSignal').value = type === 'volt' ? '5' : type === 'volt5' ? '2.5' : type === 'ma0' ? '10' : '12';
     updateSignal();
   });
+
+  // Relatório independente por módulo: abrir impressão permite salvar como PDF offline.
+  function reportEscape(text) {
+    return String(text ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+  function createReport() {
+    const tab = document.querySelector('.tab.active');
+    if (!tab) return;
+    const panelId = tab.dataset.panel;
+    const panel = $(panelId);
+    const moduleName = tab.textContent.trim();
+    const subtitle = tab.dataset.subtitle || moduleName;
+    const sections = Array.from(panel.querySelectorAll('article.card'));
+    const parts = [];
+    sections.forEach((article) => {
+      const title = article.querySelector('h2')?.textContent?.trim() || 'Dados do módulo';
+      const rows = [];
+      article.querySelectorAll('input,select').forEach((field) => {
+        if (field.closest('[hidden]') || field.hidden || field.disabled) return;
+        let label = article.querySelector(`label[for="${field.id}"]`)?.textContent?.trim() || field.id;
+        let value = field.tagName === 'SELECT' ? field.selectedOptions[0]?.textContent?.trim() : field.value;
+        if (!String(value ?? '').trim()) return;
+        rows.push(`<tr><th>${reportEscape(label)}</th><td>${reportEscape(value)}</td></tr>`);
+      });
+      const outputs = [];
+      article.querySelectorAll('.result-card,.mini-card,.highlight-card').forEach((r) => {
+        const label = r.querySelector('span,.result-label')?.textContent?.trim();
+        const value = r.querySelector('strong,.big-result')?.textContent?.trim();
+        if (label && value) outputs.push(`<tr><th>${reportEscape(label)}</th><td>${reportEscape(value)}</td></tr>`);
+      });
+      if (!rows.length && !outputs.length && !article.querySelector('img')) return;
+      let visuals = '';
+      if (panelId === 'flow' || panelId === 'range') {
+        visuals = Array.from(article.querySelectorAll('.tech-diagram, #meterInstallDiagram svg'))
+          .map(node => `<div class="report-diagram">${node.outerHTML}</div>`).join('');
+      }
+      if (panelId === 'range' && article.querySelector('img')) {
+        const img = article.querySelector('img');
+        visuals += `<img class="report-image" src="${img.src}" alt="${reportEscape(img.alt)}">`;
+      }
+      parts.push(`<section class="report-section"><h2>${reportEscape(title)}</h2>
+        ${rows.length ? `<h3>Parâmetros informados</h3><table>${rows.join('')}</table>` : ''}
+        ${outputs.length ? `<h3>Resultados</h3><table>${outputs.join('')}</table>` : ''}
+        ${visuals}</section>`);
+    });
+    // Tabela H/L: coleta e resultados da seção independente do artigo.
+    if (panelId === 'range') {
+      const fields = [['H em 100%', 'hlH100'], ['L em 100%', 'hlL100'], ['H em 0%', 'hlH0'], ['L em 0%', 'hlL0'], ['Densidade aplicada', 'hlDensity']];
+      const rows = fields.map(([label,id]) => `<tr><th>${reportEscape(label)}</th><td>${reportEscape($(id).value)} ${id === 'hlDensity' ? '' : 'mmH₂O'}</td></tr>`).join('');
+      const summary = Array.from($('hlSummary').querySelectorAll('.result-card')).map(e => `<tr><th>${reportEscape(e.querySelector('span')?.textContent || '')}</th><td>${reportEscape(e.querySelector('strong')?.textContent || '')}</td></tr>`).join('');
+      parts.push(`<section class="report-section"><h2>Critério H e L</h2><h3>Dados de entrada</h3><table>${rows}</table>
+      <h3>Resultados</h3><table>${summary}</table><div class="report-diagram">${$('hlDiagram').innerHTML}</div></section>`);
+    }
+    const generatedAt = new Date().toLocaleString('pt-BR');
+    const report = `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+      <title>Relatório ${reportEscape(moduleName)} — Instrumentação PRO</title>
+      <style>
+        * { box-sizing:border-box; }body{font:14px Arial, sans-serif;color:#102b47;margin:0;background:#edf2f7;}
+        .toolbar{background:#0f2d4f;color:#fff;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+        .toolbar button{background:#2784ce;color:#fff;border:0;border-radius:8px;padding:12px 18px;font-weight:bold;cursor:pointer;}
+        .paper{max-width:850px;margin:20px auto;padding:32px;background:#fff;box-shadow:0 5px 25px #0002;}
+        header{padding:0 0 16px;border-bottom:3px solid #1566a1;}
+        h1{font-size:26px;margin:5px 0 5px;}h2{font-size:17px;color:#123b60;margin:0 0 12px;}
+        h3{font-size:12px;color:#5a7288;text-transform:uppercase;letter-spacing:.06em;margin:14px 0 7px;}
+        p{color:#526a81;line-height:1.6}.report-section{margin-top:22px;break-inside:avoid-page;}
+        table{width:100%;border-collapse:collapse;margin-bottom:12px;font-size:12px;}
+        th,td{border:1px solid #d8e2eb;padding:8px 11px;text-align:left;vertical-align:top;}
+        th{width:48%;font-weight:600;background:#f2f6fb;}td{font-weight:700;overflow-wrap:anywhere;}
+        .report-diagram{margin:12px auto;max-width:720px;break-inside:avoid-page;}
+        .report-diagram svg{width:100%;max-height:310px;display:block;}
+        .tech-diagram{display:flex;gap:22px;align-items:center;border:1px solid #d4e0e9;border-radius:12px;padding:14px;}
+        .tech-diagram svg{width:49%;flex-shrink:0;}
+        .diagram-facts{flex:1;display:flex;flex-direction:column;gap:10px;}
+        .diagram-fact{background:#f0f6fb;padding:8px 12px;border-radius:8px;}
+        .df-label{font-size:11px;display:block;color:#58738b;margin-bottom:3px;}.diagram-fact strong{font-size:13px;display:block;}
+        .diagram-caption{font-size:10px;color:#526a81;}
+        .report-image{max-width:90%;max-height:370px;display:block;margin:10px auto;object-fit:contain;}
+        footer{border-top:1px solid #d2dee7;padding-top:12px;margin-top:30px;font-size:11px;color:#546b80;}
+        @page{size:A4;margin:15mm 13mm;}@media print{body{background:white;print-color-adjust:exact;-webkit-print-color-adjust:exact;}
+          .toolbar{display:none}.paper{margin:0;max-width:none;padding:0;box-shadow:none;}.report-section{break-inside:auto;}}
+      </style></head><body>
+      <div class="toolbar"><span>Relatório pronto — selecione “Salvar como PDF” na impressão.</span><button onclick="window.print()">Imprimir / Salvar PDF</button></div>
+      <main class="paper"><header><small>INSTRUMENTAÇÃO PRO · RELATÓRIO TÉCNICO</small><h1>${reportEscape(subtitle)}</h1><div>Emitido em ${reportEscape(generatedAt)}</div></header>
+      ${parts.join('')}
+      <footer>Relatório gerado no dispositivo pelo Instrumentação PRO. Antes de utilizar em campo, confira os dados de processo, limites dos instrumentos e requisitos de instalação. Não contém equações.</footer>
+      </main></body></html>`;
+    const win = window.open('', '_blank');
+    if (!win) {
+      alert('O navegador bloqueou a janela do relatório. Autorize pop-ups para este aplicativo e tente novamente.');
+      return;
+    }
+    win.document.open();
+    win.document.write(report);
+    win.document.close();
+    win.focus();
+  }
+
+  function initializeAppearance() {
+    const select = $('themeSelect');
+    let theme = 'light';
+    try { theme = localStorage.getItem('instrumentacao-pro-theme') || 'light'; } catch (_) {}
+    if (theme !== 'dark') theme = 'light';
+    document.documentElement.dataset.theme = theme;
+    select.value = theme;
+    select.addEventListener('change', () => {
+      document.documentElement.dataset.theme = select.value;
+      try { localStorage.setItem('instrumentacao-pro-theme', select.value); } catch (_) {}
+    });
+  }
+  initializeAppearance();
+  $('reportBtn').addEventListener('click', createReport);
 
   let deferredPrompt = null;
   window.addEventListener('beforeinstallprompt', (e) => {

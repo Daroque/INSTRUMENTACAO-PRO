@@ -410,3 +410,42 @@ input:focus, select:focus {
 @media (max-width: 640px) {
   .sheet-table { min-width: 560px; }
 }
+
+/* Instrumentação PRO v1.6 — Aparência e esquemas sem sobreposição */
+.theme-select-label { display:flex;align-items:center;gap:9px;color:#e9f4ff;font-size:.9rem;font-weight:600; }
+.theme-select-label select { width:auto;min-width:112px;background:#f5f9ff;border-color:#7890a5;padding:9px 32px 9px 11px;font-size:.9rem; }
+.hero-actions .btn { white-space:nowrap; }
+.tech-diagram { display:grid;grid-template-columns:minmax(0,1.15fr) minmax(205px,.85fr);gap:20px;align-items:center;background:#f8fbff;border:1px solid #d8e1ea;border-radius:16px;padding:18px; }
+.tech-diagram svg { width:100%;min-height:240px;display:block; }
+.diagram-facts { display:flex;flex-direction:column;gap:12px;min-width:0; }
+.diagram-fact { border:1px solid #ccd9e5;background:#fff;border-radius:12px;padding:12px 14px;overflow-wrap:anywhere; }
+.diagram-fact .df-label { display:block;color:#476076;font-size:.82rem;font-weight:700;margin-bottom:5px; }
+.diagram-fact strong { display:block;color:#0f2d4f;font-size:1.12rem;line-height:1.3; }
+.diagram-fact.muted { border-color:#d9e5f0;background:#edf5fb; }
+.diagram-fact.muted strong { color:#28577e; }
+.diagram-caption {font-size:.85rem;color:#64748b;margin:0;}
+@media(max-width:650px){ .tech-diagram{grid-template-columns:1fr;padding:12px;} .tech-diagram svg{min-height:190px;max-height:300px;} .hero-actions{width:100%;} .hero-actions .btn{flex:1;} }
+/* Escuro - variáveis fundamentais e contraste de campos e resultados */
+html[data-theme="dark"] {color-scheme:dark; --navy:#08192a;--navy-2:#112b43;--bg:#101b29;--card:#17283a;--border:#344a61;--text:#e9f2fa;--muted:#adbed0;--accent:#297fca;--accent-2:#3d96de;--green:#50d79b;--warn:#e5b965;--danger:#ff8585;--shadow:0 10px 24px rgba(0,0,0,.22);}
+html[data-theme="dark"] .hero{ background:linear-gradient(180deg,#091a2b,#103655);}
+html[data-theme="dark"] .tab{background:#21354a;color:var(--text);border-color:#476177;}
+html[data-theme="dark"] .tab.active{background:#1e67aa;border-color:#3585c8;color:#fff;}
+html[data-theme="dark"] input, html[data-theme="dark"] select{background:#132437;color:var(--text);border-color:#52667b;}
+html[data-theme="dark"] .theme-select-label select{background:#263e55;color:#fff;}
+html[data-theme="dark"] .result-card, html[data-theme="dark"] .mini-card, html[data-theme="dark"] .highlight-card, html[data-theme="dark"] .unit-display-box {background:#21354a;color:var(--text);border-color:#466079;}
+html[data-theme="dark"] .result-card strong,html[data-theme="dark"] .mini-card strong{color:var(--text);}
+html[data-theme="dark"] .sheet-table td,html[data-theme="dark"] .sheet-input{background:#21354a;color:var(--text);}
+html[data-theme="dark"] .sheet-percent{background:#6b6020;color:#fff;}
+html[data-theme="dark"] .sheet-result{background:#6b8d2c;color:#fff;}
+html[data-theme="dark"] .unit-fixed{background:#2c4054;color:#fff;}
+html[data-theme="dark"] .sheet-header-cyan{background:#376473;color:#fff;}
+html[data-theme="dark"] .tech-diagram{background:#16283c;border-color:#3b536a;}
+html[data-theme="dark"] .diagram-fact{background:#21364c;border-color:#3e5a72;}
+html[data-theme="dark"] .diagram-fact strong{color:#e8f6ff;}
+html[data-theme="dark"] .diagram-fact .df-label{color:#b9cfe2;}
+html[data-theme="dark"] .diagram-fact.muted{background:#213f57;}
+html[data-theme="dark"] .diagram-fact.muted strong{color:#d0eaff;}
+html[data-theme="dark"] .diagram-caption{color:#b0c2d2;}
+html[data-theme="dark"] .pill-warning{background:#45381d;color:#ffe2a7;border-color:#79633b;}
+html[data-theme="dark"] .note-warning{color:#e4c48a;}
+html[data-theme="dark"] .progress-track{background:#39536a;}
