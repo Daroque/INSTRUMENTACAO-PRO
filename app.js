@@ -495,6 +495,26 @@
     ].join(''));
   }
 
+  function updateDeviceOutput() {
+    const lrv = valueOrNull('deviceLrv');
+    const urv = valueOrNull('deviceUrv');
+    const unit = $('deviceUnit').value;
+    if (lrv === null || urv === null) {
+      setHTML('deviceOutputResults', resultCard('Preenchimento necessário', 'Informe os dois limites da faixa.'));
+      $('deviceOutputNotice').textContent = 'Preencha LRV e URV para visualizar o span.';
+      return;
+    }
+    const span = urv - lrv;
+    setHTML('deviceOutputResults', [
+      resultCard('LRV · 0%', `${fmt(lrv, 3)} ${unit}`),
+      resultCard('URV · 100%', `${fmt(urv, 3)} ${unit}`),
+      resultCard('Span da saída', `${fmt(span, 3)} ${unit}`)
+    ].join(''));
+    $('deviceOutputNotice').textContent = span > 0
+      ? 'Faixa informada em ' + unit + '. Se a unidade não for de pressão, não representa uma conversão do cálculo hidrostático.'
+      : 'Verifique a configuração: URV deve ser maior que LRV para uma faixa ascendente.';
+  }
+
   function bindInputs(ids, fn) {
     ids.forEach((id) => {
       const el = $(id);
@@ -516,6 +536,7 @@
   bindInputs(['powerValue', 'powerUnit', 'powerTarget', 'powerPf'], updatePower);
   bindInputs(['rangeMode', 'rangeMin', 'rangeMax', 'rangeRho'], () => { updateRange(); updateHLRange(); });
   bindInputs(['hlH100', 'hlL100', 'hlH0', 'hlL0', 'hlDensity'], updateHLRange);
+  bindInputs(['deviceLrv', 'deviceUrv', 'deviceUnit'], updateDeviceOutput);
 
   $('powerSwap').addEventListener('click', swapPower);
   $('pExampleBtn').addEventListener('click', function () {
@@ -700,4 +721,5 @@
   updatePower();
   updateRange();
   updateHLRange();
+  updateDeviceOutput();
 })();

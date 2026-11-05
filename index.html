@@ -40,7 +40,7 @@
         <button class="tab active" data-panel="pressure" data-subtitle="Módulo 01 · Pressão e conversões" role="tab" aria-selected="true">Pressão e conversões</button>
         <button class="tab" data-panel="flow" data-subtitle="Módulo 02 · Vazão" role="tab" aria-selected="false">Vazão</button>
         <button class="tab" data-panel="temperature" data-subtitle="Módulo 03 · Temperatura e sensores" role="tab" aria-selected="false">Temperatura e sensores</button>
-        <button class="tab" data-panel="signal" data-subtitle="Módulo 04 · Sinais 4–20 mA, 0–20 mA, 0–10 V e 0–5 V" role="tab" aria-selected="false">Sinais de instrumentação</button>
+        <button class="tab" data-panel="signal" data-subtitle="Módulo 04 - Sinais de instrumentação" role="tab" aria-selected="false">Sinais de instrumentação</button>
         <button class="tab" data-panel="power" data-subtitle="Módulo 05 · Potência e conversões" role="tab" aria-selected="false">Potência e conversões</button>
         <button class="tab" data-panel="range" data-subtitle="Módulo 06 · Faixa de transmissores de nível" role="tab" aria-selected="false">Faixa de transmissores</button>
       </div>
@@ -397,6 +397,132 @@
           </article>
         </div>
 
+
+        <article class="card" style="margin-top:18px" id="instrumentOutputSection">
+          <h2>Range de saída do equipamento</h2>
+          <p class="note note-no-top">Configure a faixa indicada no instrumento. Os valores são digitados diretamente na unidade escolhida; este campo não converte automaticamente grandezas diferentes.</p>
+          <div class="form-grid three-cols" style="margin-top:16px">
+            <div class="field">
+              <label for="deviceLrv">Range de saída · LRV (0%)</label>
+              <input id="deviceLrv" type="number" step="any" inputmode="decimal" value="0">
+            </div>
+            <div class="field">
+              <label for="deviceUrv">Range de saída · URV (100%)</label>
+              <input id="deviceUrv" type="number" step="any" inputmode="decimal" value="3000">
+            </div>
+            <div class="field">
+              <label for="deviceUnit">Unidade de engenharia da saída</label>
+              <select id="deviceUnit">
+              <optgroup label="Pressão">
+                <option value="Pa">Pa</option>
+                <option value="kPa">kPa</option>
+                <option value="MPa">MPa</option>
+                <option value="bar">bar</option>
+                <option value="mbar">mbar</option>
+                <option value="psi">psi</option>
+                <option value="kgf/cm²">kgf/cm²</option>
+                <option value="mmH₂O" selected>mmH₂O</option>
+                <option value="cmH₂O">cmH₂O</option>
+                <option value="mH₂O">mH₂O</option>
+                <option value="inH₂O">inH₂O</option>
+                <option value="mmHg">mmHg</option>
+                <option value="inHg">inHg</option>
+                <option value="Torr">Torr</option>
+                <option value="atm">atm</option>
+              </optgroup>
+              <optgroup label="Nível / comprimento">
+                <option value="mm">mm</option>
+                <option value="cm">cm</option>
+                <option value="m">m</option>
+                <option value="km">km</option>
+                <option value="pol">pol</option>
+                <option value="ft">ft</option>
+                <option value="in">in</option>
+                <option value="%">%</option>
+              </optgroup>
+              <optgroup label="Temperatura">
+                <option value="°C">°C</option>
+                <option value="°F">°F</option>
+                <option value="K">K</option>
+              </optgroup>
+              <optgroup label="Vazão volumétrica">
+                <option value="m³/h">m³/h</option>
+                <option value="m³/s">m³/s</option>
+                <option value="L/h">L/h</option>
+                <option value="L/min">L/min</option>
+                <option value="L/s">L/s</option>
+                <option value="mL/min">mL/min</option>
+                <option value="gal/min (US)">gal/min (US)</option>
+                <option value="ft³/min">ft³/min</option>
+                <option value="Nm³/h">Nm³/h</option>
+                <option value="Sm³/h">Sm³/h</option>
+              </optgroup>
+              <optgroup label="Vazão mássica">
+                <option value="kg/s">kg/s</option>
+                <option value="kg/h">kg/h</option>
+                <option value="t/h">t/h</option>
+                <option value="g/s">g/s</option>
+                <option value="lb/h">lb/h</option>
+              </optgroup>
+              <optgroup label="Massa">
+                <option value="g">g</option>
+                <option value="kg">kg</option>
+                <option value="t">t</option>
+                <option value="lb">lb</option>
+              </optgroup>
+              <optgroup label="Densidade">
+                <option value="kg/m³">kg/m³</option>
+                <option value="g/cm³">g/cm³</option>
+                <option value="kg/L">kg/L</option>
+                <option value="°API">°API</option>
+              </optgroup>
+              <optgroup label="Velocidade / rotação">
+                <option value="m/s">m/s</option>
+                <option value="km/h">km/h</option>
+                <option value="rpm">rpm</option>
+                <option value="Hz">Hz</option>
+              </optgroup>
+              <optgroup label="Sinais elétricos">
+                <option value="mA">mA</option>
+                <option value="A">A</option>
+                <option value="V">V</option>
+                <option value="mV">mV</option>
+                <option value="Ω">Ω</option>
+                <option value="kΩ">kΩ</option>
+              </optgroup>
+              <optgroup label="Potência / energia">
+                <option value="W">W</option>
+                <option value="kW">kW</option>
+                <option value="MW">MW</option>
+                <option value="hp">hp</option>
+                <option value="cv">cv</option>
+                <option value="kVA">kVA</option>
+                <option value="kWh">kWh</option>
+                <option value="MWh">MWh</option>
+              </optgroup>
+              <optgroup label="Processo / outras">
+                <option value="pH">pH</option>
+                <option value="µS/cm">µS/cm</option>
+                <option value="mS/cm">mS/cm</option>
+                <option value="NTU">NTU</option>
+                <option value="ppm">ppm</option>
+                <option value="ppb">ppb</option>
+                <option value="mg/L">mg/L</option>
+                <option value="g/L">g/L</option>
+                <option value="% vol">% vol</option>
+                <option value="% massa">% massa</option>
+                <option value="°Brix">°Brix</option>
+                <option value="N·m">N·m</option>
+                <option value="kN">kN</option>
+              </optgroup>
+              </select>
+              <small>Selecione a grandeza indicada pelo instrumento.</small>
+            </div>
+          </div>
+          <div class="result-grid" id="deviceOutputResults" style="margin-top:16px" aria-live="polite"></div>
+          <p class="note" id="deviceOutputNotice">Faixa de saída informada pelo usuário, independente do critério hidrostático em mmH₂O.</p>
+        </article>
+
         <div class="card" style="margin-top:18px">
           <h2>Critério H e L · referência em mmH₂O</h2>
           <p class="note note-no-top">Informe os valores de H e L para 100% e 0%. O aplicativo calcula automaticamente o range e o span com e sem a aplicação da densidade, mantendo mmH₂O como unidade fixa desta seção.</p>
@@ -462,7 +588,7 @@
       </section>
 
       <footer class="footer-note">
-        Instrumentação PRO · Versão 1.6.2 · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
+        Instrumentação PRO · Versão 1.6.3 · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
       </footer>
     </div>
   </main>

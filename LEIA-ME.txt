@@ -1,14 +1,9 @@
-Instrumentação PRO - versão 1.6.2
+Instrumentação PRO v1.6.3
 
-Atualizações desta versão:
-- Módulo 02: referência da cotagem ajustada para o centro do medidor.
-- Módulo 02: a ilustração não desaparece quando o diâmetro informado é zero.
-- Módulo 02: remoção do nome OPTIFLUX 1000/5000 do texto explicativo.
-- Módulos 02, 03, 04, 05 e 06: inclusão do campo Tag do instrumento.
-- Funcionamento offline mantido.
+- Módulo 04: subtítulo simplificado para Sinais de instrumentação.
+- Módulo 06: seção Range de saída do equipamento com LRV (0%), URV (100%), unidade de engenharia selecionável e Span calculado automaticamente.
+- Ampla seleção de unidades agrupadas por grandeza de processo.
+- Os valores de saída são informados pelo usuário; a seleção de unidades não converte grandezas físicas incompatíveis.
+- Impressão por módulo e cache offline preservados.
 
-Para atualizar no GitHub Pages:
-1) Extraia o ZIP.
-2) Substitua os arquivos do repositório.
-3) Aguarde a publicação do GitHub Pages.
-4) Atualize o aplicativo instalado para recarregar o novo cache.
+Publicação: extraia e substitua o conteúdo do repositório. Aguarde o GitHub Pages e atualize o app online antes do uso offline.
