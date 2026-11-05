@@ -1,27 +1,11 @@
-INSTRUMENTAÇÃO PRO - VERSÃO 1.6.0
+Instrumentação PRO — versão 1.6.1
 
-MELHORIAS
-- Módulo 02 renomeado apenas para "Vazão".
-- Imagens das referências da instalação incorporadas ao index.html para evitar links quebrados.
-- Cache offline corrigido, incluindo as duas imagens do manual OPTIFLUX.
-- Módulo 06: figuras redesenhadas com resultados separados do tanque, sem sobreposição.
-- Aparência clara ou escura, com escolha armazenada no navegador.
-- Relatório isolado por módulo, com campos preenchidos e resultados, pronto para imprimir ou salvar em PDF.
+Correções:
+- Módulo 02 permanece com nome Vazão.
+- Removidos os cartões Referência visual e Orientações de instalação.
+- Desenho de instalação redimensionado, com legendas maiores e separadas das setas.
+- Relatório individual agora é gerado em uma aba nova de navegador (documento HTML temporário fora do escopo da PWA).
+- A aba da PWA original permanece aberta; escolha Imprimir / Salvar PDF na nova aba.
+- Cache offline versionado.
 
-COMO SALVAR PDF
-1. Entre no módulo desejado e informe os dados.
-2. Clique em "Gerar PDF do módulo" na barra superior.
-3. Será aberta uma página de relatório contendo apenas o módulo ativo.
-4. Clique em "Imprimir / Salvar PDF".
-5. No Windows/Edge ou Chrome, escolha como destino "Salvar como PDF".
-6. No celular, use a opção de imprimir e "Salvar como PDF", caso disponível no sistema.
-
-COMO ATUALIZAR O GITHUB
-1. Extraia o conteúdo do ZIP.
-2. Atualize os arquivos no repositório INSTRUMENTACAO-PRO, incluindo a pasta assets.
-3. Verifique o GitHub Pages após o commit.
-4. Abra o aplicativo com internet para instalar o novo cache offline.
-5. Teste novamente sem conexão.
-
-OBSERVAÇÃO TÉCNICA
-O critério 5D a montante do medidor e 2D a jusante é retirado da figura do manual fornecido. A indicação "máx. 2 DN" no original deve ser conferida com o manual do sensor e a instalação real. O aplicativo mantém o critério 2D solicitado pelo usuário como referência ilustrativa; não substitui o manual do equipamento ou o projeto de instalação.
+Atualização no GitHub Pages: substitua index.html, app.js, sw.js e, opcionalmente, LEIA-ME.txt.

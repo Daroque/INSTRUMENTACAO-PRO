@@ -449,3 +449,8 @@ html[data-theme="dark"] .diagram-caption{color:#b0c2d2;}
 html[data-theme="dark"] .pill-warning{background:#45381d;color:#ffe2a7;border-color:#79633b;}
 html[data-theme="dark"] .note-warning{color:#e4c48a;}
 html[data-theme="dark"] .progress-track{background:#39536a;}
+/* Vazão: área maior para leitura das cotas e setas do desenho */
+@media (min-width: 901px) {
+  #flow .module-grid-two { grid-template-columns: minmax(290px, .68fr) minmax(0, 1.32fr); }
+}
+#meterInstallDiagram svg { display: block; width: 100%; height: auto; }

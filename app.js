@@ -106,29 +106,31 @@
 
 
   function meterInstallDiagram(diameter, upstream, downstream) {
-    return `<svg viewBox="0 0 760 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Trecho mínimo de instalação do medidor de vazão">
+    // Cotagem ampliada: descrições ficam fora do desenho e das setas.
+    return `<svg viewBox="0 0 1040 410" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Instalação do medidor: ${fmt(upstream, 1)} mm antes e ${fmt(downstream, 1)} mm depois">
       <defs>
-        <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2563a1"/></marker>
-        <marker id="arrow-black" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#111827"/></marker>
+        <marker id="flow-arrow-161" markerWidth="9" markerHeight="9" refX="7.5" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#1976bd"/></marker>
+        <marker id="dim-arrow-161" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto-start-reverse"><path d="M0,0 L9,4.5 L0,9 Z" fill="#163e62"/></marker>
       </defs>
-      <text x="18" y="24" font-size="18" font-weight="700" fill="#0f2d4f">Ilustrativo de instalação mínima do medidor</text>
-      <path d="M40 120 H260 L290 90 H470 L500 120 H720" fill="none" stroke="#c8ccd2" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
-      <rect x="322" y="76" width="116" height="88" rx="10" fill="#dfe8f4" stroke="#213f65" stroke-width="3"/>
-      <circle cx="380" cy="72" r="28" fill="#dce9f8" stroke="#2f6fb0" stroke-width="5"/>
-      <circle cx="380" cy="72" r="16" fill="#f6fbff" stroke="#7aa6d5" stroke-width="3"/>
-      <rect x="344" y="148" width="72" height="20" rx="4" fill="#eef3f8" stroke="#213f65" stroke-width="2"/>
-      <text x="356" y="162" font-size="14" font-weight="700" fill="#213f65">MEDIDOR</text>
-      <path d="M160 58 H310" stroke="#145da0" stroke-width="5" marker-end="url(#arrow-blue)"/>
-      <text x="175" y="50" font-size="16" font-weight="700" fill="#145da0">Sentido do fluxo</text>
-      <line x1="120" y1="178" x2="320" y2="178" stroke="#111827" stroke-width="3" marker-start="url(#arrow-black)" marker-end="url(#arrow-black)"/>
-      <line x1="320" y1="170" x2="320" y2="186" stroke="#111827" stroke-width="3"/>
-      <line x1="120" y1="170" x2="120" y2="186" stroke="#111827" stroke-width="3"/>
-      <text x="150" y="204" font-size="18" font-weight="700" fill="#111827">mín. 5 × D = ${fmt(upstream, 2)} mm</text>
-      <line x1="440" y1="178" x2="620" y2="178" stroke="#111827" stroke-width="3" marker-start="url(#arrow-black)" marker-end="url(#arrow-black)"/>
-      <line x1="440" y1="170" x2="440" y2="186" stroke="#111827" stroke-width="3"/>
-      <line x1="620" y1="170" x2="620" y2="186" stroke="#111827" stroke-width="3"/>
-      <text x="450" y="204" font-size="18" font-weight="700" fill="#111827">mín. 2 × D = ${fmt(downstream, 2)} mm</text>
-      <text x="545" y="66" font-size="15" font-weight="700" fill="#0f2d4f">Diâmetro informado: ${fmt(diameter, 2)} mm</text>
+      <text x="520" y="32" text-anchor="middle" fill="#123b60" font-size="25" font-weight="800">Instalação mínima do medidor de vazão</text>
+      <text x="520" y="65" text-anchor="middle" fill="#416681" font-size="18">Diâmetro informado: ${fmt(diameter,2)} mm</text>
+      <path d="M85 190 H955" fill="none" stroke="#c5d5e3" stroke-width="72" stroke-linecap="round"/>
+      <path d="M85 190 H955" fill="none" stroke="#7191ad" stroke-width="48" stroke-linecap="round"/>
+      <path d="M85 190 H955" fill="none" stroke="#dcebf5" stroke-width="35" stroke-linecap="round"/>
+      <rect x="474" y="144" width="92" height="92" rx="12" fill="#dce9f4" stroke="#1b496e" stroke-width="4"/>
+      <rect x="497" y="131" width="46" height="120" rx="6" fill="#8db6d5" stroke="#1b496e" stroke-width="3"/>
+      <circle cx="520" cy="127" r="30" fill="#eef6fb" stroke="#1565a3" stroke-width="5"/>
+      <circle cx="520" cy="127" r="16" fill="#c6dfef" stroke="#3778aa" stroke-width="3"/>
+      <text x="520" y="288" text-anchor="middle" fill="#123b60" font-size="19" font-weight="800">MEDIDOR</text>
+      <path d="M297 102 H431" fill="none" stroke="#1976bd" stroke-width="6" marker-end="url(#flow-arrow-161)"/>
+      <text x="363" y="90" text-anchor="middle" fill="#155e9a" font-size="20" font-weight="800">Fluxo</text>
+      <path d="M90 251 V318 M474 251 V318 M566 251 V318 M950 251 V318" stroke="#59758b" stroke-width="2" stroke-dasharray="7 5"/>
+      <path d="M90 314 H474" stroke="#163e62" stroke-width="3.5" marker-start="url(#dim-arrow-161)" marker-end="url(#dim-arrow-161)"/>
+      <path d="M566 314 H950" stroke="#163e62" stroke-width="3.5" marker-start="url(#dim-arrow-161)" marker-end="url(#dim-arrow-161)"/>
+      <text x="280" y="355" text-anchor="middle" fill="#123b60" font-size="24" font-weight="800">ANTES · 5 × D</text>
+      <text x="280" y="389" text-anchor="middle" fill="#0e598f" font-size="27" font-weight="800">${fmt(upstream, 2)} mm</text>
+      <text x="760" y="355" text-anchor="middle" fill="#123b60" font-size="24" font-weight="800">DEPOIS · 2 × D</text>
+      <text x="760" y="389" text-anchor="middle" fill="#0e598f" font-size="27" font-weight="800">${fmt(downstream, 2)} mm</text>
     </svg>`;
   }
 
@@ -614,20 +616,24 @@
         @page{size:A4;margin:15mm 13mm;}@media print{body{background:white;print-color-adjust:exact;-webkit-print-color-adjust:exact;}
           .toolbar{display:none}.paper{margin:0;max-width:none;padding:0;box-shadow:none;}.report-section{break-inside:auto;}}
       </style></head><body>
-      <div class="toolbar"><span>Relatório pronto — selecione “Salvar como PDF” na impressão.</span><button onclick="window.print()">Imprimir / Salvar PDF</button></div>
+      <div class="toolbar"><span>Relatório em aba separada — feche esta aba para retornar ao aplicativo.</span><button onclick="window.print()">Imprimir / Salvar PDF</button></div>
       <main class="paper"><header><small>INSTRUMENTAÇÃO PRO · RELATÓRIO TÉCNICO</small><h1>${reportEscape(subtitle)}</h1><div>Emitido em ${reportEscape(generatedAt)}</div></header>
       ${parts.join('')}
       <footer>Relatório gerado no dispositivo pelo Instrumentação PRO. Antes de utilizar em campo, confira os dados de processo, limites dos instrumentos e requisitos de instalação. Não contém equações.</footer>
       </main></body></html>`;
-    const win = window.open('', '_blank');
+    // Um documento Blob possui URL fora do escopo da PWA e é aberto em aba separada.
+    // A janela principal jamais é substituída pelo relatório.
+    const reportFile = new Blob([report], { type: 'text/html;charset=utf-8' });
+    const reportUrl = URL.createObjectURL(reportFile);
+    const win = window.open(reportUrl, '_blank');
     if (!win) {
-      alert('O navegador bloqueou a janela do relatório. Autorize pop-ups para este aplicativo e tente novamente.');
+      URL.revokeObjectURL(reportUrl);
+      alert('O navegador bloqueou a nova aba. Permita pop-ups para o Instrumentação PRO e tente novamente.');
       return;
     }
-    win.document.open();
-    win.document.write(report);
-    win.document.close();
-    win.focus();
+    try { win.focus(); } catch (_) {}
+    // Evitar revogação imediata: a navegação da nova aba ainda pode estar carregando.
+    // Os URLs temporários são descartados ao encerrar a sessão do aplicativo.
   }
 
   function initializeAppearance() {
