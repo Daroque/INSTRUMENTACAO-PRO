@@ -322,3 +322,9 @@ input:focus, select:focus {
   }
   .mini-grid { grid-template-columns: 1fr; }
 }
+/* Instrumentação PRO 1.3 */
+.diagram-holder { background:#f6f9fc; border:1px solid #d8e1ea; border-radius:14px; padding:12px; }
+.diagram-holder svg { width:100%; height:auto; max-height:310px; display:block; }
+.field[hidden], .range-wet-only[hidden], #powerPfField[hidden] { display:none !important; }
+.output-picker { max-width:100%; }
+.output-card .result-grid .result-card { min-height:82px; }
