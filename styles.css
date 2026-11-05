@@ -328,3 +328,85 @@ input:focus, select:focus {
 .field[hidden], .range-wet-only[hidden], #powerPfField[hidden] { display:none !important; }
 .output-picker { max-width:100%; }
 .output-card .result-grid .result-card { min-height:82px; }
+/* Instrumentação PRO 1.4 */
+.note-no-top { margin-top: 0; }
+.sheet-wrap { overflow-x: auto; margin-top: 14px; }
+.sheet-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 620px;
+  background: #ffffff;
+}
+.sheet-table th,
+.sheet-table td {
+  border: 2px solid #707f8f;
+  text-align: center;
+  padding: 0;
+}
+.sheet-header {
+  padding: 12px 10px;
+  font-size: 1rem;
+  font-weight: 800;
+}
+.sheet-header-red { background: #eb2416; }
+.sheet-header-cyan { background: #b7e0e2; }
+.sheet-percent {
+  background: #f4f0a0;
+  font-weight: 800;
+  font-size: 1rem;
+  min-width: 90px;
+  padding: 14px 12px !important;
+}
+.sheet-input {
+  border: 0;
+  border-radius: 0;
+  background: #fbfbfb;
+  text-align: center;
+  min-width: 120px;
+  padding: 16px 10px;
+  box-shadow: none !important;
+}
+.sheet-result {
+  background: #c8f428;
+  font-weight: 800;
+  font-size: 1.15rem;
+  min-width: 140px;
+  padding: 16px 10px !important;
+}
+.unit-fixed {
+  background: #f1f1f1;
+  font-weight: 700;
+  min-width: 110px;
+  padding: 16px 10px !important;
+}
+.unit-display-box {
+  background: #f7f9fc;
+  border: 1px solid #b8c7d7;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 1rem;
+  font-weight: 700;
+}
+.hl-results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+.image-panel .reference-figure { margin: 0; }
+.reference-figure figcaption {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.responsive-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 1px solid #d8e1ea;
+  border-radius: 14px;
+  background: #fff;
+}
+@media (max-width: 640px) {
+  .sheet-table { min-width: 560px; }
+}

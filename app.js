@@ -3,12 +3,14 @@
 
   const $ = (id) => document.getElementById(id);
   const fmt = (n, dec = 2) => Number(n).toLocaleString('pt-BR', { minimumFractionDigits: dec, maximumFractionDigits: dec });
-  const safeNum = (value) => {
-    const n = parseFloat(String(value).replace(',', '.'));
-    return Number.isFinite(n) ? n : 0;
-  };
   const setHTML = (id, html) => { const el = $(id); if (el) el.innerHTML = html; };
   const resultCard = (label, value) => `<div class="result-card"><span>${label}</span><strong>${value}</strong></div>`;
+  const valueOrNull = (id) => {
+    const raw = $(id)?.value?.trim?.() ?? '';
+    if (raw === '') return null;
+    const n = Number(raw.replace(',', '.'));
+    return Number.isFinite(n) ? n : null;
+  };
 
   const tabs = Array.from(document.querySelectorAll('.tab'));
   const panels = Array.from(document.querySelectorAll('.panel'));
@@ -55,48 +57,66 @@
   };
 
   function updatePressure() {
-    const raw = $('pValue').value.trim();
+    const val = valueOrNull('pValue');
     const unit = $('pUnit').value;
     const target = $('pTarget').value;
-    if (!raw || !Number.isFinite(Number(raw))) {
+    if (val === null) {
       setHTML('pressureResults', resultCard('Verifique os dados', 'Informe um valor válido.'));
       return;
     }
-    const bar = Number(raw) * pressureToBar[unit];
+    const bar = val * pressureToBar[unit];
     const out = bar / pressureToBar[target];
-    const dec = Math.abs(out) >= 100000 ? 0 : Math.abs(out) < 0.001 && out !== 0 ? 8 : 4;
+    const dec = Math.abs(out) >= 100000 ? 0 : (Math.abs(out) < 0.001 && out !== 0 ? 8 : 4);
     setHTML('pressureResults', resultCard(pressureLabels[target], `${fmt(out, dec)} ${pressureLabels[target]}`));
   }
 
-  const flowToM3s = {
-    m3s: 1,
-    m3h: 1 / 3600,
-    lh: 0.001 / 3600,
-    ls: 0.001,
-    lmin: 0.001 / 60
-  };
-  const flowLabels = { m3s: 'm³/s', m3h: 'm³/h', lh: 'L/h', ls: 'L/s', lmin: 'L/min' };
+  const metricToM = { mm: 0.001, cm: 0.01, m: 1, km: 1000, pol: 0.0254, ft: 0.3048 };
+  const metricLabels = { mm: 'mm', cm: 'cm', m: 'm', km: 'km', pol: 'pol', ft: 'ft' };
+  function updateMetric() {
+    const val = valueOrNull('metricValue');
+    const from = $('metricUnit').value;
+    const to = $('metricTarget').value;
+    if (val === null) {
+      setHTML('metricResults', resultCard('Verifique os dados', 'Informe um valor válido.'));
+      return;
+    }
+    const meters = val * metricToM[from];
+    const out = meters / metricToM[to];
+    const dec = Math.abs(out) >= 100000 ? 0 : (Math.abs(out) < 0.001 && out !== 0 ? 8 : 4);
+    setHTML('metricResults', resultCard(metricLabels[to], `${fmt(out, dec)} ${metricLabels[to]}`));
+  }
 
+  const flowToM3s = { m3s: 1, m3h: 1 / 3600, lh: 0.001 / 3600, ls: 0.001, lmin: 0.001 / 60 };
+  const flowLabels = { m3s: 'm³/s', m3h: 'm³/h', lh: 'L/h', ls: 'L/s', lmin: 'L/min' };
   function updateFlow() {
-    const value = safeNum($('fValue').value);
+    const val = valueOrNull('fValue');
     const unit = $('fUnit').value;
-    const m3s = value * flowToM3s[unit];
-    const results = Object.keys(flowToM3s).map((key) => {
+    if (val === null) {
+      setHTML('flowResults', resultCard('Verifique os dados', 'Informe uma vazão válida.'));
+      return;
+    }
+    const m3s = val * flowToM3s[unit];
+    const html = Object.keys(flowToM3s).map((key) => {
       const out = m3s / flowToM3s[key];
       const dec = key === 'm3s' ? 6 : 3;
       return resultCard(flowLabels[key], `${fmt(out, dec)} ${flowLabels[key]}`);
     }).join('');
-    setHTML('flowResults', results);
+    setHTML('flowResults', html);
   }
 
   function updateOrifice() {
-    const D = safeNum($('oD').value) / 1000;
-    const d = safeNum($('od').value) / 1000;
-    const dp = safeNum($('odp').value) * 1000;
-    const rho = safeNum($('orho').value);
-    const cd = safeNum($('ocd').value);
+    const Dmm = valueOrNull('oD');
+    const dmm = valueOrNull('od');
+    const dpkPa = valueOrNull('odp');
+    const rho = valueOrNull('orho');
+    const cd = valueOrNull('ocd');
+    if ([Dmm, dmm, dpkPa, rho, cd].some(v => v === null)) {
+      setHTML('orificeResults', resultCard('Verifique os dados', 'Informe os valores do cálculo.'));
+      return;
+    }
+    const D = Dmm / 1000, d = dmm / 1000, dp = dpkPa * 1000;
     if (D <= 0 || d <= 0 || d >= D || dp < 0 || rho <= 0 || cd <= 0) {
-      setHTML('orificeResults', resultCard('Aviso', 'Verifique os dados informados'));
+      setHTML('orificeResults', resultCard('Aviso', 'Verifique diâmetros, pressão diferencial, densidade e Cd.'));
       return;
     }
     const beta = d / D;
@@ -106,43 +126,42 @@
     const vPipe = q / (Math.PI * D * D / 4);
     const vOrifice = q / area;
     const reynoldsHint = (rho * vPipe * D) / 0.001;
-    const html = [
+    setHTML('orificeResults', [
       resultCard('Vazão estimada', `${fmt(qh, 3)} m³/h`),
       resultCard('Vazão estimada', `${fmt(q, 6)} m³/s`),
       resultCard('Beta (d/D)', `${fmt(beta, 4)}`),
       resultCard('Velocidade na tubulação', `${fmt(vPipe, 3)} m/s`),
       resultCard('Velocidade no orifício', `${fmt(vOrifice, 3)} m/s`),
-      resultCard('Reynolds aproximado*', `${fmt(reynoldsHint, 0)}`)
-    ].join('');
-    setHTML('orificeResults', html);
+      resultCard('Reynolds aproximado', `${fmt(reynoldsHint, 0)}`)
+    ].join(''));
   }
 
   function updateTemp() {
-    const value = safeNum($('tValue').value);
+    const value = valueOrNull('tValue');
     const unit = $('tUnit').value;
+    if (value === null) {
+      setHTML('tempResults', resultCard('Verifique os dados', 'Informe uma temperatura válida.'));
+      return;
+    }
     let c = value;
     if (unit === 'f') c = (value - 32) * 5 / 9;
     if (unit === 'k') c = value - 273.15;
     const f = (c * 9 / 5) + 32;
     const k = c + 273.15;
-    const html = [
+    setHTML('tempResults', [
       resultCard('°C', `${fmt(c, 2)} °C`),
       resultCard('°F', `${fmt(f, 2)} °F`),
       resultCard('K', `${fmt(k, 2)} K`)
-    ].join('');
-    setHTML('tempResults', html);
+    ].join(''));
   }
 
   function pt100ResistanceFromTemp(t) {
-    const A = 3.9083e-3;
-    const B = -5.775e-7;
-    const C = -4.183e-12;
+    const A = 3.9083e-3, B = -5.775e-7, C = -4.183e-12;
     if (t >= 0) return 100 * (1 + A * t + B * t * t);
     return 100 * (1 + A * t + B * t * t + C * (t - 100) * t * t * t);
   }
   function pt100TempFromResistance(r) {
-    let low = -200;
-    let high = 850;
+    let low = -200, high = 850;
     for (let i = 0; i < 80; i++) {
       const mid = (low + high) / 2;
       const rm = pt100ResistanceFromTemp(mid);
@@ -150,146 +169,135 @@
     }
     return (low + high) / 2;
   }
-
   function updatePt100() {
     const mode = $('rMode').value;
-    const value = safeNum($('rValue').value);
+    const value = valueOrNull('rValue');
     const label = $('rValueLabel');
+    if (value === null) {
+      setHTML('pt100Results', resultCard('Verifique os dados', 'Informe um valor válido.'));
+      return;
+    }
     if (mode === 'temp') {
       label.textContent = 'Temperatura (°C)';
       const r = pt100ResistanceFromTemp(value);
-      const html = [
+      setHTML('pt100Results', [
         resultCard('Resistência', `${fmt(r, 4)} Ω`),
         resultCard('Temperatura', `${fmt(value, 2)} °C`)
-      ].join('');
-      setHTML('pt100Results', html);
+      ].join(''));
     } else {
       label.textContent = 'Resistência (Ω)';
       const t = pt100TempFromResistance(value);
-      const html = [
+      setHTML('pt100Results', [
         resultCard('Temperatura estimada', `${fmt(t, 2)} °C`),
         resultCard('Resistência', `${fmt(value, 4)} Ω`)
-      ].join('');
-      setHTML('pt100Results', html);
+      ].join(''));
     }
   }
 
   const tcTables = {
-    K: [
-      [0, 0.000], [50, 2.039], [100, 4.095], [150, 6.138], [200, 8.138], [250, 10.153], [300, 12.209], [350, 14.293], [400, 16.397], [450, 18.516], [500, 20.644]
-    ],
-    J: [
-      [0, 0.000], [50, 2.585], [100, 5.268], [150, 8.010], [200, 10.779], [250, 13.553], [300, 16.327], [350, 19.096], [400, 21.848], [450, 24.572], [500, 27.260]
-    ]
+    K: [[0, 0.000], [50, 2.039], [100, 4.095], [150, 6.138], [200, 8.138], [250, 10.153], [300, 12.209], [350, 14.293], [400, 16.397], [450, 18.516], [500, 20.644]],
+    J: [[0, 0.000], [50, 2.585], [100, 5.268], [150, 8.010], [200, 10.779], [250, 13.553], [300, 16.327], [350, 19.096], [400, 21.848], [450, 24.572], [500, 27.260]]
   };
-
   function interpTc(type, temp) {
     const table = tcTables[type];
     if (temp <= table[0][0]) return table[0][1];
     if (temp >= table[table.length - 1][0]) return table[table.length - 1][1];
     for (let i = 0; i < table.length - 1; i++) {
-      const [t1, e1] = table[i];
-      const [t2, e2] = table[i + 1];
-      if (temp >= t1 && temp <= t2) {
-        const frac = (temp - t1) / (t2 - t1);
-        return e1 + frac * (e2 - e1);
-      }
+      const [t1, e1] = table[i], [t2, e2] = table[i + 1];
+      if (temp >= t1 && temp <= t2) return e1 + ((temp - t1) / (t2 - t1)) * (e2 - e1);
     }
     return 0;
   }
-
   function updateTc() {
     const type = $('tcType').value;
-    const hot = safeNum($('tcHot').value);
-    const cold = safeNum($('tcCold').value);
-    const emfHot = interpTc(type, hot);
-    const emfCold = interpTc(type, cold);
-    const emfNet = emfHot - emfCold;
-    const html = [
+    const hot = valueOrNull('tcHot');
+    const cold = valueOrNull('tcCold');
+    if (hot === null || cold === null) {
+      setHTML('tcResults', resultCard('Verifique os dados', 'Informe as temperaturas das juntas.'));
+      return;
+    }
+    const emfHot = interpTc(type, hot), emfCold = interpTc(type, cold), emfNet = emfHot - emfCold;
+    setHTML('tcResults', [
       resultCard('EMF junta quente', `${fmt(emfHot, 3)} mV`),
       resultCard('EMF junta fria', `${fmt(emfCold, 3)} mV`),
       resultCard('EMF resultante', `${fmt(emfNet, 3)} mV`)
-    ].join('');
-    setHTML('tcResults', html);
+    ].join(''));
   }
 
+  function signalConfig(type) {
+    if (type === 'ma') return { min: 4, max: 20, unit: 'mA', label: 'Corrente medida (mA)', help: 'Faixa nominal: 4 a 20 mA' };
+    if (type === 'ma0') return { min: 0, max: 20, unit: 'mA', label: 'Corrente medida (mA)', help: 'Faixa nominal: 0 a 20 mA' };
+    if (type === 'volt5') return { min: 0, max: 5, unit: 'V', label: 'Tensão medida (V)', help: 'Faixa nominal: 0 a 5 V' };
+    return { min: 0, max: 10, unit: 'V', label: 'Tensão medida (V)', help: 'Faixa nominal: 0 a 10 V' };
+  }
   function updateSignalLabels() {
     const type = $('sType').value;
-    const signalLabel = $('sSignalLabel');
-    const signalHelp = $('sSignalHelp');
-    if (type === 'ma' || type === 'ma0') {
-      signalLabel.textContent = 'Corrente medida (mA)';
-      signalHelp.textContent = type === 'ma' ? 'Faixa nominal: 4 a 20 mA' : 'Faixa nominal: 0 a 20 mA';
-    } else {
-      signalLabel.textContent = 'Tensão medida (V)';
-      signalHelp.textContent = 'Faixa nominal: 0 a 10 V';
-    }
+    const cfg = signalConfig(type);
+    $('sSignalLabel').textContent = cfg.label;
+    $('sSignalHelp').textContent = cfg.help;
   }
-
   function updateSignal() {
     updateSignalLabels();
-    const type = $('sType').value;
-    const lrv = safeNum($('sLrv').value);
-    const urv = safeNum($('sUrv').value);
-    const signal = safeNum($('sSignal').value);
-    const processWanted = safeNum($('sProcess').value);
+    const cfg = signalConfig($('sType').value);
+    const lrv = valueOrNull('sLrv');
+    const urv = valueOrNull('sUrv');
+    const signal = valueOrNull('sSignal');
+    const processWanted = valueOrNull('sProcess');
     const unit = ($('sUnit').value || 'unidade').trim();
-    const min = type === 'ma' ? 4 : 0;
-    const max = (type === 'ma' || type === 'ma0') ? 20 : 10;
-    const span = urv - lrv;
-    if (span <= 0 || !Number.isFinite(span) || !Number.isFinite(signal) || !Number.isFinite(processWanted)) {
-      $('sPv').textContent = '—'; $('sPercent').textContent = '—';
-      $('sSpan').textContent = '—'; $('sReverse').textContent = '—';
-      $('sStatus').textContent = 'Verifique a faixa: URV deve superar LRV.';
-      $('sBar').style.width = '0%'; return;
+    if ([lrv, urv, signal, processWanted].some(v => v === null)) {
+      $('sPv').textContent = '—'; $('sStatus').textContent = 'Informe todos os valores.'; $('sStatus').style.color = 'var(--danger)';
+      $('sPercent').textContent = '—'; $('sInputEcho').textContent = '—'; $('sSpan').textContent = '—'; $('sReverse').textContent = '—'; $('sScaleText').textContent = '—'; $('sBar').style.width = '0%';
+      return;
     }
-    let percent = ((signal - min) / (max - min)) * 100;
-    let pv = lrv + ((signal - min) / (max - min)) * span;
-    let reverse = min + ((processWanted - lrv) / (span || 1)) * (max - min);
-    const within = signal >= min && signal <= max;
+    const span = urv - lrv;
+    if (!(span > 0)) {
+      $('sPv').textContent = '—'; $('sStatus').textContent = 'Verifique a faixa: URV deve superar LRV.'; $('sStatus').style.color = 'var(--danger)';
+      $('sPercent').textContent = '—'; $('sInputEcho').textContent = '—'; $('sSpan').textContent = '—'; $('sReverse').textContent = '—'; $('sScaleText').textContent = '—'; $('sBar').style.width = '0%';
+      return;
+    }
+    const percent = ((signal - cfg.min) / (cfg.max - cfg.min)) * 100;
+    const pv = lrv + ((signal - cfg.min) / (cfg.max - cfg.min)) * span;
+    const reverse = cfg.min + ((processWanted - lrv) / span) * (cfg.max - cfg.min);
+    const within = signal >= cfg.min && signal <= cfg.max;
     $('sPv').textContent = fmt(pv, 2);
     $('sPvUnit').textContent = unit;
     $('sStatus').textContent = within ? 'Dentro da faixa nominal' : 'Fora da faixa nominal';
     $('sStatus').style.color = within ? 'var(--green)' : 'var(--danger)';
     $('sPercent').textContent = `${fmt(percent, 2)}%`;
-    $('sInputEcho').textContent = `${fmt(signal, 2)} ${type === 'volt' ? 'V' : 'mA'}`;
+    $('sInputEcho').textContent = `${fmt(signal, 2)} ${cfg.unit}`;
     $('sSpan').textContent = fmt(span, 2);
-    $('sReverse').textContent = `${fmt(reverse, 2)} ${type === 'volt' ? 'V' : 'mA'}`;
+    $('sReverse').textContent = `${fmt(reverse, 2)} ${cfg.unit}`;
     $('sScaleText').textContent = `${fmt(percent, 2)}%`;
-    const barPct = Math.max(0, Math.min(100, percent));
-    $('sBar').style.width = `${barPct}%`;
+    $('sBar').style.width = `${Math.max(0, Math.min(100, percent))}%`;
   }
 
-
-  const powerWatts = {
-    w: 1, kw: 1000, mw: 1e6, gw: 1e9, hp: 745.6998715822702,
-    cv: 735.49875, btuh: 0.2930710701722222, kcalh: 1.163
-  };
-  const powerLabels = {
-    w: 'W', kw: 'kW', mw: 'MW', gw: 'GW', hp: 'hp', cv: 'cv',
-    btuh: 'BTU/h', kcalh: 'kcal/h', kva: 'kVA'
-  };
+  const powerWatts = { w: 1, kw: 1000, mw: 1e6, gw: 1e9, hp: 745.6998715822702, cv: 735.49875, btuh: 0.2930710701722222, kcalh: 1.163 };
+  const powerLabels = { w: 'W', kw: 'kW', mw: 'MW', gw: 'GW', hp: 'hp', cv: 'cv', btuh: 'BTU/h', kcalh: 'kcal/h', kva: 'kVA' };
   function updatePower() {
     const from = $('powerUnit').value;
     const to = $('powerTarget').value;
     const isKva = from === 'kva' || to === 'kva';
     $('powerPfField').hidden = !isKva;
-    const raw = $('powerValue').value.trim();
-    const pfRaw = $('powerPf').value.trim();
-    const pf = Number(pfRaw);
-    if (!raw || !Number.isFinite(Number(raw)) ||
-        (isKva && (!pfRaw || !Number.isFinite(pf) || pf <= 0 || pf > 1))) {
+    const value = valueOrNull('powerValue');
+    const pf = valueOrNull('powerPf');
+    if (value === null || (isKva && (pf === null || pf <= 0 || pf > 1))) {
       setHTML('powerResults', resultCard('Verificação', 'Informe potência e fator de potência válidos.'));
       $('powerNotice').textContent = 'O fator de potência deve estar acima de 0 e até 1.';
       return;
     }
-    const v = Number(raw);
-    const watts = from === 'kva' ? v * 1000 * pf : v * powerWatts[from];
+    const watts = from === 'kva' ? value * 1000 * pf : value * powerWatts[from];
     const out = to === 'kva' ? watts / (1000 * pf) : watts / powerWatts[to];
     const digits = Math.abs(out) >= 100000 ? 1 : Math.abs(out) < .001 && out !== 0 ? 8 : 4;
-    setHTML('powerResults', resultCard(powerLabels[to], `${fmt(out,digits)} ${powerLabels[to]}`));
-    $('powerNotice').textContent = isKva ? `Conversão entre potência ativa e aparente considerando FP ${fmt(pf,3)}.` : 'Conversão entre unidades de potência ativa.';
+    setHTML('powerResults', resultCard(powerLabels[to], `${fmt(out, digits)} ${powerLabels[to]}`));
+    $('powerNotice').textContent = isKva ? `Conversão entre potência ativa e aparente considerando FP ${fmt(pf, 3)}.` : 'Conversão entre unidades de potência ativa.';
   }
+  function swapPower() {
+    const oldFrom = $('powerUnit').value;
+    $('powerUnit').value = $('powerTarget').value;
+    $('powerTarget').value = oldFrom;
+    updatePower();
+  }
+
   function rangeDiagram(mode) {
     const wet = mode === 'wet', closed = mode !== 'open';
     const top = closed ? '<rect x="50" y="22" width="255" height="215" rx="24" fill="#f8fafc" stroke="#64748b" stroke-width="3"/>' : '<path d="M50 22 V237 H305 V22" fill="none" stroke="#64748b" stroke-width="3"/>';
@@ -312,44 +320,78 @@
        <text x="285" y="294" font-size="10" fill="#2563a1">Baixa (LP)</text>
      </svg>`;
   }
+  function paToUnit(pa, unit) {
+    return pa / (pressureToBar[unit] * 100000);
+  }
   function updateRange() {
     const mode = $('rangeMode').value;
     document.querySelectorAll('.range-wet-only').forEach(el => el.hidden = mode !== 'wet');
     $('rangeDiagram').innerHTML = rangeDiagram(mode);
-    const required = ['rangeMin','rangeMax','rangeRho','rangeDrop',...(mode === 'wet' ? ['rangeWetHeight','rangeWetRho'] : [])];
-    const vals = required.map(id => $(id).value.trim());
-    const nums = vals.map(Number);
-    const min = Number($('rangeMin').value), max = Number($('rangeMax').value);
-    const rho = Number($('rangeRho').value), drop = Number($('rangeDrop').value);
-    const wetHeight = Number($('rangeWetHeight').value), wetRho = Number($('rangeWetRho').value);
+
+    const min = valueOrNull('rangeMin'), max = valueOrNull('rangeMax'), rho = valueOrNull('rangeRho'), drop = valueOrNull('rangeDrop');
+    const wetHeight = valueOrNull('rangeWetHeight'), wetRho = valueOrNull('rangeWetRho');
     const unit = $('rangeOutputUnit').value;
-    if (vals.some(x=>x==='') || nums.some(x=>!Number.isFinite(x)) || min<0 || max<=min || rho<=0 ||
-      (mode==='wet' && (wetHeight<0 || wetRho<=0))) {
+    if ([min, max, rho, drop].some(v => v === null) || (mode === 'wet' && [wetHeight, wetRho].some(v => v === null))) {
+      setHTML('rangeResults', resultCard('Verificação', 'Informe todos os valores necessários.'));
+      setHTML('rangeChecks', '');
+      $('rangeNotice').textContent = 'Complete os campos para gerar a faixa.';
+      return;
+    }
+    if (min < 0 || max <= min || rho <= 0 || (mode === 'wet' && (wetHeight < 0 || wetRho <= 0))) {
       setHTML('rangeResults', resultCard('Verificação', 'Confira alturas, densidades e ordem dos níveis.'));
       setHTML('rangeChecks', '');
       $('rangeNotice').textContent = 'Nível máximo deve superar o mínimo. Densidades devem ser positivas.';
       return;
     }
-    const g=9.80665;
-    const offset = mode === 'wet' ? wetRho*g*wetHeight : 0;
-    const lrvPa = (rho*g*(min+drop)) - offset;
-    const urvPa = (rho*g*(max+drop)) - offset;
-    const spanPa=urvPa-lrvPa;
-    const conv = (p) => p/(pressureToBar[unit]*100000);
-    const digit = unit==='mmh2o' ? 1 : 4;
-    const low=conv(lrvPa), high=conv(urvPa), span=conv(spanPa);
+    const g = 9.80665;
+    const offset = mode === 'wet' ? wetRho * g * wetHeight : 0;
+    const lrvPa = (rho * g * (min + drop)) - offset;
+    const urvPa = (rho * g * (max + drop)) - offset;
+    const spanPa = urvPa - lrvPa;
+    const low = paToUnit(lrvPa, unit), high = paToUnit(urvPa, unit), span = paToUnit(spanPa, unit);
+    const digit = unit === 'mmh2o' ? 1 : 4;
     setHTML('rangeResults', [
-      resultCard('LRV · 0% (4 mA)', `${fmt(low,digit)} ${pressureLabels[unit]}`),
-      resultCard('URV · 100% (20 mA)', `${fmt(high,digit)} ${pressureLabels[unit]}`),
-      resultCard('Span', `${fmt(span,digit)} ${pressureLabels[unit]}`)
+      resultCard('LRV · 0% (4 mA)', `${fmt(low, digit)} ${pressureLabels[unit]}`),
+      resultCard('URV · 100% (20 mA)', `${fmt(high, digit)} ${pressureLabels[unit]}`),
+      resultCard('Span', `${fmt(span, digit)} ${pressureLabels[unit]}`)
     ].join(''));
     setHTML('rangeChecks', [
-      resultCard('Altura útil de medição',`${fmt(max-min,3)} m`),
-      resultCard('Densidade do processo',`${fmt(rho,1)} kg/m³`),
+      resultCard('Altura útil de medição', `${fmt(max - min, 3)} m`),
+      resultCard('Densidade do processo', `${fmt(rho, 1)} kg/m³`),
       resultCard('Tipo de zero', low < -1e-6 ? 'Zero elevado (LRV negativo)' : low > 1e-6 ? 'Zero suprimido (LRV positivo)' : 'Zero normal'),
       resultCard('Orientação diferencial', 'HP − LP')
     ].join(''));
     $('rangeNotice').textContent = 'Valores calculados para o arranjo selecionado; pressão diferencial HP − LP. Verifique a instalação real antes de configurar o instrumento.';
+  }
+
+  function updateHLRange() {
+    const h100 = valueOrNull('hlH100');
+    const l100 = valueOrNull('hlL100');
+    const h0 = valueOrNull('hlH0');
+    const l0 = valueOrNull('hlL0');
+    const density = valueOrNull('hlDensity');
+    if ([h100, l100, h0, l0, density].some(v => v === null)) {
+      $('hlR100').textContent = '—';
+      $('hlR0').textContent = '—';
+      setHTML('hlSummary', resultCard('Verificação', 'Informe H, L e densidade.'));
+      return;
+    }
+    const dp100 = h100 - l100;
+    const dp0 = h0 - l0;
+    const span = dp100 - dp0;
+    const dp100d = dp100 * density;
+    const dp0d = dp0 * density;
+    const spand = span * density;
+    $('hlR100').textContent = fmt(dp100, 3);
+    $('hlR0').textContent = fmt(dp0, 3);
+    setHTML('hlSummary', [
+      resultCard('URV sem densidade', `${fmt(dp100, 3)} mmH₂O`),
+      resultCard('LRV sem densidade', `${fmt(dp0, 3)} mmH₂O`),
+      resultCard('Span sem densidade', `${fmt(span, 3)} mmH₂O`),
+      resultCard('URV com densidade', `${fmt(dp100d, 3)} mmH₂O`),
+      resultCard('LRV com densidade', `${fmt(dp0d, 3)} mmH₂O`),
+      resultCard('Span com densidade', `${fmt(spand, 3)} mmH₂O`)
+    ].join(''));
   }
 
   function bindInputs(ids, fn) {
@@ -362,25 +404,18 @@
   }
 
   bindInputs(['pValue', 'pUnit', 'pTarget'], updatePressure);
-  bindInputs(['powerValue', 'powerUnit', 'powerTarget', 'powerPf'], updatePower);
-  $('powerSwap').addEventListener('click', () => {
-    const oldFrom = $('powerUnit').value;
-    $('powerUnit').value = $('powerTarget').value;
-    $('powerTarget').value = oldFrom;
-    updatePower();
-  });
-  bindInputs(['rangeMode', 'rangeMin', 'rangeMax', 'rangeRho', 'rangeDrop', 'rangeWetHeight', 'rangeWetRho', 'rangeOutputUnit'], updateRange);
+  bindInputs(['metricValue', 'metricUnit', 'metricTarget'], updateMetric);
   bindInputs(['fValue', 'fUnit'], updateFlow);
   bindInputs(['oD', 'od', 'odp', 'orho', 'ocd'], updateOrifice);
   bindInputs(['tValue', 'tUnit'], updateTemp);
   bindInputs(['rMode', 'rValue'], updatePt100);
   bindInputs(['tcType', 'tcHot', 'tcCold'], updateTc);
-  bindInputs(['sLrv', 'sUrv', 'sUnit', 'sSignal', 'sProcess'], updateSignal);
-  $('sType').addEventListener('change', () => {
-    $('sSignal').value = $('sType').value === 'volt' ? '5' : ($('sType').value === 'ma0' ? '10' : '12');
-    updateSignal();
-  });
+  bindInputs(['sLrv', 'sUrv', 'sType', 'sUnit', 'sSignal', 'sProcess'], updateSignal);
+  bindInputs(['powerValue', 'powerUnit', 'powerTarget', 'powerPf'], updatePower);
+  bindInputs(['rangeMode', 'rangeMin', 'rangeMax', 'rangeRho', 'rangeDrop', 'rangeWetHeight', 'rangeWetRho', 'rangeOutputUnit'], updateRange);
+  bindInputs(['hlH100', 'hlL100', 'hlH0', 'hlL0', 'hlDensity'], updateHLRange);
 
+  $('powerSwap').addEventListener('click', swapPower);
   $('pExampleBtn').addEventListener('click', function () {
     $('pValue').value = '10';
     $('pUnit').value = 'bar';
@@ -396,8 +431,12 @@
     $('sProcess').value = '50';
     updateSignal();
   });
+  $('sType').addEventListener('change', () => {
+    const type = $('sType').value;
+    $('sSignal').value = type === 'volt' ? '5' : type === 'volt5' ? '2.5' : type === 'ma0' ? '10' : '12';
+    updateSignal();
+  });
 
-  // PWA install
   let deferredPrompt = null;
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
@@ -413,7 +452,6 @@
     $('installBtn').hidden = true;
   });
 
-  // Online/offline status
   function updateConnectionStatus() {
     const el = $('connection-status');
     if (!el) return;
@@ -434,12 +472,14 @@
   }
 
   updatePressure();
-  updatePower();
-  updateRange();
+  updateMetric();
   updateFlow();
   updateOrifice();
   updateTemp();
   updatePt100();
   updateTc();
   updateSignal();
+  updatePower();
+  updateRange();
+  updateHLRange();
 })();

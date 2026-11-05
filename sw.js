@@ -1,4 +1,4 @@
-const CACHE_NAME = 'instrumentacao-pro-v1-3';
+const CACHE_NAME = 'instrumentacao-pro-v1-4';
 const ASSETS = [
   './',
   './index.html',
@@ -6,7 +6,9 @@ const ASSETS = [
   './app.js',
   './manifest.webmanifest',
   './icons/icon-192.png',
-  './icons/icon-512.png'
+  './icons/icon-512.png',
+  './assets/transmitter_cell_reference.png',
+  './assets/range_hl_reference.png'
 ];
 
 self.addEventListener('install', (event) => {

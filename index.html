@@ -35,8 +35,8 @@
       <div class="tabs" role="tablist" aria-label="Módulos do aplicativo">
         <button class="tab active" data-panel="pressure" data-subtitle="Módulo 01 · Pressão e conversões" role="tab" aria-selected="true">Pressão e conversões</button>
         <button class="tab" data-panel="flow" data-subtitle="Módulo 02 · Vazão e placa de orifício" role="tab" aria-selected="false">Vazão e placa de orifício</button>
-        <button class="tab" data-panel="temperature" data-subtitle="Módulo 03 · Temperatura, Pt100 e termopares" role="tab" aria-selected="false">Temperatura e sensores</button>
-        <button class="tab" data-panel="signal" data-subtitle="Módulo 04 · Sinais 4–20 mA e 0–10 V" role="tab" aria-selected="false">Sinais de instrumentação</button>
+        <button class="tab" data-panel="temperature" data-subtitle="Módulo 03 · Temperatura e sensores" role="tab" aria-selected="false">Temperatura e sensores</button>
+        <button class="tab" data-panel="signal" data-subtitle="Módulo 04 · Sinais 4–20 mA, 0–20 mA, 0–10 V e 0–5 V" role="tab" aria-selected="false">Sinais de instrumentação</button>
         <button class="tab" data-panel="power" data-subtitle="Módulo 05 · Potência e conversões" role="tab" aria-selected="false">Potência e conversões</button>
         <button class="tab" data-panel="range" data-subtitle="Módulo 06 · Faixa de transmissores de nível" role="tab" aria-selected="false">Faixa de transmissores</button>
       </div>
@@ -44,7 +44,7 @@
       <section class="panel active" id="pressure" role="tabpanel">
         <div class="module-grid module-grid-two">
           <article class="card input-card">
-            <h2>Dados de entrada</h2>
+            <h2>Pressão · Dados de entrada</h2>
             <div class="form-grid two-cols">
               <div class="field">
                 <label for="pValue">Valor de entrada</label>
@@ -61,7 +61,12 @@
                   <option value="mpa">MPa</option>
                   <option value="pa">Pa</option>
                   <option value="mca">mca</option>
-                  <option value="mmhg">mmHg</option><option value="mmh2o">mmH₂O</option><option value="mbar">mbar</option><option value="atm">atm</option><option value="inh2o">inH₂O</option><option value="torr">Torr</option>
+                  <option value="mmh2o">mmH₂O</option>
+                  <option value="mmhg">mmHg</option>
+                  <option value="mbar">mbar</option>
+                  <option value="atm">atm</option>
+                  <option value="inh2o">inH₂O</option>
+                  <option value="torr">Torr</option>
                 </select>
                 <small>Conversão linear entre unidades.</small>
               </div>
@@ -69,13 +74,25 @@
             <div class="field output-picker" style="margin-top:16px">
               <label for="pTarget">Unidade que deseja visualizar no resultado</label>
               <select id="pTarget">
-                <option value="kgf">kgf/cm²</option><option value="bar">bar</option><option value="psi">psi</option><option value="kpa">kPa</option><option value="mpa">MPa</option><option value="pa">Pa</option><option value="mca">mca</option><option value="mmh2o">mmH₂O</option><option value="mmhg">mmHg</option><option value="mbar">mbar</option><option value="atm">atm</option><option value="inh2o">inH₂O</option><option value="torr">Torr</option>
+                <option value="kgf">kgf/cm²</option>
+                <option value="bar">bar</option>
+                <option value="psi">psi</option>
+                <option value="kpa">kPa</option>
+                <option value="mpa">MPa</option>
+                <option value="pa">Pa</option>
+                <option value="mca">mca</option>
+                <option value="mmh2o">mmH₂O</option>
+                <option value="mmhg">mmHg</option>
+                <option value="mbar">mbar</option>
+                <option value="atm">atm</option>
+                <option value="inh2o">inH₂O</option>
+                <option value="torr">Torr</option>
               </select>
             </div>
             <div class="button-row">
               <button class="btn" id="pExampleBtn">Restaurar exemplo</button>
             </div>
-            <p class="note">Observação: a conversão não altera automaticamente referência absoluta ou manométrica. Para mca, considera-se água a 1.000 kg/m³ e gravidade padrão.</p>
+            <p class="note">Observação: a conversão não altera automaticamente referência absoluta ou manométrica. Para mca e mmH₂O, considera-se água a 1.000 kg/m³ e gravidade padrão.</p>
           </article>
 
           <article class="card output-card">
@@ -84,65 +101,40 @@
             <p class="note">Somente a unidade de saída selecionada é exibida.</p>
           </article>
         </div>
-      </section>
 
-
-      <section class="panel" id="power" role="tabpanel" hidden>
-        <div class="module-grid module-grid-two">
-          <article class="card input-card">
-            <h2>Dados de entrada</h2>
-            <div class="form-grid two-cols">
-              <div class="field"><label for="powerValue">Potência</label><input id="powerValue" type="number" inputmode="decimal" step="any" value="100"></div>
-              <div class="field"><label for="powerUnit">Unidade de entrada</label><select id="powerUnit">
-                <option value="kw">kW</option><option value="w">W</option><option value="mw">MW</option><option value="gw">GW</option><option value="hp">hp (mecânico)</option><option value="cv">cv (métrico)</option><option value="btuh">BTU/h</option><option value="kcalh">kcal/h</option><option value="kva">kVA (aparente)</option>
-              </select></div>
-              <div class="field"><label for="powerTarget">Unidade de saída</label><select id="powerTarget">
-                <option value="hp">hp (mecânico)</option><option value="w">W</option><option value="kw">kW</option><option value="mw">MW</option><option value="gw">GW</option><option value="cv">cv (métrico)</option><option value="btuh">BTU/h</option><option value="kcalh">kcal/h</option><option value="kva">kVA (aparente)</option>
-              </select></div>
-              <div class="field" id="powerPfField" hidden><label for="powerPf">Fator de potência (FP)</label><input id="powerPf" type="number" inputmode="decimal" step="any" value="0.9" min="0" max="1"><small>Necessário para conversões com kVA.</small></div>
+        <article class="card" style="margin-top:18px">
+          <h2>Conversão métrica auxiliar</h2>
+          <div class="form-grid three-cols">
+            <div class="field">
+              <label for="metricValue">Valor</label>
+              <input id="metricValue" type="number" inputmode="decimal" step="any" value="1">
+              <small>Conversão de altura ou comprimento.</small>
             </div>
-            <div class="button-row"><button id="powerSwap" class="btn">Inverter unidades</button></div>
-            <p class="note">hp = horsepower mecânico; cv = cavalo-vapor métrico. kVA é potência aparente e exige fator de potência para conversão com unidades de potência ativa.</p>
-          </article>
-          <article class="card output-card"><h2>Resultado</h2><div class="result-grid" id="powerResults"></div><p class="note" id="powerNotice"></p></article>
-        </div>
-      </section>
-
-      <section class="panel" id="range" role="tabpanel" hidden>
-        <div class="module-grid module-grid-two">
-          <article class="card input-card">
-            <h2>Configuração da faixa · Transmissor de nível DP</h2>
-            <div class="field"><label for="rangeMode">Tipo de instalação</label><select id="rangeMode">
-              <option value="open">Tanque aberto / referência atmosférica</option>
-              <option value="dry">Vaso fechado / perna seca</option>
-              <option value="wet">Vaso fechado / perna molhada</option>
-            </select></div>
-            <div class="form-grid two-cols" style="margin-top:14px">
-              <div class="field"><label for="rangeMin">Nível mínimo da faixa (m)</label><input id="rangeMin" type="number" step="any" value="0"><small>Altura a partir da tomada inferior.</small></div>
-              <div class="field"><label for="rangeMax">Nível máximo (m)</label><input id="rangeMax" type="number" step="any" value="3"></div>
-              <div class="field"><label for="rangeRho">Densidade do processo (kg/m³)</label><input id="rangeRho" type="number" step="any" value="1000"></div>
-              <div class="field"><label for="rangeDrop">Transmissor abaixo da tomada inferior (m)</label><input id="rangeDrop" type="number" step="any" value="0"><small>Valor negativo se instalado acima da tomada.</small></div>
-              <div class="field range-wet-only" hidden><label for="rangeWetHeight">Altura da perna molhada (m)</label><input id="rangeWetHeight" type="number" step="any" value="3.5"><small>Coluna no lado de baixa pressão (LP).</small></div>
-              <div class="field range-wet-only" hidden><label for="rangeWetRho">Densidade do fluido da perna molhada (kg/m³)</label><input id="rangeWetRho" type="number" step="any" value="1000"></div>
-              <div class="field"><label for="rangeOutputUnit">Unidade do range de pressão</label><select id="rangeOutputUnit">
-                <option value="mmh2o">mmH₂O</option><option value="mbar">mbar</option><option value="kpa">kPa</option><option value="bar">bar</option><option value="psi">psi</option><option value="kgf">kgf/cm²</option><option value="mca">mca</option>
-              </select></div>
+            <div class="field">
+              <label for="metricUnit">Unidade de entrada</label>
+              <select id="metricUnit">
+                <option value="m">m</option>
+                <option value="mm">mm</option>
+                <option value="cm">cm</option>
+                <option value="km">km</option>
+                <option value="pol">pol</option>
+                <option value="ft">ft</option>
+              </select>
             </div>
-            <p class="note">Instalação presumida: tomada de alta pressão (HP) na parte inferior; a de baixa pressão (LP) é atmosférica, seca ou preenchida, conforme seleção. Informe as alturas verticais.</p>
-          </article>
-          <article class="card output-card">
-            <h2>Esquema ilustrativo</h2>
-            <div id="rangeDiagram" class="diagram-holder" aria-label="Esquema de instalação do transmissor DP"></div>
-            <p class="note">Diagramas esquemáticos originais, não representando escala ou a instalação real.</p>
-            <h2 style="margin-top:20px">Faixa de configuração</h2>
-            <div class="result-grid" id="rangeResults"></div>
-            <p class="note" id="rangeNotice"></p>
-          </article>
-        </div>
-        <div class="card" style="margin-top:18px"><h2>Conferência da faixa</h2>
-          <div class="result-grid" id="rangeChecks"></div>
-          <p class="note note-warning">Ajuste preliminar com colunas hidrostáticas. Em aplicações reais, confirme densidades nas temperaturas de processo, enchimento das linhas, geometria, limites de pressão, tecnologia de selos e sentido de atuação do transmissor.</p>
-        </div>
+            <div class="field">
+              <label for="metricTarget">Unidade de saída</label>
+              <select id="metricTarget">
+                <option value="mm">mm</option>
+                <option value="cm">cm</option>
+                <option value="m">m</option>
+                <option value="km">km</option>
+                <option value="pol">pol</option>
+                <option value="ft">ft</option>
+              </select>
+            </div>
+          </div>
+          <div class="result-grid" id="metricResults" style="margin-top:16px"></div>
+        </article>
       </section>
 
       <section class="panel" id="flow" role="tabpanel" hidden>
@@ -291,8 +283,9 @@
                 <label for="sType">Tipo de sinal</label>
                 <select id="sType">
                   <option value="ma">4–20 mA</option>
-                  <option value="volt">0–10 V</option>
                   <option value="ma0">0–20 mA</option>
+                  <option value="volt">0–10 V</option>
+                  <option value="volt5">0–5 V</option>
                 </select>
               </div>
               <div class="field">
@@ -338,8 +331,124 @@
         </div>
       </section>
 
+      <section class="panel" id="power" role="tabpanel" hidden>
+        <div class="module-grid module-grid-two">
+          <article class="card input-card">
+            <h2>Dados de entrada</h2>
+            <div class="form-grid two-cols">
+              <div class="field"><label for="powerValue">Potência</label><input id="powerValue" type="number" inputmode="decimal" step="any" value="100"></div>
+              <div class="field"><label for="powerUnit">Unidade de entrada</label><select id="powerUnit">
+                <option value="kw">kW</option><option value="w">W</option><option value="mw">MW</option><option value="gw">GW</option><option value="hp">hp (mecânico)</option><option value="cv">cv (métrico)</option><option value="btuh">BTU/h</option><option value="kcalh">kcal/h</option><option value="kva">kVA (aparente)</option>
+              </select></div>
+              <div class="field"><label for="powerTarget">Unidade de saída</label><select id="powerTarget">
+                <option value="hp">hp (mecânico)</option><option value="w">W</option><option value="kw">kW</option><option value="mw">MW</option><option value="gw">GW</option><option value="cv">cv (métrico)</option><option value="btuh">BTU/h</option><option value="kcalh">kcal/h</option><option value="kva">kVA (aparente)</option>
+              </select></div>
+              <div class="field" id="powerPfField" hidden><label for="powerPf">Fator de potência (FP)</label><input id="powerPf" type="number" inputmode="decimal" step="any" value="0.9" min="0" max="1"><small>Necessário para conversões com kVA.</small></div>
+            </div>
+            <div class="button-row"><button id="powerSwap" class="btn">Inverter unidades</button></div>
+            <p class="note">hp = horsepower mecânico; cv = cavalo-vapor métrico. kVA é potência aparente e exige fator de potência para conversão com unidades de potência ativa.</p>
+          </article>
+          <article class="card output-card"><h2>Resultado</h2><div class="result-grid" id="powerResults"></div><p class="note" id="powerNotice"></p></article>
+        </div>
+      </section>
+
+      <section class="panel" id="range" role="tabpanel" hidden>
+        <div class="module-grid module-grid-two">
+          <article class="card input-card">
+            <h2>Configuração da faixa · Transmissor de nível DP</h2>
+            <div class="field"><label for="rangeMode">Tipo de instalação</label><select id="rangeMode">
+              <option value="open">Tanque aberto / referência atmosférica</option>
+              <option value="dry">Vaso fechado / perna seca</option>
+              <option value="wet">Vaso fechado / perna molhada</option>
+            </select></div>
+            <div class="form-grid two-cols" style="margin-top:14px">
+              <div class="field"><label for="rangeMin">Nível mínimo da faixa (m)</label><input id="rangeMin" type="number" step="any" value="0"><small>Altura a partir da tomada inferior.</small></div>
+              <div class="field"><label for="rangeMax">Nível máximo (m)</label><input id="rangeMax" type="number" step="any" value="3"></div>
+              <div class="field"><label for="rangeRho">Densidade do processo (kg/m³)</label><input id="rangeRho" type="number" step="any" value="1000"></div>
+              <div class="field"><label for="rangeDrop">Transmissor abaixo da tomada inferior (m)</label><input id="rangeDrop" type="number" step="any" value="0"><small>Valor negativo se instalado acima da tomada.</small></div>
+              <div class="field range-wet-only" hidden><label for="rangeWetHeight">Altura da perna molhada (m)</label><input id="rangeWetHeight" type="number" step="any" value="3.5"><small>Coluna no lado de baixa pressão (LP).</small></div>
+              <div class="field range-wet-only" hidden><label for="rangeWetRho">Densidade do fluido da perna molhada (kg/m³)</label><input id="rangeWetRho" type="number" step="any" value="1000"></div>
+              <div class="field"><label for="rangeOutputUnit">Unidade do range de pressão</label><select id="rangeOutputUnit">
+                <option value="mmh2o">mmH₂O</option><option value="mbar">mbar</option><option value="kpa">kPa</option><option value="bar">bar</option><option value="psi">psi</option><option value="kgf">kgf/cm²</option><option value="mca">mca</option>
+              </select></div>
+            </div>
+            <p class="note">Instalação presumida: tomada de alta pressão (HP) na parte inferior; a de baixa pressão (LP) é atmosférica, seca ou preenchida, conforme seleção. Informe as alturas verticais.</p>
+          </article>
+          <article class="card output-card">
+            <h2>Esquema ilustrativo</h2>
+            <div id="rangeDiagram" class="diagram-holder" aria-label="Esquema de instalação do transmissor DP"></div>
+            <p class="note">Diagramas esquemáticos originais, não representando escala ou a instalação real.</p>
+            <h2 style="margin-top:20px">Faixa de configuração</h2>
+            <div class="result-grid" id="rangeResults"></div>
+            <p class="note" id="rangeNotice"></p>
+          </article>
+        </div>
+
+        <div class="card" style="margin-top:18px">
+          <h2>Critério H e L · referência em mmH₂O</h2>
+          <p class="note note-no-top">Informe os valores de H e L para 100% e 0%. O aplicativo calcula automaticamente o range e o span com e sem a aplicação da densidade. Nesta tabela, a unidade permanece fixa em mmH₂O.</p>
+          <div class="sheet-wrap">
+            <table class="sheet-table" aria-label="Tabela de critério H e L">
+              <thead>
+                <tr>
+                  <th class="sheet-header sheet-header-red"></th>
+                  <th class="sheet-header sheet-header-cyan">H</th>
+                  <th class="sheet-header sheet-header-cyan">L</th>
+                  <th class="sheet-header sheet-header-cyan">H − L</th>
+                  <th class="sheet-header sheet-header-cyan"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="sheet-percent">100%</td>
+                  <td><input id="hlH100" class="sheet-input" type="number" step="any" value="1000"></td>
+                  <td><input id="hlL100" class="sheet-input" type="number" step="any" value="1500"></td>
+                  <td class="sheet-result" id="hlR100">-500</td>
+                  <td class="unit-fixed">mmH₂O</td>
+                </tr>
+                <tr>
+                  <td class="sheet-percent">0%</td>
+                  <td><input id="hlH0" class="sheet-input" type="number" step="any" value="0"></td>
+                  <td><input id="hlL0" class="sheet-input" type="number" step="any" value="1500"></td>
+                  <td class="sheet-result" id="hlR0">-1500</td>
+                  <td class="unit-fixed">mmH₂O</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="form-grid two-cols" style="margin-top:16px">
+            <div class="field">
+              <label for="hlDensity">Densidade aplicada</label>
+              <input id="hlDensity" type="number" step="any" value="1">
+              <small>Use fator de densidade relativa. Ex.: 1,00 para água.</small>
+            </div>
+            <div class="field">
+              <label>Unidade fixa desta tabela</label>
+              <div class="unit-display-box">mmH₂O</div>
+              <small>Conforme solicitado, a unidade desta área permanece fixa.</small>
+            </div>
+          </div>
+          <div class="hl-results-grid" id="hlSummary"></div>
+        </div>
+
+        <div class="module-grid module-grid-two" style="margin-top:18px">
+          <article class="card image-panel">
+            <h2>Indicação da célula do transmissor</h2>
+            <figure class="reference-figure">
+              <img class="responsive-image" src="./assets/transmitter_cell_reference.png" alt="Imagem ilustrativa da indicação da célula do transmissor">
+              <figcaption>Referência visual para entendimento do usuário sobre o sentido de medição e a representação da célula do transmissor.</figcaption>
+            </figure>
+          </article>
+          <article class="card">
+            <h2>Conferência da faixa</h2>
+            <div class="result-grid" id="rangeChecks"></div>
+            <p class="note note-warning">Ajuste preliminar com colunas hidrostáticas. Em aplicações reais, confirme densidades nas temperaturas de processo, enchimento das linhas, geometria, limites de pressão, tecnologia de selos e sentido de atuação do transmissor.</p>
+          </article>
+        </div>
+      </section>
+
       <footer class="footer-note">
-        Instrumentação PRO · Versão 1.3 · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
+        Instrumentação PRO · Versão 1.4 · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
       </footer>
     </div>
   </main>
