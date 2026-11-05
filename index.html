@@ -138,8 +138,8 @@
       </section>
 
       <section class="panel" id="flow" role="tabpanel" hidden>
-        <div class="module-grid">
-          <article class="card">
+        <div class="module-grid module-grid-two">
+          <article class="card input-card">
             <h2>Conversão de vazão volumétrica</h2>
             <div class="form-grid two-cols">
               <div class="field">
@@ -162,35 +162,40 @@
             <div class="result-grid" id="flowResults"></div>
           </article>
 
-          <article class="card">
-            <div class="title-row">
-              <h2>Placa de orifício</h2>
-              <span class="pill pill-warning">Estimativa preliminar</span>
-            </div>
-            <div class="form-grid three-cols">
+          <article class="card output-card">
+            <h2>Trecho mínimo de instalação do medidor</h2>
+            <div class="form-grid two-cols">
               <div class="field">
-                <label for="oD">Diâmetro interno da tubulação (mm)</label>
-                <input id="oD" type="number" inputmode="decimal" step="any" value="100">
+                <label for="meterDiameter">Diâmetro do tubo do medidor (mm)</label>
+                <input id="meterDiameter" type="number" inputmode="decimal" step="any" value="100">
+                <small>Informe o diâmetro interno ou nominal adotado para o trecho do medidor.</small>
               </div>
               <div class="field">
-                <label for="od">Diâmetro do orifício (mm)</label>
-                <input id="od" type="number" inputmode="decimal" step="any" value="60">
-              </div>
-              <div class="field">
-                <label for="odp">Pressão diferencial (kPa)</label>
-                <input id="odp" type="number" inputmode="decimal" step="any" value="20">
-              </div>
-              <div class="field">
-                <label for="orho">Densidade do líquido (kg/m³)</label>
-                <input id="orho" type="number" inputmode="decimal" step="any" value="998">
-              </div>
-              <div class="field">
-                <label for="ocd">Coeficiente de descarga Cd</label>
-                <input id="ocd" type="number" inputmode="decimal" step="any" value="0.61">
+                <label>Critério aplicado</label>
+                <div class="unit-display-box">Antes do medidor = 5 × D &nbsp;&nbsp;|&nbsp;&nbsp; Depois do medidor = 2 × D</div>
+                <small>O resultado representa o limite mínimo de instalação do tubo em relação ao medidor.</small>
               </div>
             </div>
-            <div class="result-grid result-grid-wide" id="orificeResults"></div>
-            <p class="note note-warning">Modelo simplificado para líquido incompressível, sem correções completas da ISO 5167, expansibilidade ou verificação de instalação. Use apenas como estimativa inicial de engenharia.</p>
+            <div class="result-grid" id="meterInstallResults" style="margin-top:16px"></div>
+            <div id="meterInstallDiagram" class="diagram-holder" style="margin-top:14px" aria-label="Ilustrativo de instalação mínima do medidor de vazão"></div>
+            <p class="note">Critério ilustrativo baseado nas instruções do anexo enviado. Sempre confirme o manual do equipamento, conexões e condicionantes reais da instalação.</p>
+          </article>
+        </div>
+
+        <div class="module-grid module-grid-two" style="margin-top:18px">
+          <article class="card image-panel">
+            <h2>Referência visual · Manual página 2</h2>
+            <figure class="reference-figure">
+              <img class="responsive-image" src="./assets/optiflux_page2.png" alt="Página 2 do manual de instalação do medidor Optiflux 1000/5000">
+              <figcaption>Referência ilustrativa da página 2 do manual enviado, com orientações de manuseio e trecho reto mínimo.</figcaption>
+            </figure>
+          </article>
+          <article class="card image-panel">
+            <h2>Referência visual · Manual página 3</h2>
+            <figure class="reference-figure">
+              <img class="responsive-image" src="./assets/optiflux_page3.png" alt="Página 3 do manual de instalação do medidor Optiflux 1000/5000">
+              <figcaption>Referência ilustrativa da página 3 do manual enviado, com orientações complementares de instalação.</figcaption>
+            </figure>
           </article>
         </div>
       </section>
@@ -444,7 +449,7 @@
       </section>
 
       <footer class="footer-note">
-        Instrumentação PRO · Versão 1.4.2 · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
+        Instrumentação PRO · Versão 1.5.0 · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
       </footer>
     </div>
   </main>

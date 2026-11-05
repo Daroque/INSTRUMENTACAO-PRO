@@ -1,11 +1,10 @@
-Instrumentação PRO - versão 1.4.2
+Instrumentação PRO - versão 1.5.0
 
 Atualizações desta versão:
-- Módulo 06 com unidade fixa em mmH2O para LRV, URV e Span.
-- Campos Nível mínimo da faixa e Nível máximo da faixa ajustados para mmH2O.
-- Esquema ilustrativo principal exibindo os valores da faixa ao lado do tanque e das tomadas de impulso.
-- Critério H e L com esquema ilustrativo próprio, também reagindo ao Tipo de instalação.
-- Remoção do bloco “Unidade fixa desta tabela”, mantendo a unidade fixa apenas na própria tabela e nos resultados.
+- Módulo 02: remoção da calculadora de Placa de orifício.
+- Módulo 02: inclusão do ilustrativo de instalação mínima do medidor de vazão.
+- Novo campo para diâmetro do tubo do medidor, com cálculo automático de 5D antes e 2D depois do medidor.
+- Inclusão das imagens de referência das páginas 2 e 3 do anexo enviado.
 - Funcionamento offline mantido.
 
 Para atualizar no GitHub Pages:

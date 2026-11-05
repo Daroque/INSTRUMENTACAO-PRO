@@ -104,6 +104,58 @@
     setHTML('flowResults', html);
   }
 
+
+  function meterInstallDiagram(diameter, upstream, downstream) {
+    return `<svg viewBox="0 0 760 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Trecho mínimo de instalação do medidor de vazão">
+      <defs>
+        <marker id="arrow-blue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#2563a1"/></marker>
+        <marker id="arrow-black" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#111827"/></marker>
+      </defs>
+      <text x="18" y="24" font-size="18" font-weight="700" fill="#0f2d4f">Ilustrativo de instalação mínima do medidor</text>
+      <path d="M40 120 H260 L290 90 H470 L500 120 H720" fill="none" stroke="#c8ccd2" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="322" y="76" width="116" height="88" rx="10" fill="#dfe8f4" stroke="#213f65" stroke-width="3"/>
+      <circle cx="380" cy="72" r="28" fill="#dce9f8" stroke="#2f6fb0" stroke-width="5"/>
+      <circle cx="380" cy="72" r="16" fill="#f6fbff" stroke="#7aa6d5" stroke-width="3"/>
+      <rect x="344" y="148" width="72" height="20" rx="4" fill="#eef3f8" stroke="#213f65" stroke-width="2"/>
+      <text x="356" y="162" font-size="14" font-weight="700" fill="#213f65">MEDIDOR</text>
+      <path d="M160 58 H310" stroke="#145da0" stroke-width="5" marker-end="url(#arrow-blue)"/>
+      <text x="175" y="50" font-size="16" font-weight="700" fill="#145da0">Sentido do fluxo</text>
+      <line x1="120" y1="178" x2="320" y2="178" stroke="#111827" stroke-width="3" marker-start="url(#arrow-black)" marker-end="url(#arrow-black)"/>
+      <line x1="320" y1="170" x2="320" y2="186" stroke="#111827" stroke-width="3"/>
+      <line x1="120" y1="170" x2="120" y2="186" stroke="#111827" stroke-width="3"/>
+      <text x="150" y="204" font-size="18" font-weight="700" fill="#111827">mín. 5 × D = ${fmt(upstream, 2)} mm</text>
+      <line x1="440" y1="178" x2="620" y2="178" stroke="#111827" stroke-width="3" marker-start="url(#arrow-black)" marker-end="url(#arrow-black)"/>
+      <line x1="440" y1="170" x2="440" y2="186" stroke="#111827" stroke-width="3"/>
+      <line x1="620" y1="170" x2="620" y2="186" stroke="#111827" stroke-width="3"/>
+      <text x="450" y="204" font-size="18" font-weight="700" fill="#111827">mín. 2 × D = ${fmt(downstream, 2)} mm</text>
+      <text x="545" y="66" font-size="15" font-weight="700" fill="#0f2d4f">Diâmetro informado: ${fmt(diameter, 2)} mm</text>
+    </svg>`;
+  }
+
+  function updateMeterInstall() {
+    const d = valueOrNull('meterDiameter');
+    if (d === null) {
+      setHTML('meterInstallResults', resultCard('Verifique os dados', 'Informe o diâmetro do tubo do medidor.'));
+      setHTML('meterInstallDiagram', '');
+      return;
+    }
+    if (d <= 0) {
+      setHTML('meterInstallResults', resultCard('Verifique os dados', 'O diâmetro deve ser positivo.'));
+      setHTML('meterInstallDiagram', '');
+      return;
+    }
+    const upstream = 5 * d;
+    const downstream = 2 * d;
+    const html = [
+      resultCard('Diâmetro do tubo', `${fmt(d, 2)} mm`),
+      resultCard('Trecho mínimo antes do medidor', `${fmt(upstream, 2)} mm`),
+      resultCard('Trecho mínimo depois do medidor', `${fmt(downstream, 2)} mm`),
+      resultCard('Resumo', `Instalação mínima: 5D antes e 2D depois`)
+    ].join('');
+    setHTML('meterInstallResults', html);
+    setHTML('meterInstallDiagram', meterInstallDiagram(d, upstream, downstream));
+  }
+
   function updateOrifice() {
     const Dmm = valueOrNull('oD');
     const dmm = valueOrNull('od');
@@ -305,12 +357,28 @@
 
   function rangeDiagram(mode, lrv, urv, density) {
     const wet = mode === 'wet', closed = mode !== 'open';
+    const open = mode === 'open';
     const top = closed ? '<rect x="65" y="32" width="225" height="190" rx="24" fill="#f8fafc" stroke="#64748b" stroke-width="3"/>' : '<path d="M65 32 V222 H290 V32" fill="none" stroke="#64748b" stroke-width="3"/>';
     const fluid = '<path d="M68 115 H287 V219 H68 Z" fill="#b5e1f8" opacity=".86"/><path d="M68 115 H287" stroke="#3184bf" stroke-width="2" stroke-dasharray="6 4"/>';
     const hp = '<path d="M65 205 H30 V260 H136" fill="none" stroke="#cb6a24" stroke-width="5" stroke-linejoin="round"/>';
     const lp = wet ? '<path d="M290 55 H328 V260 H220" fill="none" stroke="#2074bc" stroke-width="5" stroke-linejoin="round"/>' : closed ? '<path d="M290 55 H328 V260 H220" fill="none" stroke="#2074bc" stroke-width="5" stroke-linejoin="round" stroke-dasharray="8 6"/>' : '<path d="M220 260 H285" fill="none" stroke="#2074bc" stroke-width="5" stroke-dasharray="8 6"/>';
     const wetFill = wet ? '<path d="M328 56 V258" stroke="#9bdcf4" stroke-width="3"/>' : '';
     const title = installationTitle(mode);
+    const leftX = open ? 6 : 18;
+    const topLabelBlock = open
+      ? `<text x="${leftX}" y="62" font-size="12.5" font-weight="700" fill="#0f2d4f">100% / URV</text>
+         <text x="${leftX}" y="81" font-size="14.5" font-weight="800" fill="#0f2d4f">${fmt(urv, 3)} mmH₂O</text>
+         <text x="${leftX}" y="102" font-size="11" fill="#64748b">sem densidade</text>
+         <text x="${leftX}" y="205" font-size="12.5" font-weight="700" fill="#0f2d4f">0% / LRV</text>
+         <text x="${leftX}" y="224" font-size="14.5" font-weight="800" fill="#0f2d4f">${fmt(lrv, 3)} mmH₂O</text>
+         <text x="${leftX}" y="245" font-size="11" fill="#64748b">sem densidade</text>`
+      : `<text x="18" y="96" font-size="11" fill="#0f2d4f">0% / LRV</text>
+         <text x="18" y="112" font-size="13" font-weight="700" fill="#0f2d4f">${fmt(lrv, 3)} mmH₂O</text>
+         <text x="18" y="132" font-size="10" fill="#64748b">sem densidade</text>
+         <text x="18" y="155" font-size="11" fill="#0f2d4f">100% / URV</text>
+         <text x="18" y="171" font-size="13" font-weight="700" fill="#0f2d4f">${fmt(urv, 3)} mmH₂O</text>
+         <text x="18" y="191" font-size="10" fill="#64748b">sem densidade</text>`;
+    const rightBlockY = open ? 70 : 95;
     return `<svg viewBox="0 0 410 335" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${title}">
       <text x="18" y="18" font-size="14" font-weight="700" fill="#0f2d4f">${title}</text>
       ${top}${fluid}${hp}${lp}${wetFill}
@@ -320,15 +388,10 @@
       <text x="108" y="109" font-size="12" font-weight="700" fill="#17629a">FAIXA</text>
       <text x="24" y="197" font-size="11" fill="#a45112">HP</text>
       <text x="332" y="197" font-size="11" fill="#2563a1">LP</text>
-      <text x="18" y="96" font-size="11" fill="#0f2d4f">0% / LRV</text>
-      <text x="18" y="112" font-size="13" font-weight="700" fill="#0f2d4f">${fmt(lrv, 3)} mmH₂O</text>
-      <text x="18" y="132" font-size="10" fill="#64748b">sem densidade</text>
-      <text x="18" y="155" font-size="11" fill="#0f2d4f">100% / URV</text>
-      <text x="18" y="171" font-size="13" font-weight="700" fill="#0f2d4f">${fmt(urv, 3)} mmH₂O</text>
-      <text x="18" y="191" font-size="10" fill="#64748b">sem densidade</text>
-      <text x="236" y="95" font-size="11" fill="#0f2d4f">Com densidade</text>
-      <text x="236" y="112" font-size="12" font-weight="700" fill="#0f2d4f">0% = ${fmt(lrv * density, 3)} mmH₂O</text>
-      <text x="236" y="132" font-size="12" font-weight="700" fill="#0f2d4f">100% = ${fmt(urv * density, 3)} mmH₂O</text>
+      ${topLabelBlock}
+      <text x="236" y="${rightBlockY}" font-size="11" fill="#0f2d4f">Com densidade</text>
+      <text x="236" y="${rightBlockY + 17}" font-size="12" font-weight="700" fill="#0f2d4f">0% = ${fmt(lrv * density, 3)} mmH₂O</text>
+      <text x="236" y="${rightBlockY + 37}" font-size="12" font-weight="700" fill="#0f2d4f">100% = ${fmt(urv * density, 3)} mmH₂O</text>
       ${wet ? '<text x="271" y="178" font-size="11" fill="#2563a1">Coluna molhada</text>' : ''}
       <text x="76" y="233" font-size="10" fill="#0f2d4f">Tomada inferior</text>
     </svg>`;
@@ -336,26 +399,37 @@
 
   function hlDiagram(mode, dp0, dp100, density) {
     const wet = mode === 'wet', closed = mode !== 'open';
+    const open = mode === 'open';
     const top = closed ? '<rect x="60" y="30" width="200" height="175" rx="22" fill="#f8fafc" stroke="#64748b" stroke-width="3"/>' : '<path d="M60 30 V205 H260 V30" fill="none" stroke="#64748b" stroke-width="3"/>';
     const fluid = '<path d="M63 112 H257 V202 H63 Z" fill="#b5e1f8" opacity=".86"/><path d="M63 112 H257" stroke="#3184bf" stroke-width="2" stroke-dasharray="6 4"/>';
     const hp = '<path d="M60 188 H26 V243 H128" fill="none" stroke="#cb6a24" stroke-width="5" stroke-linejoin="round"/>';
     const lp = wet ? '<path d="M260 52 H296 V243 H208" fill="none" stroke="#2074bc" stroke-width="5" stroke-linejoin="round"/>' : closed ? '<path d="M260 52 H296 V243 H208" fill="none" stroke="#2074bc" stroke-width="5" stroke-linejoin="round" stroke-dasharray="8 6"/>' : '<path d="M208 243 H275" fill="none" stroke="#2074bc" stroke-width="5" stroke-dasharray="8 6"/>';
     const title = installationTitle(mode);
+    const leftX = open ? 4 : 16;
+    const leftInfo = open
+      ? `<text x="${leftX}" y="55" font-size="12.5" font-weight="700" fill="#0f2d4f">100% · URV</text>
+         <text x="${leftX}" y="74" font-size="14.5" font-weight="800" fill="#0f2d4f">${fmt(dp100, 3)} mmH₂O</text>
+         <text x="${leftX}" y="95" font-size="11" fill="#64748b">com densidade: ${fmt(dp100 * density, 3)} mmH₂O</text>
+         <text x="${leftX}" y="190" font-size="12.5" font-weight="700" fill="#0f2d4f">0% · LRV</text>
+         <text x="${leftX}" y="209" font-size="14.5" font-weight="800" fill="#0f2d4f">${fmt(dp0, 3)} mmH₂O</text>
+         <text x="${leftX}" y="230" font-size="11" fill="#64748b">com densidade: ${fmt(dp0 * density, 3)} mmH₂O</text>`
+      : `<text x="16" y="80" font-size="11" fill="#0f2d4f">0% · LRV</text>
+         <text x="16" y="98" font-size="13" font-weight="700" fill="#0f2d4f">${fmt(dp0, 3)} mmH₂O</text>
+         <text x="16" y="116" font-size="10" fill="#64748b">com densidade: ${fmt(dp0 * density, 3)} mmH₂O</text>
+         <text x="16" y="150" font-size="11" fill="#0f2d4f">100% · URV</text>
+         <text x="16" y="168" font-size="13" font-weight="700" fill="#0f2d4f">${fmt(dp100, 3)} mmH₂O</text>
+         <text x="16" y="186" font-size="10" fill="#64748b">com densidade: ${fmt(dp100 * density, 3)} mmH₂O</text>`;
+    const spanBlockY = open ? 76 : 92;
     return `<svg viewBox="0 0 405 310" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Critério H e L - ${title}">
       <text x="16" y="18" font-size="14" font-weight="700" fill="#0f2d4f">Critério H e L · ${title}</text>
       ${top}${fluid}${hp}${lp}
       <rect x="129" y="226" width="79" height="55" rx="12" fill="#e2ebf7" stroke="#213f65" stroke-width="3"/>
       <text x="160" y="259" text-anchor="middle" font-size="13" font-weight="700" fill="#213f65">DP</text>
-      <text x="16" y="80" font-size="11" fill="#0f2d4f">0% · LRV</text>
-      <text x="16" y="98" font-size="13" font-weight="700" fill="#0f2d4f">${fmt(dp0, 3)} mmH₂O</text>
-      <text x="16" y="116" font-size="10" fill="#64748b">com densidade: ${fmt(dp0 * density, 3)} mmH₂O</text>
-      <text x="16" y="150" font-size="11" fill="#0f2d4f">100% · URV</text>
-      <text x="16" y="168" font-size="13" font-weight="700" fill="#0f2d4f">${fmt(dp100, 3)} mmH₂O</text>
-      <text x="16" y="186" font-size="10" fill="#64748b">com densidade: ${fmt(dp100 * density, 3)} mmH₂O</text>
-      <text x="250" y="92" font-size="11" fill="#0f2d4f">Span sem densidade</text>
-      <text x="250" y="110" font-size="13" font-weight="700" fill="#0f2d4f">${fmt(dp100 - dp0, 3)} mmH₂O</text>
-      <text x="250" y="141" font-size="11" fill="#0f2d4f">Span com densidade</text>
-      <text x="250" y="159" font-size="13" font-weight="700" fill="#0f2d4f">${fmt((dp100 - dp0) * density, 3)} mmH₂O</text>
+      ${leftInfo}
+      <text x="250" y="${spanBlockY}" font-size="11" fill="#0f2d4f">Span sem densidade</text>
+      <text x="250" y="${spanBlockY + 18}" font-size="13" font-weight="700" fill="#0f2d4f">${fmt(dp100 - dp0, 3)} mmH₂O</text>
+      <text x="250" y="${spanBlockY + 49}" font-size="11" fill="#0f2d4f">Span com densidade</text>
+      <text x="250" y="${spanBlockY + 67}" font-size="13" font-weight="700" fill="#0f2d4f">${fmt((dp100 - dp0) * density, 3)} mmH₂O</text>
       ${wet ? '<text x="272" y="194" font-size="11" fill="#2563a1">Coluna molhada</text>' : ''}
     </svg>`;
   }
@@ -449,6 +523,7 @@
   bindInputs(['pValue', 'pUnit', 'pTarget'], updatePressure);
   bindInputs(['metricValue', 'metricUnit', 'metricTarget'], updateMetric);
   bindInputs(['fValue', 'fUnit'], updateFlow);
+  bindInputs(['meterDiameter'], updateMeterInstall);
   bindInputs(['oD', 'od', 'odp', 'orho', 'ocd'], updateOrifice);
   bindInputs(['tValue', 'tUnit'], updateTemp);
   bindInputs(['rMode', 'rValue'], updatePt100);
@@ -517,6 +592,7 @@
   updatePressure();
   updateMetric();
   updateFlow();
+  updateMeterInstall();
   updateOrifice();
   updateTemp();
   updatePt100();
