@@ -454,3 +454,31 @@ html[data-theme="dark"] .progress-track{background:#39536a;}
   #flow .module-grid-two { grid-template-columns: minmax(290px, .68fr) minmax(0, 1.32fr); }
 }
 #meterInstallDiagram svg { display: block; width: 100%; height: auto; }
+
+.full-span { grid-column: 1 / -1; }
+.sensor-grid {
+  display: grid;
+  gap: 18px;
+  margin-top: 16px;
+}
+.sensor-grid-three {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+.sensor-figure {
+  margin: 0;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--card-alt);
+}
+.sensor-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.sensor-figure figcaption {
+  text-align: center;
+  margin-top: 10px;
+  font-weight: 700;
+  color: var(--text);
+}

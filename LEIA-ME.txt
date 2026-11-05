@@ -1,9 +1,7 @@
-Instrumentação PRO v1.6.3
+Instrumentação PRO v1.6.4
 
-- Módulo 04: subtítulo simplificado para Sinais de instrumentação.
-- Módulo 06: seção Range de saída do equipamento com LRV (0%), URV (100%), unidade de engenharia selecionável e Span calculado automaticamente.
-- Ampla seleção de unidades agrupadas por grandeza de processo.
-- Os valores de saída são informados pelo usuário; a seleção de unidades não converte grandezas físicas incompatíveis.
-- Impressão por módulo e cache offline preservados.
-
-Publicação: extraia e substitua o conteúdo do repositório. Aguarde o GitHub Pages e atualize o app online antes do uso offline.
+Atualizações desta versão:
+- Módulo 06: remoção das indicações destacadas em vermelho, mantendo apenas o essencial e o critério H e L.
+- Módulo 03: inclusão de ilustrações de ligação Pt100 para 2, 3 e 4 fios, sem referência a fabricante.
+- Cabos do elemento resistivo ilustrados em vermelho, conforme solicitado.
+- Funcionamento offline mantido.
