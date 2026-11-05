@@ -1,3 +1,6 @@
+Instrumentação PRO v1.7.1 — atualização do módulo 01
+Conversão métrica auxiliar ampliada para 25 unidades de comprimento e distância; entrada/saída selecionáveis. Outros módulos preservados.
+
 INSTRUMENTAÇÃO PRO — VERSÃO 1.7.0
 
 NOVO MÓDULO 07 — CALHA PARSHALL

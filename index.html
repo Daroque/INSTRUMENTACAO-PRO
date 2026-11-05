@@ -111,37 +111,88 @@
         </div>
 
         <article class="card" style="margin-top:18px">
-          <h2>Conversão métrica auxiliar</h2>
+          <h2>Conversão métrica auxiliar · Comprimento e distância</h2>
           <div class="form-grid three-cols">
             <div class="field">
               <label for="metricValue">Valor</label>
               <input id="metricValue" type="number" inputmode="decimal" step="any" value="1">
-              <small>Conversão de altura ou comprimento.</small>
+              <small>Conversão de altura, comprimento e distância entre 25 unidades.</small>
             </div>
             <div class="field">
               <label for="metricUnit">Unidade de entrada</label>
               <select id="metricUnit">
-                <option value="m">m</option>
-                <option value="mm">mm</option>
-                <option value="cm">cm</option>
-                <option value="km">km</option>
-                <option value="pol">pol</option>
-                <option value="ft">ft</option>
+                <optgroup label="Sistema métrico (SI)">
+                  <option value="pm">Picômetro (pm)</option>
+                  <option value="nm">Nanômetro (nm)</option>
+                  <option value="um">Micrômetro (µm)</option>
+                  <option value="mm">Milímetro (mm)</option>
+                  <option value="cm">Centímetro (cm)</option>
+                  <option value="dm">Decímetro (dm)</option>
+                  <option value="m" selected>Metro (m)</option>
+                  <option value="dam">Decâmetro (dam)</option>
+                  <option value="hm">Hectômetro (hm)</option>
+                  <option value="km">Quilômetro (km)</option>
+                </optgroup>
+                <optgroup label="Sistema imperial / EUA">
+                  <option value="uin">Micropolegada (µin)</option>
+                  <option value="mil">Milésimo de polegada (mil)</option>
+                  <option value="pol">Polegada (in / pol)</option>
+                  <option value="ft">Pé internacional (ft)</option>
+                  <option value="yd">Jarda (yd)</option>
+                  <option value="rod">Vara inglesa (rod)</option>
+                  <option value="chain">Corrente (chain)</option>
+                  <option value="furlong">Furlong (fur)</option>
+                  <option value="mi">Milha terrestre (mi)</option>
+                </optgroup>
+                <optgroup label="Navegação, ciência e outras">
+                  <option value="nmi">Milha náutica (nmi)</option>
+                  <option value="fathom">Braça náutica (fathom)</option>
+                  <option value="angstrom">Ångström (Å)</option>
+                  <option value="au">Unidade astronômica (au)</option>
+                  <option value="ly">Ano-luz (ly)</option>
+                  <option value="pc">Parsec (pc)</option>
+                </optgroup>
               </select>
             </div>
             <div class="field">
               <label for="metricTarget">Unidade de saída</label>
               <select id="metricTarget">
-                <option value="mm">mm</option>
-                <option value="cm">cm</option>
-                <option value="m">m</option>
-                <option value="km">km</option>
-                <option value="pol">pol</option>
-                <option value="ft">ft</option>
+                <optgroup label="Sistema métrico (SI)">
+                  <option value="pm">Picômetro (pm)</option>
+                  <option value="nm">Nanômetro (nm)</option>
+                  <option value="um">Micrômetro (µm)</option>
+                  <option value="mm" selected>Milímetro (mm)</option>
+                  <option value="cm">Centímetro (cm)</option>
+                  <option value="dm">Decímetro (dm)</option>
+                  <option value="m">Metro (m)</option>
+                  <option value="dam">Decâmetro (dam)</option>
+                  <option value="hm">Hectômetro (hm)</option>
+                  <option value="km">Quilômetro (km)</option>
+                </optgroup>
+                <optgroup label="Sistema imperial / EUA">
+                  <option value="uin">Micropolegada (µin)</option>
+                  <option value="mil">Milésimo de polegada (mil)</option>
+                  <option value="pol">Polegada (in / pol)</option>
+                  <option value="ft">Pé internacional (ft)</option>
+                  <option value="yd">Jarda (yd)</option>
+                  <option value="rod">Vara inglesa (rod)</option>
+                  <option value="chain">Corrente (chain)</option>
+                  <option value="furlong">Furlong (fur)</option>
+                  <option value="mi">Milha terrestre (mi)</option>
+                </optgroup>
+                <optgroup label="Navegação, ciência e outras">
+                  <option value="nmi">Milha náutica (nmi)</option>
+                  <option value="fathom">Braça náutica (fathom)</option>
+                  <option value="angstrom">Ångström (Å)</option>
+                  <option value="au">Unidade astronômica (au)</option>
+                  <option value="ly">Ano-luz (ly)</option>
+                  <option value="pc">Parsec (pc)</option>
+                </optgroup>
               </select>
             </div>
           </div>
           <div class="result-grid" id="metricResults" style="margin-top:16px"></div>
+          <p class="note">Unidades de comprimento e distância. Pé, polegada e milha utilizam definições internacionais; a braça corresponde à unidade náutica fathom (1,8288 m). Para valores extremamente pequenos ou grandes, o resultado é exibido em notação científica.</p>
         </article>
       </section>
 
@@ -693,7 +744,7 @@
       </section>
 
       <footer class="footer-note">
-        Instrumentação PRO · Versão 1.7.0 · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
+        Instrumentação PRO · Versão 1.7.1 · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
       </footer>
     </div>
   </main>

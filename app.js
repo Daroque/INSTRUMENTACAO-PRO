@@ -70,20 +70,50 @@
     setHTML('pressureResults', resultCard(pressureLabels[target], `${fmt(out, dec)} ${pressureLabels[target]}`));
   }
 
-  const metricToM = { mm: 0.001, cm: 0.01, m: 1, km: 1000, pol: 0.0254, ft: 0.3048 };
-  const metricLabels = { mm: 'mm', cm: 'cm', m: 'm', km: 'km', pol: 'pol', ft: 'ft' };
+  // Comprimento e distância: todos os fatores estão expressos em metros.
+  // Pés, polegadas, jardas e milhas: definição internacional, não "survey foot".
+  const metricToM = {
+    pm: 1e-12, nm: 1e-9, um: 1e-6, mm: 1e-3, cm: 1e-2,
+    dm: 0.1, m: 1, dam: 10, hm: 100, km: 1000,
+    uin: 0.0000000254, mil: 0.0000254, pol: 0.0254,
+    ft: 0.3048, yd: 0.9144, rod: 5.0292, chain: 20.1168,
+    furlong: 201.168, mi: 1609.344,
+    nmi: 1852, fathom: 1.8288,
+    angstrom: 1e-10, au: 149597870700,
+    ly: 9.4607304725808e15, pc: 3.085677581491367e16
+  };
+  const metricLabels = {
+    pm: 'pm', nm: 'nm', um: 'µm', mm: 'mm', cm: 'cm', dm: 'dm',
+    m: 'm', dam: 'dam', hm: 'hm', km: 'km',
+    uin: 'µin', mil: 'mil', pol: 'pol', ft: 'ft', yd: 'yd',
+    rod: 'rod', chain: 'chain', furlong: 'fur', mi: 'mi',
+    nmi: 'nmi', fathom: 'fathom', angstrom: 'Å',
+    au: 'au', ly: 'ly', pc: 'pc'
+  };
+  function formatMetric(value) {
+    if (value !== 0 && (Math.abs(value) < 0.000001 || Math.abs(value) >= 1e12)) {
+      return value.toExponential(6).replace('.', ',');
+    }
+    return value.toLocaleString('pt-BR', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 10
+    });
+  }
   function updateMetric() {
     const val = valueOrNull('metricValue');
     const from = $('metricUnit').value;
     const to = $('metricTarget').value;
-    if (val === null) {
-      setHTML('metricResults', resultCard('Verifique os dados', 'Informe um valor válido.'));
+    if (val === null || !Number.isFinite(val) || !metricToM[from] || !metricToM[to]) {
+      setHTML('metricResults', resultCard('Verifique os dados', 'Informe um valor e unidades válidos.'));
       return;
     }
-    const meters = val * metricToM[from];
-    const out = meters / metricToM[to];
-    const dec = Math.abs(out) >= 100000 ? 0 : (Math.abs(out) < 0.001 && out !== 0 ? 8 : 4);
-    setHTML('metricResults', resultCard(metricLabels[to], `${fmt(out, dec)} ${metricLabels[to]}`));
+    const out = val * (metricToM[from] / metricToM[to]);
+    if (!Number.isFinite(out)) {
+      setHTML('metricResults', resultCard('Valor fora do limite', 'Reduza a magnitude do valor informado.'));
+      return;
+    }
+    setHTML('metricResults', resultCard('Resultado · ' + metricLabels[to],
+      `${formatMetric(out)} ${metricLabels[to]}`));
   }
 
   const flowToM3s = { m3s: 1, m3h: 1 / 3600, lh: 0.001 / 3600, ls: 0.001, lmin: 0.001 / 60 };
