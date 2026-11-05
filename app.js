@@ -298,70 +298,110 @@
     updatePower();
   }
 
-  function rangeDiagram(mode) {
+
+  function installationTitle(mode) {
+    return mode === 'wet' ? 'Vaso fechado · Perna molhada' : mode === 'dry' ? 'Vaso fechado · Perna seca' : 'Tanque aberto / referência atmosférica';
+  }
+
+  function rangeDiagram(mode, lrv, urv, density) {
     const wet = mode === 'wet', closed = mode !== 'open';
-    const top = closed ? '<rect x="50" y="22" width="255" height="215" rx="24" fill="#f8fafc" stroke="#64748b" stroke-width="3"/>' : '<path d="M50 22 V237 H305 V22" fill="none" stroke="#64748b" stroke-width="3"/>';
-    const fluid = '<path d="M53 110 H302 V234 H53 Z" fill="#b5e1f8" opacity=".83"/><path d="M53 110 H302" stroke="#3184bf" stroke-width="2" stroke-dasharray="6 4"/>';
-    const highLine = '<path d="M50 220 H25 V265 H137" fill="none" stroke="#cb6a24" stroke-width="5" stroke-linejoin="round"/>';
-    const lowLine = wet ? '<path d="M305 48 H342 V279 H221" fill="none" stroke="#2074bc" stroke-width="5" stroke-linejoin="round"/>' : closed ? '<path d="M305 48 H342 V265 H221" fill="none" stroke="#2074bc" stroke-width="5" stroke-linejoin="round" stroke-dasharray="8 6"/>' : '<path d="M221 265 H279" fill="none" stroke="#2074bc" stroke-width="5" stroke-dasharray="8 6"/>';
-    const wetFill = wet ? '<path d="M342 50 V277" stroke="#93d5ed" stroke-width="3"/>' : '';
-    const title = wet ? 'Vaso fechado · Perna molhada' : closed ? 'Vaso fechado · Perna seca' : 'Tanque aberto';
-    return `<svg viewBox="0 0 400 335" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${title}">
-       <text x="18" y="16" font-size="14" font-weight="700" fill="#0f2d4f">${title}</text>
-       ${top}${fluid}${highLine}${lowLine}${wetFill}
-       <rect x="138" y="248" width="82" height="59" rx="12" fill="#e2ebf7" stroke="#213f65" stroke-width="3"/>
-       <circle cx="179" cy="277" r="16" fill="#fff" stroke="#213f65" stroke-width="2"/>
-       <text x="167" y="282" font-size="13" font-weight="700" fill="#213f65">DP</text>
-       <text x="133" y="324" font-size="11" fill="#213f65">HP</text><text x="216" y="324" font-size="11" fill="#213f65">LP</text>
-       <text x="65" y="102" font-size="12" fill="#17629a">NÍVEL</text>
-       <text x="64" y="230" font-size="11" fill="#0f2d4f">Tomada inferior</text>
-       ${wet ? '<text x="274" y="187" font-size="11" fill="#205d8b">Coluna LP</text>' : ''}
-       <text x="10" y="294" font-size="10" fill="#a45112">Alta (HP)</text>
-       <text x="285" y="294" font-size="10" fill="#2563a1">Baixa (LP)</text>
-     </svg>`;
+    const top = closed ? '<rect x="65" y="32" width="225" height="190" rx="24" fill="#f8fafc" stroke="#64748b" stroke-width="3"/>' : '<path d="M65 32 V222 H290 V32" fill="none" stroke="#64748b" stroke-width="3"/>';
+    const fluid = '<path d="M68 115 H287 V219 H68 Z" fill="#b5e1f8" opacity=".86"/><path d="M68 115 H287" stroke="#3184bf" stroke-width="2" stroke-dasharray="6 4"/>';
+    const hp = '<path d="M65 205 H30 V260 H136" fill="none" stroke="#cb6a24" stroke-width="5" stroke-linejoin="round"/>';
+    const lp = wet ? '<path d="M290 55 H328 V260 H220" fill="none" stroke="#2074bc" stroke-width="5" stroke-linejoin="round"/>' : closed ? '<path d="M290 55 H328 V260 H220" fill="none" stroke="#2074bc" stroke-width="5" stroke-linejoin="round" stroke-dasharray="8 6"/>' : '<path d="M220 260 H285" fill="none" stroke="#2074bc" stroke-width="5" stroke-dasharray="8 6"/>';
+    const wetFill = wet ? '<path d="M328 56 V258" stroke="#9bdcf4" stroke-width="3"/>' : '';
+    const title = installationTitle(mode);
+    return `<svg viewBox="0 0 410 335" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${title}">
+      <text x="18" y="18" font-size="14" font-weight="700" fill="#0f2d4f">${title}</text>
+      ${top}${fluid}${hp}${lp}${wetFill}
+      <rect x="137" y="244" width="83" height="58" rx="12" fill="#e2ebf7" stroke="#213f65" stroke-width="3"/>
+      <circle cx="178.5" cy="273" r="16" fill="#fff" stroke="#213f65" stroke-width="2"/>
+      <text x="166.5" y="278" font-size="13" font-weight="700" fill="#213f65">DP</text>
+      <text x="108" y="109" font-size="12" font-weight="700" fill="#17629a">FAIXA</text>
+      <text x="24" y="197" font-size="11" fill="#a45112">HP</text>
+      <text x="332" y="197" font-size="11" fill="#2563a1">LP</text>
+      <text x="18" y="96" font-size="11" fill="#0f2d4f">0% / LRV</text>
+      <text x="18" y="112" font-size="13" font-weight="700" fill="#0f2d4f">${fmt(lrv, 3)} mmH₂O</text>
+      <text x="18" y="132" font-size="10" fill="#64748b">sem densidade</text>
+      <text x="18" y="155" font-size="11" fill="#0f2d4f">100% / URV</text>
+      <text x="18" y="171" font-size="13" font-weight="700" fill="#0f2d4f">${fmt(urv, 3)} mmH₂O</text>
+      <text x="18" y="191" font-size="10" fill="#64748b">sem densidade</text>
+      <text x="236" y="95" font-size="11" fill="#0f2d4f">Com densidade</text>
+      <text x="236" y="112" font-size="12" font-weight="700" fill="#0f2d4f">0% = ${fmt(lrv * density, 3)} mmH₂O</text>
+      <text x="236" y="132" font-size="12" font-weight="700" fill="#0f2d4f">100% = ${fmt(urv * density, 3)} mmH₂O</text>
+      ${wet ? '<text x="271" y="178" font-size="11" fill="#2563a1">Coluna molhada</text>' : ''}
+      <text x="76" y="233" font-size="10" fill="#0f2d4f">Tomada inferior</text>
+    </svg>`;
   }
-  function paToUnit(pa, unit) {
-    return pa / (pressureToBar[unit] * 100000);
+
+  function hlDiagram(mode, dp0, dp100, density) {
+    const wet = mode === 'wet', closed = mode !== 'open';
+    const top = closed ? '<rect x="60" y="30" width="200" height="175" rx="22" fill="#f8fafc" stroke="#64748b" stroke-width="3"/>' : '<path d="M60 30 V205 H260 V30" fill="none" stroke="#64748b" stroke-width="3"/>';
+    const fluid = '<path d="M63 112 H257 V202 H63 Z" fill="#b5e1f8" opacity=".86"/><path d="M63 112 H257" stroke="#3184bf" stroke-width="2" stroke-dasharray="6 4"/>';
+    const hp = '<path d="M60 188 H26 V243 H128" fill="none" stroke="#cb6a24" stroke-width="5" stroke-linejoin="round"/>';
+    const lp = wet ? '<path d="M260 52 H296 V243 H208" fill="none" stroke="#2074bc" stroke-width="5" stroke-linejoin="round"/>' : closed ? '<path d="M260 52 H296 V243 H208" fill="none" stroke="#2074bc" stroke-width="5" stroke-linejoin="round" stroke-dasharray="8 6"/>' : '<path d="M208 243 H275" fill="none" stroke="#2074bc" stroke-width="5" stroke-dasharray="8 6"/>';
+    const title = installationTitle(mode);
+    return `<svg viewBox="0 0 405 310" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Critério H e L - ${title}">
+      <text x="16" y="18" font-size="14" font-weight="700" fill="#0f2d4f">Critério H e L · ${title}</text>
+      ${top}${fluid}${hp}${lp}
+      <rect x="129" y="226" width="79" height="55" rx="12" fill="#e2ebf7" stroke="#213f65" stroke-width="3"/>
+      <text x="160" y="259" text-anchor="middle" font-size="13" font-weight="700" fill="#213f65">DP</text>
+      <text x="16" y="80" font-size="11" fill="#0f2d4f">0% · LRV</text>
+      <text x="16" y="98" font-size="13" font-weight="700" fill="#0f2d4f">${fmt(dp0, 3)} mmH₂O</text>
+      <text x="16" y="116" font-size="10" fill="#64748b">com densidade: ${fmt(dp0 * density, 3)} mmH₂O</text>
+      <text x="16" y="150" font-size="11" fill="#0f2d4f">100% · URV</text>
+      <text x="16" y="168" font-size="13" font-weight="700" fill="#0f2d4f">${fmt(dp100, 3)} mmH₂O</text>
+      <text x="16" y="186" font-size="10" fill="#64748b">com densidade: ${fmt(dp100 * density, 3)} mmH₂O</text>
+      <text x="250" y="92" font-size="11" fill="#0f2d4f">Span sem densidade</text>
+      <text x="250" y="110" font-size="13" font-weight="700" fill="#0f2d4f">${fmt(dp100 - dp0, 3)} mmH₂O</text>
+      <text x="250" y="141" font-size="11" fill="#0f2d4f">Span com densidade</text>
+      <text x="250" y="159" font-size="13" font-weight="700" fill="#0f2d4f">${fmt((dp100 - dp0) * density, 3)} mmH₂O</text>
+      ${wet ? '<text x="272" y="194" font-size="11" fill="#2563a1">Coluna molhada</text>' : ''}
+    </svg>`;
   }
+
   function updateRange() {
     const mode = $('rangeMode').value;
-    document.querySelectorAll('.range-wet-only').forEach(el => el.hidden = mode !== 'wet');
-    $('rangeDiagram').innerHTML = rangeDiagram(mode);
+    const min = valueOrNull('rangeMin');
+    const max = valueOrNull('rangeMax');
+    const density = valueOrNull('rangeRho');
 
-    const min = valueOrNull('rangeMin'), max = valueOrNull('rangeMax'), rho = valueOrNull('rangeRho'), drop = valueOrNull('rangeDrop');
-    const wetHeight = valueOrNull('rangeWetHeight'), wetRho = valueOrNull('rangeWetRho');
-    const unit = $('rangeOutputUnit').value;
-    if ([min, max, rho, drop].some(v => v === null) || (mode === 'wet' && [wetHeight, wetRho].some(v => v === null))) {
-      setHTML('rangeResults', resultCard('Verificação', 'Informe todos os valores necessários.'));
+    if ([min, max, density].some(v => v === null)) {
+      $('rangeDiagram').innerHTML = rangeDiagram(mode, 0, 0, 1);
+      setHTML('rangeResults', resultCard('Verificação', 'Informe LRV, URV e densidade.'));
       setHTML('rangeChecks', '');
       $('rangeNotice').textContent = 'Complete os campos para gerar a faixa.';
       return;
     }
-    if (min < 0 || max <= min || rho <= 0 || (mode === 'wet' && (wetHeight < 0 || wetRho <= 0))) {
-      setHTML('rangeResults', resultCard('Verificação', 'Confira alturas, densidades e ordem dos níveis.'));
+    if (max <= min || density <= 0) {
+      $('rangeDiagram').innerHTML = rangeDiagram(mode, min || 0, max || 0, density || 1);
+      setHTML('rangeResults', resultCard('Verificação', 'URV deve ser maior que LRV e a densidade deve ser positiva.'));
       setHTML('rangeChecks', '');
-      $('rangeNotice').textContent = 'Nível máximo deve superar o mínimo. Densidades devem ser positivas.';
+      $('rangeNotice').textContent = 'Confira a ordem da faixa e a densidade aplicada.';
       return;
     }
-    const g = 9.80665;
-    const offset = mode === 'wet' ? wetRho * g * wetHeight : 0;
-    const lrvPa = (rho * g * (min + drop)) - offset;
-    const urvPa = (rho * g * (max + drop)) - offset;
-    const spanPa = urvPa - lrvPa;
-    const low = paToUnit(lrvPa, unit), high = paToUnit(urvPa, unit), span = paToUnit(spanPa, unit);
-    const digit = unit === 'mmh2o' ? 1 : 4;
+
+    const span = max - min;
+    const minD = min * density;
+    const maxD = max * density;
+    const spanD = span * density;
+
+    $('rangeDiagram').innerHTML = rangeDiagram(mode, min, max, density);
     setHTML('rangeResults', [
-      resultCard('LRV · 0% (4 mA)', `${fmt(low, digit)} ${pressureLabels[unit]}`),
-      resultCard('URV · 100% (20 mA)', `${fmt(high, digit)} ${pressureLabels[unit]}`),
-      resultCard('Span', `${fmt(span, digit)} ${pressureLabels[unit]}`)
+      resultCard('LRV · 0% (sem densidade)', `${fmt(min, 3)} mmH₂O`),
+      resultCard('URV · 100% (sem densidade)', `${fmt(max, 3)} mmH₂O`),
+      resultCard('Span (sem densidade)', `${fmt(span, 3)} mmH₂O`),
+      resultCard('LRV · 0% (com densidade)', `${fmt(minD, 3)} mmH₂O`),
+      resultCard('URV · 100% (com densidade)', `${fmt(maxD, 3)} mmH₂O`),
+      resultCard('Span (com densidade)', `${fmt(spanD, 3)} mmH₂O`)
     ].join(''));
     setHTML('rangeChecks', [
-      resultCard('Altura útil de medição', `${fmt(max - min, 3)} m`),
-      resultCard('Densidade do processo', `${fmt(rho, 1)} kg/m³`),
-      resultCard('Tipo de zero', low < -1e-6 ? 'Zero elevado (LRV negativo)' : low > 1e-6 ? 'Zero suprimido (LRV positivo)' : 'Zero normal'),
+      resultCard('Tipo de instalação', installationTitle(mode)),
+      resultCard('Densidade aplicada', `${fmt(density, 3)}`),
+      resultCard('Tipo de zero', minD < -1e-6 ? 'Zero elevado (LRV negativo)' : minD > 1e-6 ? 'Zero suprimido (LRV positivo)' : 'Zero normal'),
       resultCard('Orientação diferencial', 'HP − LP')
     ].join(''));
-    $('rangeNotice').textContent = 'Valores calculados para o arranjo selecionado; pressão diferencial HP − LP. Verifique a instalação real antes de configurar o instrumento.';
+    $('rangeNotice').textContent = 'Valores apresentados em mmH₂O, conforme solicitado. O tipo de instalação altera o esquema ilustrativo para facilitar a interpretação do usuário.';
   }
 
   function updateHLRange() {
@@ -370,9 +410,11 @@
     const h0 = valueOrNull('hlH0');
     const l0 = valueOrNull('hlL0');
     const density = valueOrNull('hlDensity');
+    const mode = $('rangeMode').value;
     if ([h100, l100, h0, l0, density].some(v => v === null)) {
       $('hlR100').textContent = '—';
       $('hlR0').textContent = '—';
+      $('hlDiagram').innerHTML = hlDiagram(mode, 0, 0, 1);
       setHTML('hlSummary', resultCard('Verificação', 'Informe H, L e densidade.'));
       return;
     }
@@ -384,6 +426,7 @@
     const spand = span * density;
     $('hlR100').textContent = fmt(dp100, 3);
     $('hlR0').textContent = fmt(dp0, 3);
+    $('hlDiagram').innerHTML = hlDiagram(mode, dp0, dp100, density);
     setHTML('hlSummary', [
       resultCard('URV sem densidade', `${fmt(dp100, 3)} mmH₂O`),
       resultCard('LRV sem densidade', `${fmt(dp0, 3)} mmH₂O`),
@@ -412,7 +455,7 @@
   bindInputs(['tcType', 'tcHot', 'tcCold'], updateTc);
   bindInputs(['sLrv', 'sUrv', 'sType', 'sUnit', 'sSignal', 'sProcess'], updateSignal);
   bindInputs(['powerValue', 'powerUnit', 'powerTarget', 'powerPf'], updatePower);
-  bindInputs(['rangeMode', 'rangeMin', 'rangeMax', 'rangeRho', 'rangeDrop', 'rangeWetHeight', 'rangeWetRho', 'rangeOutputUnit'], updateRange);
+  bindInputs(['rangeMode', 'rangeMin', 'rangeMax', 'rangeRho'], () => { updateRange(); updateHLRange(); });
   bindInputs(['hlH100', 'hlL100', 'hlH0', 'hlL0', 'hlDensity'], updateHLRange);
 
   $('powerSwap').addEventListener('click', swapPower);

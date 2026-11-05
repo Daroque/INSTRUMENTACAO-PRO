@@ -362,22 +362,17 @@
               <option value="wet">Vaso fechado / perna molhada</option>
             </select></div>
             <div class="form-grid two-cols" style="margin-top:14px">
-              <div class="field"><label for="rangeMin">Nível mínimo da faixa (m)</label><input id="rangeMin" type="number" step="any" value="0"><small>Altura a partir da tomada inferior.</small></div>
-              <div class="field"><label for="rangeMax">Nível máximo (m)</label><input id="rangeMax" type="number" step="any" value="3"></div>
-              <div class="field"><label for="rangeRho">Densidade do processo (kg/m³)</label><input id="rangeRho" type="number" step="any" value="1000"></div>
-              <div class="field"><label for="rangeDrop">Transmissor abaixo da tomada inferior (m)</label><input id="rangeDrop" type="number" step="any" value="0"><small>Valor negativo se instalado acima da tomada.</small></div>
-              <div class="field range-wet-only" hidden><label for="rangeWetHeight">Altura da perna molhada (m)</label><input id="rangeWetHeight" type="number" step="any" value="3.5"><small>Coluna no lado de baixa pressão (LP).</small></div>
-              <div class="field range-wet-only" hidden><label for="rangeWetRho">Densidade do fluido da perna molhada (kg/m³)</label><input id="rangeWetRho" type="number" step="any" value="1000"></div>
-              <div class="field"><label for="rangeOutputUnit">Unidade do range de pressão</label><select id="rangeOutputUnit">
-                <option value="mmh2o">mmH₂O</option><option value="mbar">mbar</option><option value="kpa">kPa</option><option value="bar">bar</option><option value="psi">psi</option><option value="kgf">kgf/cm²</option><option value="mca">mca</option>
-              </select></div>
+              <div class="field"><label for="rangeMin">Nível mínimo da faixa · LRV (mmH₂O)</label><input id="rangeMin" type="number" step="any" value="0"><small>Valor de 0% da faixa, mantido em mmH₂O.</small></div>
+              <div class="field"><label for="rangeMax">Nível máximo da faixa · URV (mmH₂O)</label><input id="rangeMax" type="number" step="any" value="3000"><small>Valor de 100% da faixa, mantido em mmH₂O.</small></div>
+              <div class="field"><label for="rangeRho">Densidade aplicada</label><input id="rangeRho" type="number" step="any" value="1"><small>Fator multiplicador da coluna. Ex.: 1,00 para água.</small></div>
+              <div class="field"><label>Unidade da engenharia</label><div class="unit-display-box">mmH₂O</div><small>URV, LRV e Span deste módulo permanecem fixos em mmH₂O.</small></div>
             </div>
-            <p class="note">Instalação presumida: tomada de alta pressão (HP) na parte inferior; a de baixa pressão (LP) é atmosférica, seca ou preenchida, conforme seleção. Informe as alturas verticais.</p>
+            <p class="note">Neste módulo, a faixa de medição é tratada diretamente em mmH₂O. O tipo de instalação atua no esquema ilustrativo e no entendimento do usuário.</p>
           </article>
           <article class="card output-card">
             <h2>Esquema ilustrativo</h2>
             <div id="rangeDiagram" class="diagram-holder" aria-label="Esquema de instalação do transmissor DP"></div>
-            <p class="note">Diagramas esquemáticos originais, não representando escala ou a instalação real.</p>
+            <p class="note">O desenho mostra o tipo de instalação selecionado e, ao lado do tanque e das tomadas de impulso, os valores da faixa de medição em mmH₂O.</p>
             <h2 style="margin-top:20px">Faixa de configuração</h2>
             <div class="result-grid" id="rangeResults"></div>
             <p class="note" id="rangeNotice"></p>
@@ -386,7 +381,7 @@
 
         <div class="card" style="margin-top:18px">
           <h2>Critério H e L · referência em mmH₂O</h2>
-          <p class="note note-no-top">Informe os valores de H e L para 100% e 0%. O aplicativo calcula automaticamente o range e o span com e sem a aplicação da densidade. Nesta tabela, a unidade permanece fixa em mmH₂O.</p>
+          <p class="note note-no-top">Informe os valores de H e L para 100% e 0%. O aplicativo calcula automaticamente o range e o span com e sem a aplicação da densidade, mantendo mmH₂O como unidade fixa desta seção.</p>
           <div class="sheet-wrap">
             <table class="sheet-table" aria-label="Tabela de critério H e L">
               <thead>
@@ -423,11 +418,12 @@
               <small>Use fator de densidade relativa. Ex.: 1,00 para água.</small>
             </div>
             <div class="field">
-              <label>Unidade fixa desta tabela</label>
-              <div class="unit-display-box">mmH₂O</div>
-              <small>Conforme solicitado, a unidade desta área permanece fixa.</small>
+              <label>Observação</label>
+              <div class="unit-display-box">A seleção “Tipo de instalação” acima também atua neste esquema ilustrativo.</div>
+              <small>Assim, a referência visual acompanha o arranjo escolhido pelo usuário.</small>
             </div>
           </div>
+          <div id="hlDiagram" class="diagram-holder" style="margin-top:16px" aria-label="Esquema ilustrativo do critério H e L"></div>
           <div class="hl-results-grid" id="hlSummary"></div>
         </div>
 
@@ -448,7 +444,7 @@
       </section>
 
       <footer class="footer-note">
-        Instrumentação PRO · Versão 1.4.1 · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
+        Instrumentação PRO · Versão 1.4.2 · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
       </footer>
     </div>
   </main>

@@ -1,11 +1,15 @@
-Instrumentação PRO — correção 1.4.1
+Instrumentação PRO - versão 1.4.2
 
-Correção da imagem ilustrativa do módulo 06: agora a imagem está incorporada diretamente ao index.html, eliminando a dependência da pasta assets para esta figura.
+Atualizações desta versão:
+- Módulo 06 com unidade fixa em mmH2O para LRV, URV e Span.
+- Campos Nível mínimo da faixa e Nível máximo da faixa ajustados para mmH2O.
+- Esquema ilustrativo principal exibindo os valores da faixa ao lado do tanque e das tomadas de impulso.
+- Critério H e L com esquema ilustrativo próprio, também reagindo ao Tipo de instalação.
+- Remoção do bloco “Unidade fixa desta tabela”, mantendo a unidade fixa apenas na própria tabela e nos resultados.
+- Funcionamento offline mantido.
 
-Atualização:
-1. Extraia o ZIP.
-2. Substitua no repositório os arquivos index.html e sw.js.
-3. Faça commit e confirme a publicação no GitHub Pages.
-4. Abra o site com internet, atualize e reabra o aplicativo instalado.
-
-O ZIP contém o aplicativo inteiro para quem preferir atualizar tudo.
+Para atualizar no GitHub Pages:
+1) Extraia o ZIP.
+2) Substitua os arquivos do repositório.
+3) Aguarde a publicação do GitHub Pages.
+4) Atualize o aplicativo instalado para recarregar o novo cache.
