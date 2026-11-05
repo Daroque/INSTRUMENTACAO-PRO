@@ -1,14 +1,11 @@
-Instrumentação PRO - versão 1.4
+Instrumentação PRO — correção 1.4.1
 
-Atualizações desta versão:
-- Módulo 01: inclusão da unidade mmH2O, seleção da unidade de saída e conversão métrica auxiliar (m, mm, cm, km, pol e ft).
-- Módulo 04: inclusão do tipo de sinal 0-5 V, mantendo 4-20 mA, 0-20 mA e 0-10 V.
-- Módulo 06: inclusão da tabela H e L em mmH2O com cálculo automático do range e do span com e sem densidade.
-- Módulo 06: inclusão de imagem ilustrativa da célula do transmissor.
-- Funcionamento offline mantido.
+Correção da imagem ilustrativa do módulo 06: agora a imagem está incorporada diretamente ao index.html, eliminando a dependência da pasta assets para esta figura.
 
-Para atualizar no GitHub Pages:
-1) Extraia o ZIP.
-2) Envie/substitua todos os arquivos no repositório.
-3) Aguarde a publicação do GitHub Pages.
-4) Atualize o app instalado para recarregar o novo cache.
+Atualização:
+1. Extraia o ZIP.
+2. Substitua no repositório os arquivos index.html e sw.js.
+3. Faça commit e confirme a publicação no GitHub Pages.
+4. Abra o site com internet, atualize e reabra o aplicativo instalado.
+
+O ZIP contém o aplicativo inteiro para quem preferir atualizar tudo.
