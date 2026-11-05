@@ -1,24 +1,31 @@
-const CACHE_NAME = 'instrumentacao-pro-v1-6-4';
-const ASSETS = [
-  './',
+const CACHE_NAME = 'instrumentacao-pro-v1-6-5';
+const CORE_ASSETS = [
   './index.html',
   './styles.css',
   './app.js',
-  './manifest.webmanifest',
-  './icons/icon-192.png',
-  './icons/icon-512.png',
-  './assets/transmitter_cell_reference.png',
-  './assets/range_hl_reference.png',
-  './assets/optiflux_page2.png',
-  './assets/optiflux_page3.png'
+  './manifest.webmanifest'
+];
+const OPTIONAL_ASSETS = [
+  './icon-192.png',
+  './icon-512.png',
+  './optiflux_page2.png',
+  './optiflux_page3.png',
+  './range_hl_reference.png',
+  './transmitter_cell_reference.png'
 ];
 
-self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS)));
-  self.skipWaiting();
+self.addEventListener('install', event => {
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE_NAME);
+    // Arquivos essenciais: a instalação falha somente se faltar um deles.
+    await cache.addAll(CORE_ASSETS);
+    // Imagens opcionais não devem impedir a atualização do aplicativo.
+    await Promise.allSettled(OPTIONAL_ASSETS.map(asset => cache.add(asset)));
+    await self.skipWaiting();
+  })());
 });
 
-self.addEventListener('activate', (event) => {
+self.addEventListener('activate', event => {
   event.waitUntil((async () => {
     const keys = await caches.keys();
     await Promise.all(keys.filter(key => key.startsWith('instrumentacao-pro-') && key !== CACHE_NAME).map(key => caches.delete(key)));
@@ -26,15 +33,16 @@ self.addEventListener('activate', (event) => {
   })());
 });
 
-self.addEventListener('fetch', (event) => {
+self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
   const url = new URL(event.request.url);
-  if (url.origin !== self.location.origin) return;
+  if (url.origin !== self.location.origin || !url.pathname.startsWith(self.registration.scope.replace(self.location.origin, ''))) return;
 
+  // Navegação: preferir versão publicada, com fallback offline.
   if (event.request.mode === 'navigate') {
     event.respondWith((async () => {
       try {
-        const response = await fetch(event.request);
+        const response = await fetch(event.request, {cache: 'no-store'});
         if (response.ok) {
           const cache = await caches.open(CACHE_NAME);
           await cache.put('./index.html', response.clone());
@@ -47,18 +55,17 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // Recursos locais: revalidar na rede quando disponível.
   event.respondWith((async () => {
-    const cached = await caches.match(event.request);
-    if (cached) return cached;
     try {
-      const response = await fetch(event.request);
+      const response = await fetch(event.request, {cache: 'no-store'});
       if (response.ok) {
         const cache = await caches.open(CACHE_NAME);
-        cache.put(event.request, response.clone()).catch(() => {});
+        await cache.put(event.request, response.clone());
       }
       return response;
     } catch (_) {
-      return Response.error();
+      return (await caches.match(event.request)) || Response.error();
     }
   })());
 });

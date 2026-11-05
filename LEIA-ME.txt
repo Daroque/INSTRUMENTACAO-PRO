@@ -1,7 +1,9 @@
-Instrumentação PRO v1.6.4
+Instrumentação PRO v1.6.5 - correção de atualização PWA
 
-Atualizações desta versão:
-- Módulo 06: remoção das indicações destacadas em vermelho, mantendo apenas o essencial e o critério H e L.
-- Módulo 03: inclusão de ilustrações de ligação Pt100 para 2, 3 e 4 fios, sem referência a fabricante.
-- Cabos do elemento resistivo ilustrados em vermelho, conforme solicitado.
-- Funcionamento offline mantido.
+CAUSA IDENTIFICADA: no GitHub as imagens e os ícones foram publicados na raiz do repositório, mas o service worker procurava dentro de /assets e /icons. A instalação de novas versões podia falhar silenciosamente.
+
+Esta versão coloca todos os arquivos diretamente na raiz e corrige os caminhos usados pelo service worker, pelo HTML e pelo manifesto.
+
+IMPORTANTE: envie TODOS os arquivos que estão dentro deste ZIP diretamente à pasta principal (raiz) do repositório, ao lado de index.html. Não envie o ZIP como um arquivo nem crie uma subpasta.
+
+Depois faça commit / push, confirme o GitHub Pages e abra o site conectado à internet para instalar o novo cache.
