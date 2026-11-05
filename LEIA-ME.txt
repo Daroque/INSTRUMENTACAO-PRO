@@ -1,11 +1,14 @@
-Instrumentação PRO — versão 1.6.1
+Instrumentação PRO - versão 1.6.2
 
-Correções:
-- Módulo 02 permanece com nome Vazão.
-- Removidos os cartões Referência visual e Orientações de instalação.
-- Desenho de instalação redimensionado, com legendas maiores e separadas das setas.
-- Relatório individual agora é gerado em uma aba nova de navegador (documento HTML temporário fora do escopo da PWA).
-- A aba da PWA original permanece aberta; escolha Imprimir / Salvar PDF na nova aba.
-- Cache offline versionado.
+Atualizações desta versão:
+- Módulo 02: referência da cotagem ajustada para o centro do medidor.
+- Módulo 02: a ilustração não desaparece quando o diâmetro informado é zero.
+- Módulo 02: remoção do nome OPTIFLUX 1000/5000 do texto explicativo.
+- Módulos 02, 03, 04, 05 e 06: inclusão do campo Tag do instrumento.
+- Funcionamento offline mantido.
 
-Atualização no GitHub Pages: substitua index.html, app.js, sw.js e, opcionalmente, LEIA-ME.txt.
+Para atualizar no GitHub Pages:
+1) Extraia o ZIP.
+2) Substitua os arquivos do repositório.
+3) Aguarde a publicação do GitHub Pages.
+4) Atualize o aplicativo instalado para recarregar o novo cache.

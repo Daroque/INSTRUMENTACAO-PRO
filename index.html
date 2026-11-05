@@ -145,6 +145,11 @@
         <div class="module-grid module-grid-two">
           <article class="card input-card">
             <h2>Conversão de vazão volumétrica</h2>
+            <div class="field" style="margin-bottom:14px">
+              <label for="flowTag">Tag do instrumento</label>
+              <input id="flowTag" type="text" maxlength="40" placeholder="Ex.: FIT-101">
+              <small>Identificação do instrumento de vazão.</small>
+            </div>
             <div class="form-grid two-cols">
               <div class="field">
                 <label for="fValue">Vazão</label>
@@ -182,7 +187,7 @@
             </div>
             <div class="result-grid" id="meterInstallResults" style="margin-top:16px"></div>
             <div id="meterInstallDiagram" class="diagram-holder" style="margin-top:14px" aria-label="Ilustrativo de instalação mínima do medidor de vazão"></div>
-            <p class="note">Referência: figura da página 2 do manual OPTIFLUX 1000/5000. O fabricante indica 5 DN a montante e sinaliza “máx. 2 DN” a jusante. O cálculo de 2D aqui mantém o critério solicitado para comparação; confirme a interpretação e as distâncias aplicáveis ao modelo antes de executar a instalação.</p>
+            <p class="note">Critério ilustrativo para instalação mínima do medidor. Confirme em campo o manual do fabricante, o modelo do instrumento e as distâncias aplicáveis antes da instalação.</p>
           </article>
         </div>
 
@@ -192,6 +197,11 @@
         <div class="module-grid">
           <article class="card">
             <h2>Conversão de temperatura</h2>
+            <div class="field" style="margin-bottom:14px">
+              <label for="tempTag">Tag do instrumento</label>
+              <input id="tempTag" type="text" maxlength="40" placeholder="Ex.: TT-201">
+              <small>Identificação do instrumento deste módulo.</small>
+            </div>
             <div class="form-grid two-cols">
               <div class="field">
                 <label for="tValue">Temperatura</label>
@@ -261,6 +271,11 @@
         <div class="module-grid module-grid-two">
           <article class="card input-card">
             <h2>Dados do instrumento</h2>
+            <div class="field" style="margin-bottom:14px">
+              <label for="signalTag">Tag do instrumento</label>
+              <input id="signalTag" type="text" maxlength="40" placeholder="Ex.: LT-301">
+              <small>Identificação do transmissor ou instrumento.</small>
+            </div>
             <div class="form-grid two-cols">
               <div class="field">
                 <label for="sLrv">Valor inferior da faixa (LRV)</label>
@@ -328,6 +343,11 @@
         <div class="module-grid module-grid-two">
           <article class="card input-card">
             <h2>Dados de entrada</h2>
+            <div class="field" style="margin-bottom:14px">
+              <label for="powerTag">Tag do instrumento</label>
+              <input id="powerTag" type="text" maxlength="40" placeholder="Ex.: MTR-401">
+              <small>Identificação do equipamento ou instrumento.</small>
+            </div>
             <div class="form-grid two-cols">
               <div class="field"><label for="powerValue">Potência</label><input id="powerValue" type="number" inputmode="decimal" step="any" value="100"></div>
               <div class="field"><label for="powerUnit">Unidade de entrada</label><select id="powerUnit">
@@ -349,6 +369,11 @@
         <div class="module-grid module-grid-two">
           <article class="card input-card">
             <h2>Configuração da faixa · Transmissor de nível DP</h2>
+            <div class="field" style="margin-bottom:14px">
+              <label for="rangeTag">Tag do instrumento</label>
+              <input id="rangeTag" type="text" maxlength="40" placeholder="Ex.: LT-601">
+              <small>Identificação do transmissor de nível ou DP.</small>
+            </div>
             <div class="field"><label for="rangeMode">Tipo de instalação</label><select id="rangeMode">
               <option value="open">Tanque aberto / referência atmosférica</option>
               <option value="dry">Vaso fechado / perna seca</option>
@@ -437,7 +462,7 @@
       </section>
 
       <footer class="footer-note">
-        Instrumentação PRO · Versão 1.6.1 · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
+        Instrumentação PRO · Versão 1.6.2 · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
       </footer>
     </div>
   </main>

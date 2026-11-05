@@ -106,11 +106,11 @@
 
 
   function meterInstallDiagram(diameter, upstream, downstream) {
-    // Cotagem ampliada: descrições ficam fora do desenho e das setas.
-    return `<svg viewBox="0 0 1040 410" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Instalação do medidor: ${fmt(upstream, 1)} mm antes e ${fmt(downstream, 1)} mm depois">
+    // Cotagem referenciada ao centro do medidor, conforme solicitado.
+    return `<svg viewBox="0 0 1040 430" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Instalação do medidor: ${fmt(upstream, 1)} mm antes e ${fmt(downstream, 1)} mm depois">
       <defs>
-        <marker id="flow-arrow-161" markerWidth="9" markerHeight="9" refX="7.5" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#1976bd"/></marker>
-        <marker id="dim-arrow-161" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto-start-reverse"><path d="M0,0 L9,4.5 L0,9 Z" fill="#163e62"/></marker>
+        <marker id="flow-arrow-162" markerWidth="9" markerHeight="9" refX="7.5" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#1976bd"/></marker>
+        <marker id="dim-arrow-162" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto-start-reverse"><path d="M0,0 L9,4.5 L0,9 Z" fill="#163e62"/></marker>
       </defs>
       <text x="520" y="32" text-anchor="middle" fill="#123b60" font-size="25" font-weight="800">Instalação mínima do medidor de vazão</text>
       <text x="520" y="65" text-anchor="middle" fill="#416681" font-size="18">Diâmetro informado: ${fmt(diameter,2)} mm</text>
@@ -122,37 +122,40 @@
       <circle cx="520" cy="127" r="30" fill="#eef6fb" stroke="#1565a3" stroke-width="5"/>
       <circle cx="520" cy="127" r="16" fill="#c6dfef" stroke="#3778aa" stroke-width="3"/>
       <text x="520" y="288" text-anchor="middle" fill="#123b60" font-size="19" font-weight="800">MEDIDOR</text>
-      <path d="M297 102 H431" fill="none" stroke="#1976bd" stroke-width="6" marker-end="url(#flow-arrow-161)"/>
+      <path d="M297 102 H431" fill="none" stroke="#1976bd" stroke-width="6" marker-end="url(#flow-arrow-162)"/>
       <text x="363" y="90" text-anchor="middle" fill="#155e9a" font-size="20" font-weight="800">Fluxo</text>
-      <path d="M90 251 V318 M474 251 V318 M566 251 V318 M950 251 V318" stroke="#59758b" stroke-width="2" stroke-dasharray="7 5"/>
-      <path d="M90 314 H474" stroke="#163e62" stroke-width="3.5" marker-start="url(#dim-arrow-161)" marker-end="url(#dim-arrow-161)"/>
-      <path d="M566 314 H950" stroke="#163e62" stroke-width="3.5" marker-start="url(#dim-arrow-161)" marker-end="url(#dim-arrow-161)"/>
-      <text x="280" y="355" text-anchor="middle" fill="#123b60" font-size="24" font-weight="800">ANTES · 5 × D</text>
-      <text x="280" y="389" text-anchor="middle" fill="#0e598f" font-size="27" font-weight="800">${fmt(upstream, 2)} mm</text>
-      <text x="760" y="355" text-anchor="middle" fill="#123b60" font-size="24" font-weight="800">DEPOIS · 2 × D</text>
-      <text x="760" y="389" text-anchor="middle" fill="#0e598f" font-size="27" font-weight="800">${fmt(downstream, 2)} mm</text>
+      <path d="M90 251 V326 M520 108 V326 M950 251 V326" stroke="#59758b" stroke-width="2.4" stroke-dasharray="7 5"/>
+      <path d="M90 314 H520" stroke="#163e62" stroke-width="3.5" marker-start="url(#dim-arrow-162)" marker-end="url(#dim-arrow-162)"/>
+      <path d="M520 314 H950" stroke="#163e62" stroke-width="3.5" marker-start="url(#dim-arrow-162)" marker-end="url(#dim-arrow-162)"/>
+      <text x="305" y="357" text-anchor="middle" fill="#123b60" font-size="24" font-weight="800">ANTES · 5 × D</text>
+      <text x="305" y="392" text-anchor="middle" fill="#0e598f" font-size="29" font-weight="800">${fmt(upstream, 2)} mm</text>
+      <text x="735" y="357" text-anchor="middle" fill="#123b60" font-size="24" font-weight="800">DEPOIS · 2 × D</text>
+      <text x="735" y="392" text-anchor="middle" fill="#0e598f" font-size="29" font-weight="800">${fmt(downstream, 2)} mm</text>
     </svg>`;
   }
 
   function updateMeterInstall() {
-    const d = valueOrNull('meterDiameter');
-    if (d === null) {
-      setHTML('meterInstallResults', resultCard('Verifique os dados', 'Informe o diâmetro do tubo do medidor.'));
-      setHTML('meterInstallDiagram', '');
-      return;
-    }
-    if (d <= 0) {
-      setHTML('meterInstallResults', resultCard('Verifique os dados', 'O diâmetro deve ser positivo.'));
-      setHTML('meterInstallDiagram', '');
+    const raw = valueOrNull('meterDiameter');
+    const d = raw === null ? 0 : raw;
+    if (d < 0) {
+      const html = [
+        resultCard('Diâmetro do tubo', `${fmt(d, 2)} mm`),
+        resultCard('Trecho mínimo antes do medidor', `0,00 mm`),
+        resultCard('Trecho mínimo depois do medidor', `0,00 mm`),
+        resultCard('Aviso', `Informe um diâmetro igual ou maior que zero`)
+      ].join('');
+      setHTML('meterInstallResults', html);
+      setHTML('meterInstallDiagram', meterInstallDiagram(0, 0, 0));
       return;
     }
     const upstream = 5 * d;
     const downstream = 2 * d;
+    const summary = d === 0 ? 'Informe um valor maior que zero para uma instalação real' : 'Instalação mínima: 5D antes e 2D depois';
     const html = [
       resultCard('Diâmetro do tubo', `${fmt(d, 2)} mm`),
       resultCard('Trecho mínimo antes do medidor', `${fmt(upstream, 2)} mm`),
       resultCard('Trecho mínimo depois do medidor', `${fmt(downstream, 2)} mm`),
-      resultCard('Resumo', `Instalação mínima: 5D antes e 2D depois`)
+      resultCard('Resumo', summary)
     ].join('');
     setHTML('meterInstallResults', html);
     setHTML('meterInstallDiagram', meterInstallDiagram(d, upstream, downstream));
