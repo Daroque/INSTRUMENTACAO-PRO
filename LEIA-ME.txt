@@ -1,13 +1,7 @@
-Instrumentação PRO v1.6.6
+Instrumentação PRO v1.6.7
 
 Atualizações desta versão:
-- Módulo 03: substituição da ilustração anterior por uma imagem baseada no anexo fornecido pelo usuário.
-- Cabeçote do transmissor ajustado para a cor verde.
-- Ligação resistiva destacada em vermelho para melhor leitura.
-- Funcionamento offline mantido e cache atualizado.
-
-Para atualizar no GitHub Pages:
-1) Extraia o ZIP.
-2) Substitua os arquivos do repositório.
-3) Aguarde a publicação do GitHub Pages.
-4) Abra o aplicativo com internet para atualizar o cache offline.
+- Remoção da ilustração de ligações Pt100 do módulo 03.
+- Inclusão do novo logo fornecido pelo usuário no cabeçalho do aplicativo.
+- Substituição dos ícones do aplicativo (computador e celular) pelo novo logo.
+- Funcionamento offline mantido com atualização de cache.

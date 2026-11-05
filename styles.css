@@ -46,6 +46,22 @@ body {
   align-items: flex-start;
   gap: 16px;
 }
+.hero-brand {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-width: 0;
+}
+.hero-logo {
+  width: clamp(78px, 10vw, 110px);
+  height: clamp(78px, 10vw, 110px);
+  border-radius: 22px;
+  display: block;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.22);
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.08);
+  object-fit: cover;
+}
 .hero h1 {
   margin: 0;
   font-size: clamp(2rem, 4vw, 3rem);
@@ -309,6 +325,8 @@ input:focus, select:focus {
 @media (max-width: 900px) {
   .module-grid-two, .three-cols, .two-cols { grid-template-columns: 1fr; }
   .hero-row { flex-direction: column; }
+  .hero-brand { width: 100%; }
+  .hero-logo { width: 82px; height: 82px; }
   .container { width: min(100% - 24px, 1180px); }
 }
 
