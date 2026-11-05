@@ -1,8 +1,9 @@
-const CACHE_NAME = 'instrumentacao-pro-v1-6-7';
+const CACHE_NAME = 'instrumentacao-pro-v1-7-0';
 const CORE_ASSETS = [
   './index.html',
   './styles.css',
   './app.js',
+  './parshall.js',
   './manifest.webmanifest'
 ];
 const OPTIONAL_ASSETS = [
@@ -12,7 +13,9 @@ const OPTIONAL_ASSETS = [
   './optiflux_page3.png',
   './range_hl_reference.png',
   './transmitter_cell_reference.png',
-  './app_logo.png'
+  './app_logo.png',
+  './parshall_funcionamento.webp',
+  './parshall_dimensoes.jpg'
 ];
 
 self.addEventListener('install', event => {

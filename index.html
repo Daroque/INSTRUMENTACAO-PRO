@@ -46,6 +46,7 @@
         <button class="tab" data-panel="signal" data-subtitle="Módulo 04 - Sinais de instrumentação" role="tab" aria-selected="false">Sinais de instrumentação</button>
         <button class="tab" data-panel="power" data-subtitle="Módulo 05 · Potência e conversões" role="tab" aria-selected="false">Potência e conversões</button>
         <button class="tab" data-panel="range" data-subtitle="Módulo 06 · Faixa de transmissores de nível" role="tab" aria-selected="false">Faixa de transmissores</button>
+        <button class="tab" data-panel="parshall" data-subtitle="Módulo 07 · Calha Parshall" role="tab" aria-selected="false">Calha Parshall</button>
       </div>
 
       <section class="panel active" id="pressure" role="tabpanel">
@@ -584,12 +585,120 @@
         </div>
       </section>
 
+
+      <section class="panel" id="parshall" role="tabpanel" hidden>
+        <div class="parshall-heading">
+          <div>
+            <span class="parshall-eyebrow">MEDIÇÃO DE VAZÃO EM CANAL ABERTO</span>
+            <h2>Calha Parshall</h2>
+            <p>Selecione ou informe a largura padronizada da garganta e consulte a relação entre altura da lâmina d'água e vazão em regime de escoamento livre.</p>
+          </div>
+          <span class="parshall-reference">Referência: ASTM D1941-21 / USBR</span>
+        </div>
+        <div class="module-grid module-grid-two parshall-main-grid">
+          <article class="card">
+            <h2>Dados da calha</h2>
+            <div class="form-grid two-cols">
+              <div class="field parshall-wide-field">
+                <label for="parshallTag">Tag do instrumento</label>
+                <input id="parshallTag" type="text" maxlength="40" placeholder="Ex.: FIT-701">
+              </div>
+              <div class="field parshall-wide-field">
+                <label for="parshallSize">Garganta padronizada — largura W</label>
+                <select id="parshallSize"></select>
+                <small>Calibração própria para cada largura; sem interpolação entre tamanhos.</small>
+              </div>
+              <div class="field">
+                <label for="parshallWidth">Largura da garganta W (mm)</label>
+                <input id="parshallWidth" type="number" inputmode="decimal" step="any" min="0" value="152.4">
+                <small>Digite a largura ou escolha no menu acima.</small>
+              </div>
+              <div class="field">
+                <label for="parshallHead">Altura a montante Hₐ (mm)</label>
+                <input id="parshallHead" type="number" inputmode="decimal" step="any" min="0" value="300">
+                <small>Altura no ponto Hₐ, não na garganta.</small>
+              </div>
+              <div class="field">
+                <label for="parshallOutputUnit">Unidade de vazão</label>
+                <select id="parshallOutputUnit">
+                  <option value="m3h">m³/h</option>
+                  <option value="ls">L/s</option>
+                  <option value="m3s">m³/s</option>
+                  <option value="lmin">L/min</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="parshallStep">Intervalo da tabela (mm)</label>
+                <select id="parshallStep">
+                  <option value="10">10 mm</option>
+                  <option value="25" selected>25 mm</option>
+                  <option value="50">50 mm</option>
+                  <option value="100">100 mm</option>
+                  <option value="250">250 mm</option>
+                </select>
+              </div>
+            </div>
+            <div class="parshall-alert" id="parshallValidation" role="status" aria-live="polite"></div>
+            <p class="note">O diâmetro não define uma Calha Parshall: informe a <strong>largura da garganta W</strong>. A dimensão deve corresponder a uma geometria padronizada da calha.</p>
+          </article>
+          <article class="card">
+            <h2>Resultado da medição</h2>
+            <div class="highlight-card parshall-highlight">
+              <div class="result-label">Vazão estimada — escoamento livre</div>
+              <div class="big-result"><span id="parshallFlow">—</span> <small id="parshallFlowUnit">m³/h</small></div>
+              <div class="big-result-status" id="parshallFlowStatus">Selecione uma garganta padronizada.</div>
+            </div>
+            <div class="mini-grid">
+              <div class="mini-card"><span>Garganta selecionada</span><strong id="parshallWidthDisplay">—</strong></div>
+              <div class="mini-card"><span>Altura Hₐ</span><strong id="parshallHeadDisplay">—</strong></div>
+              <div class="mini-card"><span>Faixa calibrada de Hₐ</span><strong id="parshallRangeDisplay">—</strong></div>
+              <div class="mini-card"><span>Limite de submergência</span><strong id="parshallSubLimit">—</strong></div>
+            </div>
+            <div class="parshall-alert parshall-caution">O cálculo assume escoamento livre, sem afogamento. Para submergência acima do limite, a relação altura × vazão exibida não é válida sem correções específicas.</div>
+          </article>
+        </div>
+        <article class="card parshall-table-card">
+          <div class="title-row"><h2>Relação altura × vazão</h2><span class="parshall-reference">Curva calculada para a garganta selecionada</span></div>
+          <p class="note note-no-top" id="parshallTableNote">Informe uma largura padronizada para gerar a tabela.</p>
+          <div class="parshall-table-layout">
+            <div class="parshall-chart-wrap"><svg id="parshallCurve" viewBox="0 0 620 340" role="img" aria-label="Curva de altura por vazão para Calha Parshall"></svg></div>
+            <div class="parshall-table-wrap">
+              <table class="parshall-table" aria-label="Tabela altura e vazão Calha Parshall">
+                <thead><tr><th>Altura Hₐ (mm)</th><th id="parshallTableHeaderFlow">Vazão (m³/h)</th></tr></thead>
+                <tbody id="parshallTableBody"><tr><td colspan="2">Selecione uma largura.</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </article>
+        <article class="card parshall-figures-card">
+          <h2>Ilustrações de funcionamento e geometria</h2>
+          <div class="parshall-figure-stack">
+            <figure>
+              <div class="parshall-image-frame"><img src="./parshall_funcionamento.webp" alt="Calha Parshall em perspectiva com garganta, tirantes, escala e ancoragem" loading="lazy"></div>
+              <figcaption><strong>01 · Funcionamento</strong> — Vista em perspectiva da calha, incluindo a região convergente, garganta e medição de vazão.</figcaption>
+            </figure>
+            <figure>
+              <div class="parshall-image-frame"><img src="./parshall_dimensoes.jpg" alt="Desenho técnico da Calha Parshall com dimensões da garganta e pontos de medição H0" loading="lazy"></div>
+              <figcaption><strong>02 · Geometria e leitura da altura</strong> — Vista superior e seção longitudinal. A medição de nível deve seguir o ponto de referência indicado para a calha padronizada.</figcaption>
+            </figure>
+          </div>
+          <p class="note note-warning">As figuras são referências de identificação e não substituem as cotas de fabricação das normas. Calhas de larguras diferentes não são necessariamente semelhantes geometricamente.</p>
+        </article>
+        <article class="card parshall-technical">
+          <h2>Critérios técnicos e referências</h2>
+          <p>A vazão é calculada a partir das curvas empíricas padronizadas de <strong>escoamento livre</strong>. A altura Hₐ deve ser medida no ponto correto a montante e relativa à referência de fundo estabelecida para a calha.</p>
+          <p>Para escoamento submerso, medição inadequada da altura, construção fora das dimensões padronizadas ou regime de aproximação turbulento, é necessária avaliação específica. O aplicativo bloqueia a extrapolação fora da faixa de calibração de cada tamanho.</p>
+          <p><strong>Fontes:</strong> U.S. Bureau of Reclamation, <em>Water Measurement Manual</em>, capítulo 8, seção 10, tabela 8-6; ASTM D1941-21, tabela 2.</p>
+        </article>
+      </section>
+
       <footer class="footer-note">
-        Instrumentação PRO · Versão 1.6.7 · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
+        Instrumentação PRO · Versão 1.7.0 · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
       </footer>
     </div>
   </main>
 
   <script src="./app.js"></script>
+  <script src="./parshall.js"></script>
 </body>
 </html>

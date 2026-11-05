@@ -604,6 +604,21 @@
         ${outputs.length ? `<h3>Resultados</h3><table>${outputs.join('')}</table>` : ''}
         ${visuals}</section>`);
     });
+    // Módulo 07: incluir curva, tabela e ilustrações no relatório individual.
+    if (panelId === 'parshall') {
+      const chart = $('parshallCurve')?.outerHTML || '';
+      const table = $('parshallTableBody')?.innerHTML || '';
+      const fUnit = $('parshallOutputUnit')?.selectedOptions[0]?.textContent || 'm³/h';
+      if (chart) parts.push(`<section class="report-section"><h2>Curva de altura × vazão</h2><div class="report-diagram">${chart}</div></section>`);
+      if (table) parts.push(`<section class="report-section"><h2>Tabela de altura × vazão</h2><table>
+        <thead><tr><th>Altura Hₐ (mm)</th><th>Vazão (${reportEscape(fUnit)})</th></tr></thead><tbody>${table}</tbody></table></section>`);
+      const images = [
+        ['Funcionamento da calha', 'parshall_funcionamento.webp'],
+        ['Geometria e pontos de medição', 'parshall_dimensoes.jpg']
+      ];
+      const figures = images.map(([name,file])=>`<figure><img class="report-image" src="${new URL(file, document.baseURI).href}" alt="${reportEscape(name)}"><figcaption>${reportEscape(name)}</figcaption></figure>`).join('');
+      parts.push(`<section class="report-section"><h2>Referências visuais</h2>${figures}</section>`);
+    }
     // Tabela H/L: coleta e resultados da seção independente do artigo.
     if (panelId === 'range') {
       const fields = [['H em 100%', 'hlH100'], ['L em 100%', 'hlL100'], ['H em 0%', 'hlH0'], ['L em 0%', 'hlL0'], ['Densidade aplicada', 'hlDensity']];
