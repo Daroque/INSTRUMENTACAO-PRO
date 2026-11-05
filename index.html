@@ -39,13 +39,28 @@
     <div class="container app-body">
       <p class="intro-text">Aplicativo de cálculos de instrumentação para uso no computador e no celular, inclusive offline. Resultados instantâneos e interface profissional, sem mostrar equações na tela.</p>
 
+      <div class="report-identity card" aria-label="Identificação para os relatórios técnicos">
+        <div class="report-identity-title">Identificação do responsável pelo relatório <span class="report-optional">(opcional)</span></div>
+        <div class="form-grid two-cols">
+          <div class="field">
+            <label for="reportAuthorName">Nome</label>
+            <input id="reportAuthorName" type="text" autocomplete="name" maxlength="120" placeholder="Nome do responsável">
+          </div>
+          <div class="field">
+            <label for="reportAuthorRole">Função</label>
+            <input id="reportAuthorRole" type="text" maxlength="120" placeholder="Ex.: Instrumentista / Engenheiro">
+          </div>
+        </div>
+        <p class="note">Estes campos valem para o PDF do módulo selecionado. Se ficarem vazios, o relatório terá espaço para preenchimento manual.</p>
+      </div>
+
       <div class="tabs" role="tablist" aria-label="Módulos do aplicativo">
         <button class="tab active" data-panel="pressure" data-subtitle="Módulo 01 · Pressão e conversões" role="tab" aria-selected="true">Pressão e conversões</button>
         <button class="tab" data-panel="flow" data-subtitle="Módulo 02 · Vazão" role="tab" aria-selected="false">Vazão</button>
         <button class="tab" data-panel="temperature" data-subtitle="Módulo 03 · Temperatura e sensores" role="tab" aria-selected="false">Temperatura e sensores</button>
         <button class="tab" data-panel="signal" data-subtitle="Módulo 04 - Sinais de instrumentação" role="tab" aria-selected="false">Sinais de instrumentação</button>
         <button class="tab" data-panel="power" data-subtitle="Módulo 05 · Potência e conversões" role="tab" aria-selected="false">Potência e conversões</button>
-        <button class="tab" data-panel="range" data-subtitle="Módulo 06 · Faixa de transmissores de nível" role="tab" aria-selected="false">Faixa de transmissores</button>
+        <button class="tab" data-panel="range" data-subtitle="Módulo 06 · Faixa de transmissores" role="tab" aria-selected="false">Faixa de transmissores</button>
         <button class="tab" data-panel="parshall" data-subtitle="Módulo 07 · Calha Parshall" role="tab" aria-selected="false">Calha Parshall</button>
       </div>
 
@@ -744,7 +759,7 @@
       </section>
 
       <footer class="footer-note">
-        Instrumentação PRO · Versão 1.7.1 · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
+        Instrumentação PRO · Versão 1.7.2 · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
       </footer>
     </div>
   </main>

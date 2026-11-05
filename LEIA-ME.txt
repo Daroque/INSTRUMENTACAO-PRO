@@ -1,29 +1,9 @@
-Instrumentação PRO v1.7.1 — atualização do módulo 01
-Conversão métrica auxiliar ampliada para 25 unidades de comprimento e distância; entrada/saída selecionáveis. Outros módulos preservados.
+Instrumentação PRO v1.7.2
 
-INSTRUMENTAÇÃO PRO — VERSÃO 1.7.0
+- Módulo 06: cabeçalho simplificado para Faixa de transmissores.
+- Relatórios de todos os módulos: título sem número e sem a palavra Módulo.
+- Campos opcionais Nome e Função para identificar o responsável no relatório.
+- Campos vazios geram espaços para preenchimento manual no PDF.
+- Funcionamento offline mantido; versão de cache atualizada.
 
-NOVO MÓDULO 07 — CALHA PARSHALL
-- Imagens originais fornecidas, exibidas em sequência.
-- Seleção de largura padronizada de garganta em mm, com entrada manual.
-- Relação altura (H_a) x vazão em tabela e gráfico para escoamento livre.
-- Coeficientes e limites de aplicação fundamentados em ASTM D1941-21,
-  tabela 2, e USBR Water Measurement Manual, capítulo 8, seção 10.
-- Não interpola tamanhos de garganta; não extrapola altura fora de faixa.
-- Incluído na função Gerar PDF do módulo, via impressão/salvar PDF.
-- Funcionamento offline mantido.
-
-ATENÇÃO: a medida de garganta é largura W, não diâmetro.
-A fórmula de escoamento livre só vale se as condições de instalação,
-geometria e submergência forem adequadas. A calha instalada deve obedecer
-às dimensões padronizadas. Verifique a altura no ponto H_a.
-
-ATUALIZAÇÃO VIA GITHUB PAGES
-1) Descompacte este ZIP.
-2) Substitua TODOS os arquivos na raiz do repositório (inclusive .js e imagens).
-3) Aguarde a ação Pages aparecer como concluída (verde).
-4) Abra o endereço publicado com conexão para atualizar o cache da PWA.
-
-Referências:
-USBR: https://www.usbr.gov/tsc/techreferences/mands/wmm/chap08_10.html
-ASTM D1941-21: https://www.astm.org/d1941-21.html
+Envie os arquivos completos para a raiz do repositório INSTRUMENTACAO-PRO e aguarde a publicação do GitHub Pages.

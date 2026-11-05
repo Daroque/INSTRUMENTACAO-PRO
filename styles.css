@@ -533,3 +533,10 @@ html[data-theme="dark"] .parshall-alert.ok{background:#1d3a2a;color:#b6efcd;bord
 html[data-theme="dark"] .parshall-table tr.parshall-current{background:#245075}
 @media(max-width:920px){.parshall-table-layout{grid-template-columns:1fr}.parshall-heading{align-items:start}}
 @media(max-width:640px){.parshall-main-grid{grid-template-columns:1fr}.parshall-figure-stack{gap:16px}}
+
+/* Identificação opcional do responsável para todos os módulos */
+.report-identity { margin: 0 0 18px; padding: 16px 20px; }
+.report-identity-title { font-weight: 750; margin-bottom: 12px; }
+.report-optional { font-size: .88em; color: var(--muted); font-weight: 400; }
+.report-identity .note { margin: 10px 0 0; }
+@media (max-width: 640px) { .report-identity { padding: 14px; } }

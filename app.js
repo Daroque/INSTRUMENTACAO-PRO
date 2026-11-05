@@ -600,7 +600,7 @@
     const panelId = tab.dataset.panel;
     const panel = $(panelId);
     const moduleName = tab.textContent.trim();
-    const subtitle = tab.dataset.subtitle || moduleName;
+    const subtitle = moduleName;
     const sections = Array.from(panel.querySelectorAll('article.card'));
     const parts = [];
     sections.forEach((article) => {
@@ -658,6 +658,8 @@
       <h3>Resultados</h3><table>${summary}</table><div class="report-diagram">${$('hlDiagram').innerHTML}</div></section>`);
     }
     const generatedAt = new Date().toLocaleString('pt-BR');
+    const authorName = $('reportAuthorName')?.value?.trim() || '';
+    const authorRole = $('reportAuthorRole')?.value?.trim() || '';
     const report = `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
       <title>Relatório ${reportEscape(moduleName)} — Instrumentação PRO</title>
       <style>
@@ -681,12 +683,20 @@
         .df-label{font-size:11px;display:block;color:#58738b;margin-bottom:3px;}.diagram-fact strong{font-size:13px;display:block;}
         .diagram-caption{font-size:10px;color:#526a81;}
         .report-image{max-width:90%;max-height:370px;display:block;margin:10px auto;object-fit:contain;}
+        .report-identification{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:20px 0 12px;}
+        .report-person{font-size:12px;min-width:0;}
+        .report-person-label{display:block;font-weight:700;color:#526a81;margin-bottom:7px;}
+        .report-person-value{border-bottom:1px solid #8ea4b7;min-height:26px;padding:2px 4px 5px;overflow-wrap:anywhere;}
         footer{border-top:1px solid #d2dee7;padding-top:12px;margin-top:30px;font-size:11px;color:#546b80;}
         @page{size:A4;margin:15mm 13mm;}@media print{body{background:white;print-color-adjust:exact;-webkit-print-color-adjust:exact;}
           .toolbar{display:none}.paper{margin:0;max-width:none;padding:0;box-shadow:none;}.report-section{break-inside:auto;}}
       </style></head><body>
       <div class="toolbar"><span>Relatório em aba separada — feche esta aba para retornar ao aplicativo.</span><button onclick="window.print()">Imprimir / Salvar PDF</button></div>
       <main class="paper"><header><small>INSTRUMENTAÇÃO PRO · RELATÓRIO TÉCNICO</small><h1>${reportEscape(subtitle)}</h1><div>Emitido em ${reportEscape(generatedAt)}</div></header>
+      <div class="report-identification">
+        <div class="report-person"><span class="report-person-label">Nome</span><div class="report-person-value">${reportEscape(authorName)}</div></div>
+        <div class="report-person"><span class="report-person-label">Função</span><div class="report-person-value">${reportEscape(authorRole)}</div></div>
+      </div>
       ${parts.join('')}
       <footer>Relatório gerado no dispositivo pelo Instrumentação PRO. Antes de utilizar em campo, confira os dados de processo, limites dos instrumentos e requisitos de instalação. Não contém equações.</footer>
       </main></body></html>`;
