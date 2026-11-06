@@ -1,10 +1,2 @@
-Instrumentação PRO v1.8.0 — Módulo 02
-
-O usuário digita a bitola nominal em polegadas, inclusive frações (por exemplo: 1/2 ou 1 1/2).
-O aplicativo usa EXCLUSIVAMENTE a tabela de correspondência fornecida no anexo e apresenta o diâmetro nominal em mm.
-Exemplo: 8 polegadas -> 200 mm; 5D=1000 mm; 2D=400 mm.
-Para bitolas não cadastradas, apresenta aviso e não realiza um cálculo enganoso.
-A ilustração permanece visível mesmo para campo vazio ou zero.
-IMPORTANTE: a tabela fornecida é de tamanhos nominais e não substitui a medição do diâmetro interno real nem as distâncias indicadas no manual de instalação do medidor.
-
-Envie todos os arquivos extraídos ao repositório GitHub Pages e verifique a publicação (Actions).
+Instrumentação PRO v1.8.1
+Campo do módulo 02: Diâmetro do tubo (″). Texto auxiliar removido. Cálculos nominais mantidos.
