@@ -557,6 +557,18 @@
     $('rangeNotice').textContent = 'Valores apresentados em mmH₂O, conforme solicitado. O tipo de instalação altera o esquema ilustrativo para facilitar a interpretação do usuário.';
   }
 
+  // O esquema do tanque deve permanecer visível mesmo quando os dados H/L
+  // estiverem vazios ou inválidos. Não exibir números simulados nesses casos.
+  function hlDiagramInvalid(mode, message) {
+    return `<div class="tech-diagram">
+      ${tankSvg(mode)}
+      <div class="diagram-facts">
+        <div class="diagram-fact"><span class="df-label">Critério H e L</span><strong>Faixa não calculada</strong></div>
+        <p class="diagram-caption">${message}</p>
+      </div>
+    </div>`;
+  }
+
   function updateHLRange() {
     const h100 = valueOrNull('hlH100');
     const l100 = valueOrNull('hlL100');
@@ -567,14 +579,14 @@
     if ([h100, l100, h0, l0, density].some(v => v === null)) {
       $('hlR100').textContent = '—';
       $('hlR0').textContent = '—';
-      $('hlDiagram').innerHTML = hlDiagram(mode, 0, 0, 1);
+      $('hlDiagram').innerHTML = hlDiagramInvalid(mode, 'Informe os valores H, L e a densidade para visualizar a faixa.');
       setHTML('hlSummary', resultCard('Verificação', 'Informe H, L e densidade.'));
       return;
     }
     if (density <= 0) {
       $('hlR100').textContent = '—';
       $('hlR0').textContent = '—';
-      $('hlDiagram').innerHTML = '';
+      $('hlDiagram').innerHTML = hlDiagramInvalid(mode, 'Densidade inválida. O tanque continua ilustrado, sem valores calculados.');
       setHTML('hlSummary', resultCard('Densidade inválida', 'Informe uma densidade relativa positiva.'));
       return;
     }
@@ -586,7 +598,7 @@
     const spand = span * density;
     if (![dp100,dp0,span,dp100d,dp0d,spand].every(Number.isFinite) || !(span>0)) {
       $('hlR100').textContent='—'; $('hlR0').textContent='—';
-      $('hlDiagram').innerHTML='';
+      $('hlDiagram').innerHTML = hlDiagramInvalid(mode, 'Faixa H/L inválida. Confira 0%, 100% e os valores digitados.');
       setHTML('hlSummary', resultCard('Faixa H/L inválida', span<=0 ? 'O valor de 100% deve resultar em diferencial maior que o de 0% para faixa ascendente.' : 'Valores fora do limite de cálculo.'));
       return;
     }

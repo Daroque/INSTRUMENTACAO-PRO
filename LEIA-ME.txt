@@ -34,3 +34,8 @@ ATUALIZAÇÃO PELO GITHUB PAGES
 2. Substitua os arquivos no repositório INSTRUMENTACAO-PRO, incluindo sw.js.
 3. Confirme as alterações; na aba Actions, verifique a publicação com êxito.
 4. Abra o aplicativo com internet uma vez para atualizar o cache offline.
+
+VERSÃO 1.8.3
+- No módulo 06, o desenho do tanque permanece visível mesmo se o span H/L for zero, negativo, inválido ou se faltar algum campo.
+- Os avisos são exibidos separadamente e não são apresentados resultados numéricos inválidos.
+- Cache offline atualizado.
