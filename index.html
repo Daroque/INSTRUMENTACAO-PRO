@@ -63,6 +63,7 @@
         <button class="tab" data-panel="range" data-subtitle="Módulo 06 · Faixa de transmissores" role="tab" aria-selected="false">Faixa de transmissores</button>
         <button class="tab" data-panel="parshall" data-subtitle="Módulo 07 · Calha Parshall" role="tab" aria-selected="false">Calha Parshall</button>
         <button class="tab" data-panel="passwords" data-subtitle="Módulo 08 · Senhas" role="tab" aria-selected="false">Senhas</button>
+        <button class="tab" data-panel="calculations" data-subtitle="Módulo 09 · Cálculos" role="tab" aria-selected="false">Cálculos</button>
       </div>
 
       <section class="panel active" id="pressure" role="tabpanel">
@@ -885,8 +886,35 @@
         </div>
       </section>
 
+
+      <section class="panel" id="calculations" role="tabpanel" hidden>
+        <div class="module-grid module-grid-two calc-module-grid">
+          <article class="card calc-card">
+            <h2>01 · Cálculo de Rotação</h2>
+            <p class="note note-no-top">Informe o número de dentes da engrenagem, a rotação e a frequência. Resultado calculado automaticamente.</p>
+            <div class="form-grid two-cols">
+              <div class="field"><label for="calcTeeth">Número de dentes (engrenagem)</label><input id="calcTeeth" type="number" inputmode="numeric" step="1" min="1" value="40"></div>
+              <div class="field"><label for="calcGearRpm">Rotação (RPM)</label><input id="calcGearRpm" type="number" inputmode="decimal" step="any" value="1800"></div>
+              <div class="field"><label for="calcGearHz">Frequência (Hz)</label><input id="calcGearHz" type="number" inputmode="decimal" step="any" min="0" value="60"></div>
+            </div>
+            <div class="result-grid calc-result" id="calcGearResult" aria-live="polite"></div>
+            <p class="note">Resultado: número de dentes × RPM ÷ Hz. Esta relação é um índice numérico, não uma rotação física em RPM quando a frequência está em hertz.</p>
+          </article>
+          <article class="card calc-card">
+            <h2>02 · Cálculo de RPM por hertz</h2>
+            <p class="note note-no-top">Informe a rotação e a frequência para obter a relação entre os dois valores.</p>
+            <div class="form-grid two-cols">
+              <div class="field"><label for="calcRpm">Rotação (RPM)</label><input id="calcRpm" type="number" inputmode="decimal" step="any" value="1800"></div>
+              <div class="field"><label for="calcHz">Frequência (Hz)</label><input id="calcHz" type="number" inputmode="decimal" step="any" min="0" value="60"></div>
+            </div>
+            <div class="result-grid calc-result" id="calcHzResult" aria-live="polite"></div>
+            <p class="note">Resultado: RPM ÷ Hz. Unidade correta da relação: RPM/Hz. Não equivale à velocidade de rotação em RPM.</p>
+          </article>
+        </div>
+      </section>
+
       <footer class="footer-note">
-        Instrumentação PRO · Versão 1.8.3 · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
+        Instrumentação PRO · Versão 1.8.4 · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
       </footer>
     </div>
   </main>

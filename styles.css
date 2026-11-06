@@ -552,3 +552,11 @@ html[data-theme="dark"] .parshall-table tr.parshall-current{background:#245075}
 .passwords-result .note { margin:0; }
 
 [hidden] { display: none !important; }
+
+/* Módulo 09 - calculadoras em quadros independentes */
+.calc-module-grid { align-items: stretch; }
+.calc-card { min-width: 0; }
+.calc-result { margin-top: 20px; }
+.calc-result .result-card { min-height: 105px; }
+.calc-result strong { font-size: clamp(1.15rem, 2.3vw, 1.65rem); overflow-wrap: anywhere; }
+@media (max-width: 780px) { .calc-module-grid { grid-template-columns: 1fr; } }

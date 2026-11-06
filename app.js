@@ -640,6 +640,44 @@
       : 'Verifique a configuração: URV deve ser maior que LRV para uma faixa ascendente.';
   }
 
+
+  // Módulo 09 — relações numéricas definidas pelo usuário.
+  // RPM/Hz não possui dimensão física RPM: a unidade correta é RPM/Hz.
+  function updateGearRotation() {
+    const teeth = valueOrNull('calcTeeth');
+    const rpm = valueOrNull('calcGearRpm');
+    const hz = valueOrNull('calcGearHz');
+    if ([teeth,rpm,hz].some(v => v === null)) {
+      setHTML('calcGearResult', resultCard('Dados incompletos', 'Preencha todos os campos.'));
+      return;
+    }
+    if (!Number.isInteger(teeth) || teeth <= 0 || rpm < 0 || hz <= 0) {
+      setHTML('calcGearResult', resultCard('Dados inválidos', 'Dentes: inteiro positivo; RPM: não negativo; frequência: maior que zero.'));
+      return;
+    }
+    const result = (teeth * rpm) / hz;
+    setHTML('calcGearResult', Number.isFinite(result)
+      ? resultCard('Relação calculada (RPM/Hz)', fmt(result, 3) + ' RPM/Hz')
+      : resultCard('Cálculo inválido', 'Valores fora do intervalo numérico permitido.'));
+  }
+
+  function updateRpmPerHz() {
+    const rpm = valueOrNull('calcRpm');
+    const hz = valueOrNull('calcHz');
+    if (rpm === null || hz === null) {
+      setHTML('calcHzResult', resultCard('Dados incompletos', 'Preencha ambos os campos.'));
+      return;
+    }
+    if (rpm < 0 || hz <= 0) {
+      setHTML('calcHzResult', resultCard('Dados inválidos', 'RPM não pode ser negativo e frequência deve ser maior que zero.'));
+      return;
+    }
+    const result = rpm / hz;
+    setHTML('calcHzResult', Number.isFinite(result)
+      ? resultCard('Relação calculada (RPM/Hz)', fmt(result, 3) + ' RPM/Hz')
+      : resultCard('Cálculo inválido', 'Valores fora do intervalo numérico permitido.'));
+  }
+
   function bindInputs(ids, fn) {
     ids.forEach((id) => {
       const el = $(id);
@@ -661,6 +699,8 @@
   bindInputs(['rangeMode', 'rangeMin', 'rangeMax', 'rangeRho'], () => { updateRange(); updateHLRange(); });
   bindInputs(['hlH100', 'hlL100', 'hlH0', 'hlL0', 'hlDensity'], updateHLRange);
   bindInputs(['deviceLrv', 'deviceUrv', 'deviceUnit'], updateDeviceOutput);
+  bindInputs(['calcTeeth', 'calcGearRpm', 'calcGearHz'], updateGearRotation);
+  bindInputs(['calcRpm', 'calcHz'], updateRpmPerHz);
 
   $('powerSwap').addEventListener('click', swapPower);
   $('pExampleBtn').addEventListener('click', function () {
@@ -938,4 +978,6 @@
   updateRange();
   updateHLRange();
   updateDeviceOutput();
+  updateGearRotation();
+  updateRpmPerHz();
 })();
