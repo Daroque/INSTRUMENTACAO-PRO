@@ -1,9 +1,10 @@
-const CACHE_NAME = 'instrumentacao-pro-v1-7-4';
+const CACHE_NAME = 'instrumentacao-pro-v1-7-5';
 const CORE_ASSETS = [
   './index.html',
   './styles.css',
   './app.js',
   './parshall.js',
+  './passwords.js',
   './manifest.webmanifest'
 ];
 const OPTIONAL_ASSETS = [

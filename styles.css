@@ -542,3 +542,13 @@ html[data-theme="dark"] .parshall-table tr.parshall-current{background:#245075}
 @media (max-width: 640px) { .report-identity { padding: 14px; } }
 
 .report-identity[hidden] { display: none !important; }
+
+/* Módulo 08 - Senhas: sem armazenamento de códigos no pacote público */
+.passwords-result { margin-top:18px; padding:20px; background:var(--card-alt, #f2f6fa); border:1px solid var(--border); border-radius:14px; min-height:145px; }
+.passwords-result h3 { margin:0 0 10px; font-size:1.1rem; }
+.passwords-result .code-label { font-weight:700; color:var(--muted); font-size:0.86rem; margin-bottom:6px; }
+.passwords-result .code-entry { padding:12px 14px; border:1px solid var(--border); background:var(--card); border-radius:10px; margin:8px 0; font-weight:700; font-size:1.12rem; overflow-wrap:anywhere; white-space:pre-wrap; }
+.passwords-result .code-caption { font-size:0.83rem; color:var(--muted); margin-top:7px; }
+.passwords-result .note { margin:0; }
+
+[hidden] { display: none !important; }

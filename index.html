@@ -62,6 +62,7 @@
         <button class="tab" data-panel="power" data-subtitle="Módulo 05 · Potência e conversões" role="tab" aria-selected="false">Potência e conversões</button>
         <button class="tab" data-panel="range" data-subtitle="Módulo 06 · Faixa de transmissores" role="tab" aria-selected="false">Faixa de transmissores</button>
         <button class="tab" data-panel="parshall" data-subtitle="Módulo 07 · Calha Parshall" role="tab" aria-selected="false">Calha Parshall</button>
+        <button class="tab" data-panel="passwords" data-subtitle="Módulo 08 · Senhas" role="tab" aria-selected="false">Senhas</button>
       </div>
 
       <section class="panel active" id="pressure" role="tabpanel">
@@ -854,13 +855,52 @@
         </article>
       </section>
 
+
+      <section class="panel" id="passwords" role="tabpanel" hidden>
+        <div class="module-grid module-grid-two">
+          <article class="card">
+            <h2>Consulta de senhas por fabricante</h2>
+            <p class="note note-no-top">Os códigos da lista são privados: não são publicados junto com os arquivos do site. Importe a lista particular neste dispositivo para consultá-la offline.</p>
+            <div class="field" id="passwordsImportWrap">
+              <label for="passwordsFile">Arquivo particular de senhas (.json)</label>
+              <input type="file" id="passwordsFile" accept=".json,application/json">
+              <small>Importe somente o arquivo particular fornecido separadamente. Nunca envie esse arquivo ao GitHub.</small>
+            </div>
+            <div class="field" style="margin-top:16px">
+              <label for="passwordsMaster">Senha mestra deste dispositivo</label>
+              <input id="passwordsMaster" type="password" autocomplete="off" placeholder="Digite uma senha mestra forte" minlength="8">
+              <small>Protege a lista de códigos neste navegador. Ela não é enviada ao GitHub.</small>
+            </div>
+            <div class="button-row" style="margin-top:14px;flex-wrap:wrap">
+              <button class="btn btn-primary" type="button" id="passwordsImportBtn">Importar e proteger</button>
+              <button class="btn btn-primary" type="button" id="passwordsUnlockBtn" hidden>Desbloquear</button>
+              <button class="btn" type="button" id="passwordsLockBtn" hidden>Bloquear consulta</button>
+              <button class="btn" type="button" id="passwordsClearBtn" hidden>Apagar lista deste dispositivo</button>
+            </div>
+            <p class="note" id="passwordsNotice" role="status" aria-live="polite">A lista ainda não foi importada neste dispositivo.</p>
+          </article>
+          <article class="card">
+            <h2>Consulta</h2>
+            <div class="field">
+              <label for="passwordsBrand">Fabricante (Marca)</label>
+              <select id="passwordsBrand" disabled><option value="">Desbloqueie a lista para selecionar</option></select>
+            </div>
+            <div id="passwordsResult" class="passwords-result" aria-live="polite">
+              <p class="note">Selecione um fabricante após desbloquear a lista particular.</p>
+            </div>
+            <p class="note note-warning">Códigos transcritos do material fornecido, sem validação de fabricante. Utilize apenas em equipamentos cuja operação esteja autorizada e confirme o procedimento técnico no manual correspondente.</p>
+          </article>
+        </div>
+      </section>
+
       <footer class="footer-note">
-        Instrumentação PRO · Versão 1.7.4 · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
+        Instrumentação PRO · Versão 1.7.5 · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
       </footer>
     </div>
   </main>
 
   <script src="./app.js"></script>
   <script src="./parshall.js"></script>
+  <script src="./passwords.js"></script>
 </body>
 </html>

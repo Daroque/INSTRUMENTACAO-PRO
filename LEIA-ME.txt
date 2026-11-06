@@ -1,20 +1,15 @@
-INSTRUMENTAÇÃO PRO — VERSÃO 1.7.4
-CORREÇÃO DOS RELATÓRIOS DE TODOS OS MÓDULOS
+Instrumentação PRO v1.7.5 — Módulo 08 Senhas
 
-Correção principal:
-O módulo 06 possuía um bloco legado oculto com resultados de faixa hidrostática (exemplo: URV=3000 mmH₂O). A versão anterior do relatório coletava esses resultados ocultos e os misturava com o critério H e L (exemplo: URV=2350 mmH₂O).
+1. Atualize o GitHub Pages com TODOS os arquivos deste ZIP público.
+2. Nunca envie o arquivo particular Instrumentacao_PRO_lista_privada_senhas.json ao GitHub.
+3. Abra o aplicativo instalado em HTTPS e selecione a aba "Senhas".
+4. Importe o arquivo particular, defina uma senha mestra (mínimo 8 caracteres) e clique em "Importar e proteger".
+5. Depois, escolha o fabricante para visualizar os códigos e sequências fornecidos.
+6. Nas próximas sessões, apenas desbloqueie a lista com sua senha mestra.
+7. Em cada computador/celular, faça a importação uma vez. A lista criptografada é local, não sincronizada.
 
-Nesta versão:
-- Todos os relatórios usam os valores já mostrados na interface do módulo ativo.
-- Campos e resultados ocultos não são incluídos.
-- No módulo 06, "Range de saída do equipamento" e "Critério H e L" são seções distintas.
-- As figuras H/L são capturadas do esquema que já aparece na tela.
-- Resultados de outras calculadoras e de módulos diferentes não são exportados.
-- O módulo 07 continua com curva e tabela; o módulo 05 continua sem identificação do responsável.
-- O relatório segue em aba separada, com impressão ou salvamento como PDF.
-- O cache offline foi atualizado.
-
-Teste realizado: simulações em Chromium dos 7 módulos, geração de relatórios com entradas alteradas e impressão A4 com extração de texto conferida. Recomendável conferir no Edge instalado.
-
-ATUALIZAÇÃO NO GITHUB PAGES
-Extraia o ZIP e envie os arquivos mantendo os nomes na raiz do repositório. Verifique o sucesso da publicação (Actions) e abra o aplicativo online para atualizar o cache offline.
+Segurança:
+- Não colocar senhas em código público, HTML, JS ou arquivo do GitHub Pages.
+- O navegador armazena os registros criptografados por AES-GCM, derivados da senha mestra com PBKDF2.
+- Os códigos são transcritos exclusivamente da imagem fornecida pelo usuário, não verificados com fabricantes.
+- A perda da senha mestra exige apagar a cópia local e importar novamente com uma nova senha mestra.

@@ -812,7 +812,9 @@
   function syncReportIdentity() {
     const active = document.querySelector('.tab.active');
     const identity = $('reportIdentity');
-    if (identity) identity.hidden = active?.dataset.panel === 'power';
+    if (identity) identity.hidden = active?.dataset.panel === 'power' || active?.dataset.panel === 'passwords';
+    const reportButton = $('reportBtn');
+    if (reportButton) reportButton.hidden = active?.dataset.panel === 'passwords';
   }
   document.querySelectorAll('.tab').forEach(tab => tab.addEventListener('click', syncReportIdentity));
   syncReportIdentity();
