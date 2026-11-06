@@ -66,6 +66,10 @@
     }
     const bar = val * pressureToBar[unit];
     const out = bar / pressureToBar[target];
+    if (!Number.isFinite(out)) {
+      setHTML('pressureResults', resultCard('Valor fora do limite', 'Reduza a magnitude do valor informado.'));
+      return;
+    }
     const dec = Math.abs(out) >= 100000 ? 0 : (Math.abs(out) < 0.001 && out !== 0 ? 8 : 4);
     setHTML('pressureResults', resultCard(pressureLabels[target], `${fmt(out, dec)} ${pressureLabels[target]}`));
   }
@@ -191,38 +195,6 @@
     setHTML('meterInstallDiagram', meterInstallDiagram(d, upstream, downstream));
   }
 
-  function updateOrifice() {
-    const Dmm = valueOrNull('oD');
-    const dmm = valueOrNull('od');
-    const dpkPa = valueOrNull('odp');
-    const rho = valueOrNull('orho');
-    const cd = valueOrNull('ocd');
-    if ([Dmm, dmm, dpkPa, rho, cd].some(v => v === null)) {
-      setHTML('orificeResults', resultCard('Verifique os dados', 'Informe os valores do cálculo.'));
-      return;
-    }
-    const D = Dmm / 1000, d = dmm / 1000, dp = dpkPa * 1000;
-    if (D <= 0 || d <= 0 || d >= D || dp < 0 || rho <= 0 || cd <= 0) {
-      setHTML('orificeResults', resultCard('Aviso', 'Verifique diâmetros, pressão diferencial, densidade e Cd.'));
-      return;
-    }
-    const beta = d / D;
-    const area = Math.PI * d * d / 4;
-    const q = cd * area * Math.sqrt((2 * dp) / (rho * (1 - Math.pow(beta, 4))));
-    const qh = q * 3600;
-    const vPipe = q / (Math.PI * D * D / 4);
-    const vOrifice = q / area;
-    const reynoldsHint = (rho * vPipe * D) / 0.001;
-    setHTML('orificeResults', [
-      resultCard('Vazão estimada', `${fmt(qh, 3)} m³/h`),
-      resultCard('Vazão estimada', `${fmt(q, 6)} m³/s`),
-      resultCard('Beta (d/D)', `${fmt(beta, 4)}`),
-      resultCard('Velocidade na tubulação', `${fmt(vPipe, 3)} m/s`),
-      resultCard('Velocidade no orifício', `${fmt(vOrifice, 3)} m/s`),
-      resultCard('Reynolds aproximado', `${fmt(reynoldsHint, 0)}`)
-    ].join(''));
-  }
-
   function updateTemp() {
     const value = valueOrNull('tValue');
     const unit = $('tUnit').value;
@@ -235,6 +207,10 @@
     if (unit === 'k') c = value - 273.15;
     const f = (c * 9 / 5) + 32;
     const k = c + 273.15;
+    if (k < 0) {
+      setHTML('tempResults', resultCard('Temperatura impossível', 'A temperatura não pode ser inferior ao zero absoluto (0 K).'));
+      return;
+    }
     setHTML('tempResults', [
       resultCard('°C', `${fmt(c, 2)} °C`),
       resultCard('°F', `${fmt(f, 2)} °F`),
@@ -266,6 +242,10 @@
     }
     if (mode === 'temp') {
       label.textContent = 'Temperatura (°C)';
+      if (value < -200 || value > 850) {
+        setHTML('pt100Results', resultCard('Fora da faixa IEC 60751', 'Informe uma temperatura entre −200 e 850 °C.'));
+        return;
+      }
       const r = pt100ResistanceFromTemp(value);
       setHTML('pt100Results', [
         resultCard('Resistência', `${fmt(r, 4)} Ω`),
@@ -273,6 +253,12 @@
       ].join(''));
     } else {
       label.textContent = 'Resistência (Ω)';
+      const rMin = pt100ResistanceFromTemp(-200);
+      const rMax = pt100ResistanceFromTemp(850);
+      if (value < rMin || value > rMax) {
+        setHTML('pt100Results', resultCard('Fora da faixa IEC 60751', `Informe uma resistência entre ${fmt(rMin, 3)} Ω e ${fmt(rMax, 3)} Ω.`));
+        return;
+      }
       const t = pt100TempFromResistance(value);
       setHTML('pt100Results', [
         resultCard('Temperatura estimada', `${fmt(t, 2)} °C`),
@@ -301,6 +287,10 @@
     const cold = valueOrNull('tcCold');
     if (hot === null || cold === null) {
       setHTML('tcResults', resultCard('Verifique os dados', 'Informe as temperaturas das juntas.'));
+      return;
+    }
+    if (hot < 0 || hot > 500 || cold < 0 || cold > 500) {
+      setHTML('tcResults', resultCard('Fora da tabela disponível', 'A interpolação aproximada deste módulo é válida apenas entre 0 e 500 °C para ambas as juntas.'));
       return;
     }
     const emfHot = interpTc(type, hot), emfCold = interpTc(type, cold), emfNet = emfHot - emfCold;
@@ -539,6 +529,13 @@
       setHTML('hlSummary', resultCard('Verificação', 'Informe H, L e densidade.'));
       return;
     }
+    if (density <= 0) {
+      $('hlR100').textContent = '—';
+      $('hlR0').textContent = '—';
+      $('hlDiagram').innerHTML = '';
+      setHTML('hlSummary', resultCard('Densidade inválida', 'Informe uma densidade relativa positiva.'));
+      return;
+    }
     const dp100 = h100 - l100;
     const dp0 = h0 - l0;
     const span = dp100 - dp0;
@@ -591,7 +588,6 @@
   bindInputs(['metricValue', 'metricUnit', 'metricTarget'], updateMetric);
   bindInputs(['fValue', 'fUnit'], updateFlow);
   bindInputs(['meterDiameter'], updateMeterInstall);
-  bindInputs(['oD', 'od', 'odp', 'orho', 'ocd'], updateOrifice);
   bindInputs(['tValue', 'tUnit'], updateTemp);
   bindInputs(['rMode', 'rValue'], updatePt100);
   bindInputs(['tcType', 'tcHot', 'tcCold'], updateTc);
@@ -682,10 +678,13 @@
       .filter(svg=>isReportVisible(svg,panel))
       .map(svg=>`<div class="report-diagram">${svg.outerHTML}</div>`).join('');
   }
+  const REPORT_MODULES = new Set(['flow','range','parshall']);
+  const REPORT_IDENTIFICATION_MODULES = new Set(['range','parshall']);
   function createReport() {
     const tab=document.querySelector('.tab.active');
     if (!tab) return;
     const panelId=tab.dataset.panel;
+    if (!REPORT_MODULES.has(panelId)) return;
     const panel=$(panelId);
     if (!panel) return;
 
@@ -750,8 +749,8 @@
     }
 
     const generatedAt=new Date().toLocaleString('pt-BR');
-    const authorName=panelId==='power'?'':($('reportAuthorName')?.value?.trim() || '');
-    const authorRole=panelId==='power'?'':($('reportAuthorRole')?.value?.trim() || '');
+    const authorName=REPORT_IDENTIFICATION_MODULES.has(panelId)?($('reportAuthorName')?.value?.trim() || ''):'';
+    const authorRole=REPORT_IDENTIFICATION_MODULES.has(panelId)?($('reportAuthorRole')?.value?.trim() || ''):'';
     const report=`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
       <title>Relatório ${reportEscape(moduleName)} — Instrumentação PRO</title>
       <style>
@@ -784,9 +783,9 @@
       </style></head><body>
       <div class="toolbar"><span>Relatório em aba separada — feche esta aba para retornar ao aplicativo.</span><button onclick="window.print()">Imprimir / Salvar PDF</button></div>
       <main class="paper"><header><small>INSTRUMENTAÇÃO PRO · RELATÓRIO TÉCNICO</small><h1>${reportEscape(moduleName)}</h1><div>Emitido em ${reportEscape(generatedAt)}</div></header>
-      ${panelId==='power'?'':`<div class="report-identification">
+      ${REPORT_IDENTIFICATION_MODULES.has(panelId)?`<div class="report-identification">
         <div class="report-person"><span class="report-person-label">Nome</span><div class="report-person-value">${reportEscape(authorName)}</div></div>
-        <div class="report-person"><span class="report-person-label">Função</span><div class="report-person-value">${reportEscape(authorRole)}</div></div></div>`}
+        <div class="report-person"><span class="report-person-label">Função</span><div class="report-person-value">${reportEscape(authorRole)}</div></div></div>`:''}
       ${parts.join('')}
       <footer>Relatório gerado com os resultados exibidos no módulo no momento da emissão. Revise as condições de aplicação e os dados de processo antes do uso em campo. As equações não são apresentadas.</footer>
       </main></body></html>`;
@@ -794,6 +793,8 @@
     const win=window.open(reportUrl,'_blank');
     if(!win){URL.revokeObjectURL(reportUrl);alert('O navegador bloqueou a nova aba. Permita pop-ups para o Instrumentação PRO.');return;}
     try{win.focus();}catch(_){}
+    // Libera o documento temporário após a nova aba carregá-lo.
+    setTimeout(()=>URL.revokeObjectURL(reportUrl), 60000);
   }
 
   function initializeAppearance() {
@@ -811,10 +812,11 @@
   initializeAppearance();
   function syncReportIdentity() {
     const active = document.querySelector('.tab.active');
+    const id = active?.dataset.panel || '';
     const identity = $('reportIdentity');
-    if (identity) identity.hidden = active?.dataset.panel === 'power' || active?.dataset.panel === 'passwords';
+    if (identity) identity.hidden = !REPORT_IDENTIFICATION_MODULES.has(id);
     const reportButton = $('reportBtn');
-    if (reportButton) reportButton.hidden = active?.dataset.panel === 'passwords';
+    if (reportButton) reportButton.hidden = !REPORT_MODULES.has(id);
   }
   document.querySelectorAll('.tab').forEach(tab => tab.addEventListener('click', syncReportIdentity));
   syncReportIdentity();
@@ -858,7 +860,6 @@
   updateMetric();
   updateFlow();
   updateMeterInstall();
-  updateOrifice();
   updateTemp();
   updatePt100();
   updateTc();

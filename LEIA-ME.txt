@@ -1,7 +1,12 @@
-Instrumentação PRO v1.7.7
+Instrumentação PRO 1.7.8 — Revisão de interface e confiabilidade
 
-Módulo 08 — Senhas: fabricante EMERSON ROSEMOUNT adicionado.
-Sequência: (↑) pressionada por 3 segundos.
+- Removidos os campos Nome e Função do responsável nos módulos 01 a 04.
+- Emissão de PDF disponível somente para os módulos 02 (Vazão), 06 (Faixa de transmissores) e 07 (Calha Parshall).
+- Nome e Função do responsável presentes apenas nos módulos 06 e 07 e em seus PDFs.
+- Módulo 02 gera PDF sem dados de identificação do responsável.
+- Validações adicionais: faixa Pt100 IEC 60751, temperaturas abaixo de zero absoluto, termopares fora da tabela aproximada, densidade não positiva no critério H/L, valores fora do limite em pressão.
+- Identificações de TAG e função do EQUIPAMENTO permanecem nos módulos industriais conforme configuração anterior.
+- Preservados os módulos, temas, ícones, senha e recursos offline.
 
-Para atualizar: extrair o ZIP e substituir arquivos no repositório GitHub. Confirmar publicação GitHub Pages.
-Códigos incorporados diretamente no JavaScript do site público.
+IMPORTANTE: senhas do módulo 08 continuam acessíveis no código publicado em repositório público.
+Verifique as condições de aplicação antes de empregar os cálculos em campo.
