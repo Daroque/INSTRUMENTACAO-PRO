@@ -678,6 +678,24 @@
       : resultCard('Cálculo inválido', 'Valores fora do intervalo numérico permitido.'));
   }
 
+  function updateBaumeBrix() {
+    const baume = valueOrNull('calcBaume');
+    if (baume === null) {
+      setHTML('calcBaumeResult', resultCard('Dados incompletos', 'Informe o grau Baumé.'));
+      return;
+    }
+    const brix = baume * 1.905 - 1.65;
+    if (!Number.isFinite(brix)) {
+      setHTML('calcBaumeResult', resultCard('Dados inválidos', 'Valor fora do intervalo numérico permitido.'));
+      return;
+    }
+    if (brix < 0) {
+      setHTML('calcBaumeResult', resultCard('Fora da faixa aplicável', 'Valor calculado negativo; confira a medição e a aplicabilidade da conversão.'));
+      return;
+    }
+    setHTML('calcBaumeResult', resultCard('Brix estimado', `${fmt(brix, 2)} °Brix`));
+  }
+
   function bindInputs(ids, fn) {
     ids.forEach((id) => {
       const el = $(id);
@@ -701,6 +719,7 @@
   bindInputs(['deviceLrv', 'deviceUrv', 'deviceUnit'], updateDeviceOutput);
   bindInputs(['calcTeeth', 'calcGearRpm', 'calcGearHz'], updateGearRotation);
   bindInputs(['calcRpm', 'calcHz'], updateRpmPerHz);
+  bindInputs(['calcBaume'], updateBaumeBrix);
 
   $('powerSwap').addEventListener('click', swapPower);
   $('pExampleBtn').addEventListener('click', function () {
@@ -980,4 +999,5 @@
   updateDeviceOutput();
   updateGearRotation();
   updateRpmPerHz();
+  updateBaumeBrix();
 })();

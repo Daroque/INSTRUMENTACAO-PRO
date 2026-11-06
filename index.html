@@ -910,11 +910,23 @@
             <div class="result-grid calc-result" id="calcHzResult" aria-live="polite"></div>
             <p class="note">Resultado: RPM ÷ Hz. Unidade correta da relação: RPM/Hz. Não equivale à velocidade de rotação em RPM.</p>
           </article>
+          <article class="card calc-card">
+            <h2>03 · Cálculo de Baumé para Brix</h2>
+            <p class="note note-no-top">Informe o grau Baumé para obter a estimativa correspondente em °Brix.</p>
+            <div class="form-grid two-cols">
+              <div class="field">
+                <label for="calcBaume">Grau Baumé (°Bé)</label>
+                <input id="calcBaume" type="number" inputmode="decimal" step="any" value="20">
+              </div>
+            </div>
+            <div class="result-grid calc-result" id="calcBaumeResult" aria-live="polite"></div>
+            <p class="note">Conversão empírica para referência operacional. Para controle de qualidade ou calibração, utilize o método de medição e a correção de temperatura definidos pelo laboratório.</p>
+          </article>
         </div>
       </section>
 
       <footer class="footer-note">
-        Instrumentação PRO · Versão 1.8.4 · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
+        Instrumentação PRO · Versão 1.8.5 · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
       </footer>
     </div>
   </main>

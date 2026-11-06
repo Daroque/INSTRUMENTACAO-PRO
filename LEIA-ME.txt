@@ -1,3 +1,10 @@
+Instrumentação PRO — Versão 1.8.5
+
+Módulo 09: novo cálculo de Baumé para °Brix, atualização automática.
+Constantes usadas internamente, sem exibir equação na interface.
+Validação de valor de entrada, resultado numérico e indicação de aplicação empírica.
+Sem PDF ou identificação de usuário nesse módulo.
+
 Instrumentação PRO — Versão 1.8.4
 Novo Módulo 09 — Cálculos:
 - Cálculo de Rotação: (número de dentes × RPM) ÷ frequência (Hz).
