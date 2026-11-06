@@ -1,15 +1,10 @@
-Instrumentação PRO v1.7.5 — Módulo 08 Senhas
+Instrumentação PRO — versão 1.7.6
 
-1. Atualize o GitHub Pages com TODOS os arquivos deste ZIP público.
-2. Nunca envie o arquivo particular Instrumentacao_PRO_lista_privada_senhas.json ao GitHub.
-3. Abra o aplicativo instalado em HTTPS e selecione a aba "Senhas".
-4. Importe o arquivo particular, defina uma senha mestra (mínimo 8 caracteres) e clique em "Importar e proteger".
-5. Depois, escolha o fabricante para visualizar os códigos e sequências fornecidos.
-6. Nas próximas sessões, apenas desbloqueie a lista com sua senha mestra.
-7. Em cada computador/celular, faça a importação uma vez. A lista criptografada é local, não sincronizada.
+Módulo 08 — Senhas:
+- Consulta direta por fabricante e, onde aplicável, modelo.
+- Sem importação de arquivo, senha mestra ou desbloqueio.
+- Dados incorporados ao passwords.js, disponíveis offline.
 
-Segurança:
-- Não colocar senhas em código público, HTML, JS ou arquivo do GitHub Pages.
-- O navegador armazena os registros criptografados por AES-GCM, derivados da senha mestra com PBKDF2.
-- Os códigos são transcritos exclusivamente da imagem fornecida pelo usuário, não verificados com fabricantes.
-- A perda da senha mestra exige apagar a cópia local e importar novamente com uma nova senha mestra.
+AVISO: Este repositório GitHub Pages é público. Todos os códigos incluídos em passwords.js estarão públicos e poderão ser consultados por qualquer visitante. Não use códigos confidenciais de acesso exclusivo neste modelo.
+
+Para atualizar: extraia este ZIP e substitua os arquivos do repositório GitHub. Verifique se o deploy de GitHub Pages foi concluído e, no app instalado, abra com internet para atualizar o cache.
