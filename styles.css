@@ -540,3 +540,5 @@ html[data-theme="dark"] .parshall-table tr.parshall-current{background:#245075}
 .report-optional { font-size: .88em; color: var(--muted); font-weight: 400; }
 .report-identity .note { margin: 10px 0 0; }
 @media (max-width: 640px) { .report-identity { padding: 14px; } }
+
+.report-identity[hidden] { display: none !important; }

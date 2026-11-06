@@ -358,25 +358,58 @@
     $('sBar').style.width = `${Math.max(0, Math.min(100, percent))}%`;
   }
 
-  const powerWatts = { w: 1, kw: 1000, mw: 1e6, gw: 1e9, hp: 745.6998715822702, cv: 735.49875, btuh: 0.2930710701722222, kcalh: 1.163 };
-  const powerLabels = { w: 'W', kw: 'kW', mw: 'MW', gw: 'GW', hp: 'hp', cv: 'cv', btuh: 'BTU/h', kcalh: 'kcal/h', kva: 'kVA' };
+  // Fatores de potência ativa em W (não são unidades de energia).
+  // Btu IT: 1055.05585262 J. kcal termoquímica: 4184 J.
+  const powerWatts = {
+    pw: 1e-12, nw: 1e-9, uw: 1e-6, mwatt: 1e-3, w: 1, kw: 1e3, mw: 1e6, gw: 1e9, tw: 1e12,
+    hp: 745.6998715822702, cv: 735.49875, hpe: 746, hpb: 9809.5,
+    ftlbfs: 1.3558179483314004, ftlbfmin: 1.3558179483314004/60, kgfms: 9.80665,
+    btuh: 1055.05585262/3600, btumin: 1055.05585262/60, btus: 1055.05585262,
+    kcalh: 4184/3600, kcals: 4184, cals: 4.184,
+    kjh: 1000/3600, kjs: 1000, mjh: 1e6/3600,
+    tr: 12000*1055.05585262/3600, ergs: 1e-7
+  };
+  const apparentVA = { va: 1, kva: 1000, mva: 1e6, gva: 1e9 };
+  const powerLabels = {
+    pw:'pW', nw:'nW', uw:'µW', mwatt:'mW', w:'W', kw:'kW', mw:'MW', gw:'GW', tw:'TW',
+    hp:'hp mecânico', cv:'cv', hpe:'hp elétrico', hpb:'hp de caldeira',
+    ftlbfs:'ft·lbf/s', ftlbfmin:'ft·lbf/min', kgfms:'kgf·m/s',
+    btuh:'BTU/h', btumin:'BTU/min', btus:'BTU/s', kcalh:'kcal/h', kcals:'kcal/s', cals:'cal/s',
+    kjh:'kJ/h', kjs:'kJ/s', mjh:'MJ/h', tr:'TR', ergs:'erg/s',
+    va:'VA', kva:'kVA', mva:'MVA', gva:'GVA'
+  };
+  function fmtPower(n) {
+    if (!Number.isFinite(n)) return '—';
+    const abs=Math.abs(n);
+    if (abs !== 0 && (abs >= 1e13 || abs < 1e-6)) return n.toExponential(6).replace('.', ',');
+    return n.toLocaleString('pt-BR', {maximumFractionDigits:abs < 1 ? 9 : 6});
+  }
   function updatePower() {
     const from = $('powerUnit').value;
     const to = $('powerTarget').value;
-    const isKva = from === 'kva' || to === 'kva';
-    $('powerPfField').hidden = !isKva;
+    const fromApparent = Object.hasOwn(apparentVA,from);
+    const toApparent = Object.hasOwn(apparentVA,to);
+    const requiresPf = fromApparent !== toApparent;
+    $('powerPfField').hidden = !requiresPf;
     const value = valueOrNull('powerValue');
     const pf = valueOrNull('powerPf');
-    if (value === null || (isKva && (pf === null || pf <= 0 || pf > 1))) {
-      setHTML('powerResults', resultCard('Verificação', 'Informe potência e fator de potência válidos.'));
-      $('powerNotice').textContent = 'O fator de potência deve estar acima de 0 e até 1.';
+    if (value === null || (requiresPf && (pf === null || pf <= 0 || pf > 1))) {
+      setHTML('powerResults', resultCard('Verificação', 'Informe potência válida e FP maior que 0 e até 1, quando necessário.'));
+      $('powerNotice').textContent = requiresPf ? 'Informe o fator de potência entre 0 (exclusivo) e 1.' : 'Informe uma potência válida.';
       return;
     }
-    const watts = from === 'kva' ? value * 1000 * pf : value * powerWatts[from];
-    const out = to === 'kva' ? watts / (1000 * pf) : watts / powerWatts[to];
-    const digits = Math.abs(out) >= 100000 ? 1 : Math.abs(out) < .001 && out !== 0 ? 8 : 4;
-    setHTML('powerResults', resultCard(powerLabels[to], `${fmt(out, digits)} ${powerLabels[to]}`));
-    $('powerNotice').textContent = isKva ? `Conversão entre potência ativa e aparente considerando FP ${fmt(pf, 3)}.` : 'Conversão entre unidades de potência ativa.';
+    let out;
+    if (fromApparent && toApparent) {
+      out = value * apparentVA[from] / apparentVA[to];
+    } else if (fromApparent) {
+      out = value * apparentVA[from] * pf / powerWatts[to];
+    } else if (toApparent) {
+      out = value * powerWatts[from] / (pf * apparentVA[to]);
+    } else {
+      out = value * powerWatts[from] / powerWatts[to];
+    }
+    setHTML('powerResults', resultCard(powerLabels[to], `${fmtPower(out)} ${powerLabels[to]}`));
+    $('powerNotice').textContent = requiresPf ? `Conversão entre potência ativa e aparente com FP ${fmt(pf, 3)}.` : fromApparent ? 'Conversão entre unidades de potência aparente.' : 'Conversão entre unidades de potência ativa.';
   }
   function swapPower() {
     const oldFrom = $('powerUnit').value;
@@ -658,8 +691,8 @@
       <h3>Resultados</h3><table>${summary}</table><div class="report-diagram">${$('hlDiagram').innerHTML}</div></section>`);
     }
     const generatedAt = new Date().toLocaleString('pt-BR');
-    const authorName = $('reportAuthorName')?.value?.trim() || '';
-    const authorRole = $('reportAuthorRole')?.value?.trim() || '';
+    const authorName = panelId === 'power' ? '' : ($('reportAuthorName')?.value?.trim() || '');
+    const authorRole = panelId === 'power' ? '' : ($('reportAuthorRole')?.value?.trim() || '');
     const report = `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
       <title>Relatório ${reportEscape(moduleName)} — Instrumentação PRO</title>
       <style>
@@ -693,10 +726,10 @@
       </style></head><body>
       <div class="toolbar"><span>Relatório em aba separada — feche esta aba para retornar ao aplicativo.</span><button onclick="window.print()">Imprimir / Salvar PDF</button></div>
       <main class="paper"><header><small>INSTRUMENTAÇÃO PRO · RELATÓRIO TÉCNICO</small><h1>${reportEscape(subtitle)}</h1><div>Emitido em ${reportEscape(generatedAt)}</div></header>
-      <div class="report-identification">
+      ${panelId === 'power' ? '' : `<div class="report-identification">
         <div class="report-person"><span class="report-person-label">Nome</span><div class="report-person-value">${reportEscape(authorName)}</div></div>
         <div class="report-person"><span class="report-person-label">Função</span><div class="report-person-value">${reportEscape(authorRole)}</div></div>
-      </div>
+      </div>`}
       ${parts.join('')}
       <footer>Relatório gerado no dispositivo pelo Instrumentação PRO. Antes de utilizar em campo, confira os dados de processo, limites dos instrumentos e requisitos de instalação. Não contém equações.</footer>
       </main></body></html>`;
@@ -728,6 +761,13 @@
     });
   }
   initializeAppearance();
+  function syncReportIdentity() {
+    const active = document.querySelector('.tab.active');
+    const identity = $('reportIdentity');
+    if (identity) identity.hidden = active?.dataset.panel === 'power';
+  }
+  document.querySelectorAll('.tab').forEach(tab => tab.addEventListener('click', syncReportIdentity));
+  syncReportIdentity();
   $('reportBtn').addEventListener('click', createReport);
 
   let deferredPrompt = null;

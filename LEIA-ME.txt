@@ -1,9 +1,8 @@
-Instrumentação PRO v1.7.2
+INSTRUMENTAÇÃO PRO — 1.7.3
 
-- Módulo 06: cabeçalho simplificado para Faixa de transmissores.
-- Relatórios de todos os módulos: título sem número e sem a palavra Módulo.
-- Campos opcionais Nome e Função para identificar o responsável no relatório.
-- Campos vazios geram espaços para preenchimento manual no PDF.
-- Funcionamento offline mantido; versão de cache atualizada.
+- Campo Função do equipamento imediatamente abaixo do TAG nos módulos 02, 03, 04, 06 e 07; incluído no PDF do módulo.
+- Módulo 05: não possui TAG, nem campos Nome/Função do responsável, inclusive no PDF.
+- Módulo 05: 31 unidades de potência ativa/térmica/aparente, separação de grandezas e fator de potência nos casos necessários.
+- Cache offline atualizado.
 
-Envie os arquivos completos para a raiz do repositório INSTRUMENTACAO-PRO e aguarde a publicação do GitHub Pages.
+Publicação: extrair e substituir todos os arquivos na raiz do repositório GitHub Pages; realizar commit, verificar Actions e atualizar PWA online.
