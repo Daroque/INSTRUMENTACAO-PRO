@@ -3,6 +3,12 @@
   'use strict';
   const DATA = [
   {
+    "marca": "EMERSON ROSEMOUNT",
+    "codigos": [
+      "(↑) pressionada por 3 segundos"
+    ]
+  },
+  {
     "marca": "E+H",
     "codigos": [
       "4685"

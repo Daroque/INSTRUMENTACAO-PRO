@@ -1,10 +1,7 @@
-Instrumentação PRO — versão 1.7.6
+Instrumentação PRO v1.7.7
 
-Módulo 08 — Senhas:
-- Consulta direta por fabricante e, onde aplicável, modelo.
-- Sem importação de arquivo, senha mestra ou desbloqueio.
-- Dados incorporados ao passwords.js, disponíveis offline.
+Módulo 08 — Senhas: fabricante EMERSON ROSEMOUNT adicionado.
+Sequência: (↑) pressionada por 3 segundos.
 
-AVISO: Este repositório GitHub Pages é público. Todos os códigos incluídos em passwords.js estarão públicos e poderão ser consultados por qualquer visitante. Não use códigos confidenciais de acesso exclusivo neste modelo.
-
-Para atualizar: extraia este ZIP e substitua os arquivos do repositório GitHub. Verifique se o deploy de GitHub Pages foi concluído e, no app instalado, abra com internet para atualizar o cache.
+Para atualizar: extrair o ZIP e substituir arquivos no repositório GitHub. Confirmar publicação GitHub Pages.
+Códigos incorporados diretamente no JavaScript do site público.
