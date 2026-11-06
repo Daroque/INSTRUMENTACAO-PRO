@@ -66,7 +66,7 @@
   const warn=(status,text)=>{
     $('parshallValidation').className=`parshall-alert ${status}`;
     $('parshallValidation').textContent=text;
-    $('parshallFlowStatus').textContent=status==='error'?'Verifique o preenchimento.':status==='warning'?'Fora da faixa válida.':'Dentro da faixa de referência.';
+    $('parshallFlowStatus').textContent=status==='error'?'Verifique o preenchimento.':status==='warning'?'Condição de aplicação exige verificação.':'Dentro da faixa de referência.';
     $('parshallFlowStatus').style.color=status==='ok'?'var(--green)':'var(--warn)';
   };
   const clear=()=>{
@@ -107,8 +107,10 @@
   }
   function update(){
     const width=num($('parshallWidth').value), head=num($('parshallHead').value);
+    const hb=num($('parshallHb').value);
     const unit=$('parshallOutputUnit').value;
     const step=Number($('parshallStep').value);
+    if (!Number.isFinite(step) || step<=0) { warn('error','Intervalo de tabela inválido.'); clear(); return; }
     $('parshallFlowUnit').textContent=labelUnit(unit);
     $('parshallTableHeaderFlow').textContent=`Vazão (${labelUnit(unit)})`;
     const r=width!==null&&width>0?findWidth(width):null;
@@ -116,7 +118,7 @@
     $('parshallHeadDisplay').textContent=head!==null?`${fmt(head,1)} mm`:'—';
     $('parshallRangeDisplay').textContent=r?`${fmt(r.minHaMm,0)} a ${fmt(r.maxHaMm,0)} mm`:'—';
     $('parshallSubLimit').textContent=r?`${fmt(r.subLimit*100,0)}% (Hᵦ/Hₐ)`:'—';
-    if (width===null||head===null||width<=0||head<0){warn('error','Informe uma largura W positiva e uma altura Hₐ maior ou igual a zero.');clear();return;}
+    if (width===null||head===null||width<=0||head<0 || (hb!==null&&hb<0)){warn('error','Informe W positiva, Hₐ não negativa e Hᵦ não negativa, se utilizada.');clear();return;}
     if(!r){
       const nearest=[...sizes].sort((a,b)=>Math.abs(width-a.widthMm)-Math.abs(width-b.widthMm))[0];
       warn('error',`A garganta ${fmt(width,2)} mm não corresponde a um padrão calibrado. Mais próxima: ${nearest.label} (${fmt(nearest.widthMm,1)} mm). Não será feita interpolação.`);clear();return;
@@ -124,10 +126,18 @@
     if (head<r.minHaMm-0.00001||head>r.maxHaMm+0.00001){
       warn('warning',`Hₐ fora da faixa de referência para ${r.label} (${fmt(r.minHaMm,1)} a ${fmt(r.maxHaMm,1)} mm). Não é apresentada vazão extrapolada.`);
       $('parshallFlow').textContent='—';
+    } else if (hb!==null && (head<=0 || hb/head>=r.subLimit)) {
+      warn('warning',`Submergência Hᵦ/Hₐ = ${fmt(head>0?100*hb/head:0,1)}%: atinge ou supera o limite ${fmt(100*r.subLimit,0)}%. Sem correção para afogamento não é seguro apresentar vazão.`);
+      $('parshallFlow').textContent='—';
     } else {
-      warn('ok',`Calha padronizada ${r.label}. Relação válida somente com escoamento livre e medição correta da altura Hₐ.`);
       const q=convertFlow(flow(r,head),unit);
-      $('parshallFlow').textContent=fmt(q,q<1?4:2);
+      if (!Number.isFinite(q)) {warn('error','Resultado fora do limite numérico.');$('parshallFlow').textContent='—';}
+      else {
+        warn(hb===null?'warning':'ok',hb===null
+          ? `Vazão estimada para escoamento livre. Sem Hᵦ, a submergência não foi verificada; confirme em campo antes de usar o valor.`
+          : `Submergência Hᵦ/Hₐ = ${fmt(100*hb/head,1)}%, abaixo do limite ${fmt(100*r.subLimit,0)}%. Pressupõe instalação padronizada e medição de Hₐ no ponto correto.`);
+        $('parshallFlow').textContent=fmt(q,q<1?4:2);
+      }
     }
     chart(r,head,unit,r.maxHaMm);
     // Table in the verified calibration interval. Includes the upper bound even
@@ -159,7 +169,7 @@
     else sizeEl.selectedIndex=-1;
     update();
   });
-  ['parshallHead','parshallOutputUnit','parshallStep'].forEach(id=>{
+  ['parshallHead','parshallHb','parshallOutputUnit','parshallStep'].forEach(id=>{
     $(id).addEventListener('input',update);
     $(id).addEventListener('change',update);
   });

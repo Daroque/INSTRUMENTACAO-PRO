@@ -1,2 +1,36 @@
-Instrumentação PRO v1.8.1
-Campo do módulo 02: Diâmetro do tubo (″). Texto auxiliar removido. Cálculos nominais mantidos.
+INSTRUMENTAÇÃO PRO — VERSÃO 1.8.2
+AUDITORIA TÉCNICA PREVENTIVA — 06/11/2026
+
+Esta versão parte dos arquivos da versão 1.8.1.
+
+CORREÇÕES IMPLEMENTADAS
+- Pressão: preservação de valores muito pequenos com notação científica, evitando exibir zero por arredondamento.
+- Vazão volumétrica: detecção de valores que excedem limites numéricos e preservação de vazões pequenas.
+- Sinais de instrumentação: proteção contra resultados não finitos e indicação de sinal inverso fora da faixa.
+- Potência: bloqueio de resultados numéricos inválidos ou infinitos.
+- Faixa H/L: não exibir span não crescente como faixa válida e bloquear resultados não finitos.
+- Faixa de saída do transmissor: URV deve superar LRV; impedir exibição de span negativo como configuração válida.
+- Calha Parshall: campo opcional H_b para verificar submergência; quando H_b excede o limite, a vazão é bloqueada. Sem H_b, a vazão permanece uma estimativa e o app avisa que não foi possível verificar a condição de escoamento livre.
+- PDF Calha Parshall: registrar explicitamente o resultado da verificação hidráulica.
+- PDF Vazão: acrescentar limitações do uso dos diâmetros nominais e do critério ilustrativo 5D/2D.
+- Controle: remoção de atualização duplicada no tipo de sinal.
+- Cache PWA: atualizado para evitar reaproveitamento da versão anterior.
+
+VALIDAÇÕES EXECUTADAS
+- 32 testes numéricos, documentais e de arquivos: aprovados.
+- Verificação de identificadores HTML utilizados por app.js e parshall.js: não houve IDs faltantes ou duplicados.
+- Verificação de sintaxe de app.js, parshall.js e passwords.js: aprovada.
+- Integridade do ZIP e referências de arquivos PWA: conferir no pacote.
+
+LIMITAÇÕES IMPORTANTES
+- O navegador Chromium neste ambiente bloqueou a abertura de páginas locais durante a auditoria. Não foi possível executar uma bateria visual ponta a ponta nesta sessão.
+- Os algoritmos do aplicativo não constituem calibração nem certificação metrológica. Antes de aplicar resultados em campo, confronte os parâmetros do instrumento e as normas do processo.
+- Para a Calha Parshall, a condição de escoamento livre depende da submergência e da geometria real da instalação.
+- Para trecho reto de medidor de vazão, a tabela de diâmetros é nominal (não necessariamente ID real) e as distâncias 5D/2D são referências fornecidas pelo usuário, não requisitos universais de todos os medidores.
+- As senhas do módulo 08 permanecem acessíveis no código do repositório público, conforme configuração solicitada pelo usuário.
+
+ATUALIZAÇÃO PELO GITHUB PAGES
+1. Extraia o ZIP.
+2. Substitua os arquivos no repositório INSTRUMENTACAO-PRO, incluindo sw.js.
+3. Confirme as alterações; na aba Actions, verifique a publicação com êxito.
+4. Abra o aplicativo com internet uma vez para atualizar o cache offline.

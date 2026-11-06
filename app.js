@@ -70,8 +70,10 @@
       setHTML('pressureResults', resultCard('Valor fora do limite', 'Reduza a magnitude do valor informado.'));
       return;
     }
-    const dec = Math.abs(out) >= 100000 ? 0 : (Math.abs(out) < 0.001 && out !== 0 ? 8 : 4);
-    setHTML('pressureResults', resultCard(pressureLabels[target], `${fmt(out, dec)} ${pressureLabels[target]}`));
+    const shown = out !== 0 && (Math.abs(out) < 0.000001 || Math.abs(out) >= 1e12)
+      ? out.toExponential(6).replace('.', ',')
+      : fmt(out, Math.abs(out)>=100000 ? 0 : Math.abs(out)<0.01 && out!==0 ? 8 : 4);
+    setHTML('pressureResults', resultCard(pressureLabels[target], `${shown} ${pressureLabels[target]}`));
   }
 
   // Comprimento e distância: todos os fatores estão expressos em metros.
@@ -130,10 +132,14 @@
       return;
     }
     const m3s = val * flowToM3s[unit];
+    if (!Number.isFinite(m3s) || Object.values(flowToM3s).some(factor => !Number.isFinite(m3s/factor))) {
+      setHTML('flowResults', resultCard('Valor fora do limite', 'Reduza a magnitude da vazão.'));
+      return;
+    }
     const html = Object.keys(flowToM3s).map((key) => {
       const out = m3s / flowToM3s[key];
-      const dec = key === 'm3s' ? 6 : 3;
-      return resultCard(flowLabels[key], `${fmt(out, dec)} ${flowLabels[key]}`);
+      const shown = out!==0 && Math.abs(out)<0.000001 ? out.toExponential(6).replace('.', ',') : fmt(out, key === 'm3s' ? 6 : 3);
+      return resultCard(flowLabels[key], `${shown} ${flowLabels[key]}`);
     }).join('');
     setHTML('flowResults', html);
   }
@@ -348,19 +354,24 @@
     const processWanted = valueOrNull('sProcess');
     const unit = ($('sUnit').value || 'unidade').trim();
     if ([lrv, urv, signal, processWanted].some(v => v === null)) {
-      $('sPv').textContent = '—'; $('sStatus').textContent = 'Informe todos os valores.'; $('sStatus').style.color = 'var(--danger)';
+      $('sPv').textContent = '—'; $('sPvUnit').textContent = unit; $('sStatus').textContent = 'Informe todos os valores.'; $('sStatus').style.color = 'var(--danger)';
       $('sPercent').textContent = '—'; $('sInputEcho').textContent = '—'; $('sSpan').textContent = '—'; $('sReverse').textContent = '—'; $('sScaleText').textContent = '—'; $('sBar').style.width = '0%';
       return;
     }
     const span = urv - lrv;
     if (!(span > 0)) {
-      $('sPv').textContent = '—'; $('sStatus').textContent = 'Verifique a faixa: URV deve superar LRV.'; $('sStatus').style.color = 'var(--danger)';
+      $('sPv').textContent = '—'; $('sPvUnit').textContent = unit; $('sStatus').textContent = 'Verifique a faixa: URV deve superar LRV.'; $('sStatus').style.color = 'var(--danger)';
       $('sPercent').textContent = '—'; $('sInputEcho').textContent = '—'; $('sSpan').textContent = '—'; $('sReverse').textContent = '—'; $('sScaleText').textContent = '—'; $('sBar').style.width = '0%';
       return;
     }
     const percent = ((signal - cfg.min) / (cfg.max - cfg.min)) * 100;
     const pv = lrv + ((signal - cfg.min) / (cfg.max - cfg.min)) * span;
     const reverse = cfg.min + ((processWanted - lrv) / span) * (cfg.max - cfg.min);
+    if (![percent,pv,reverse].every(Number.isFinite)) {
+      $('sPv').textContent = '—'; $('sStatus').textContent = 'Resultado fora do limite numérico.';
+      $('sPercent').textContent = '—'; $('sReverse').textContent = '—'; $('sSpan').textContent = '—'; $('sBar').style.width='0%';
+      return;
+    }
     const within = signal >= cfg.min && signal <= cfg.max;
     $('sPv').textContent = fmt(pv, 2);
     $('sPvUnit').textContent = unit;
@@ -369,7 +380,7 @@
     $('sPercent').textContent = `${fmt(percent, 2)}%`;
     $('sInputEcho').textContent = `${fmt(signal, 2)} ${cfg.unit}`;
     $('sSpan').textContent = fmt(span, 2);
-    $('sReverse').textContent = `${fmt(reverse, 2)} ${cfg.unit}`;
+    $('sReverse').textContent = `${fmt(reverse, 2)} ${cfg.unit}${processWanted < lrv || processWanted > urv ? ' (fora da faixa)' : ''}`;
     $('sScaleText').textContent = `${fmt(percent, 2)}%`;
     $('sBar').style.width = `${Math.max(0, Math.min(100, percent))}%`;
   }
@@ -423,6 +434,11 @@
       out = value * powerWatts[from] / (pf * apparentVA[to]);
     } else {
       out = value * powerWatts[from] / powerWatts[to];
+    }
+    if (!Number.isFinite(out)) {
+      setHTML('powerResults', resultCard('Valor fora do limite', 'Reduza a magnitude da potência ou revise o fator de potência.'));
+      $('powerNotice').textContent = 'Não foi possível calcular um resultado finito.';
+      return;
     }
     setHTML('powerResults', resultCard(powerLabels[to], `${fmtPower(out)} ${powerLabels[to]}`));
     $('powerNotice').textContent = requiresPf ? `Conversão entre potência ativa e aparente com FP ${fmt(pf, 3)}.` : fromApparent ? 'Conversão entre unidades de potência aparente.' : 'Conversão entre unidades de potência ativa.';
@@ -568,6 +584,12 @@
     const dp100d = dp100 * density;
     const dp0d = dp0 * density;
     const spand = span * density;
+    if (![dp100,dp0,span,dp100d,dp0d,spand].every(Number.isFinite) || !(span>0)) {
+      $('hlR100').textContent='—'; $('hlR0').textContent='—';
+      $('hlDiagram').innerHTML='';
+      setHTML('hlSummary', resultCard('Faixa H/L inválida', span<=0 ? 'O valor de 100% deve resultar em diferencial maior que o de 0% para faixa ascendente.' : 'Valores fora do limite de cálculo.'));
+      return;
+    }
     $('hlR100').textContent = fmt(dp100, 3);
     $('hlR0').textContent = fmt(dp0, 3);
     $('hlDiagram').innerHTML = hlDiagram(mode, dp0, dp100, density);
@@ -591,6 +613,11 @@
       return;
     }
     const span = urv - lrv;
+    if (!Number.isFinite(span) || !(span > 0)) {
+      setHTML('deviceOutputResults', resultCard('Faixa de saída inválida', 'O URV deve superar o LRV. Revise os valores antes de usar esta configuração.'));
+      $('deviceOutputNotice').textContent = 'Nenhum span válido foi calculado.';
+      return;
+    }
     setHTML('deviceOutputResults', [
       resultCard('LRV · 0%', `${fmt(lrv, 3)} ${unit}`),
       resultCard('URV · 100%', `${fmt(urv, 3)} ${unit}`),
@@ -759,6 +786,8 @@
         if(section) parts.push(section);
       });
       if(panelId==='parshall') {
+        const condition=$('parshallValidation')?.textContent?.trim() || 'Condição de aplicação não informada.';
+        parts.push(reportSection('Validação da condição hidráulica',[],[['Situação da medição', condition]]));
         const chart=$('parshallCurve')?.outerHTML || '';
         const body=$('parshallTableBody');
         const unit=$('parshallOutputUnit')?.selectedOptions?.[0]?.textContent || 'm³/h';
@@ -772,6 +801,9 @@
         const figureCard=panel.querySelector('.parshall-figures-card');
         if(figureCard) parts.push(reportSection('Referências visuais',[],[],reportImages(figureCard,panel)));
       }
+      if(panelId==='flow') parts.push(reportSection('Limitações de aplicação',[],[[
+        'Critério 5D/2D', 'Valores geométricos calculados sobre diâmetro nominal conforme tabela fornecida. Confirme diâmetro interno e instruções do fabricante antes da instalação.'
+      ]]));
     }
 
     const generatedAt=new Date().toLocaleString('pt-BR');

@@ -258,12 +258,12 @@
               <div class="field">
                 <label>Critério aplicado</label>
                 <div class="unit-display-box">Antes do medidor = 5 × D &nbsp;&nbsp;|&nbsp;&nbsp; Depois do medidor = 2 × D</div>
-                <small>O resultado representa o limite mínimo de instalação do tubo em relação ao medidor.</small>
+                <small>Distâncias geométricas de referência; confirme os critérios de instalação no manual específico do medidor.</small>
               </div>
             </div>
             <div class="result-grid" id="meterInstallResults" style="margin-top:16px"></div>
             <div id="meterInstallDiagram" class="diagram-holder" style="margin-top:14px" aria-label="Ilustrativo de instalação mínima do medidor de vazão"></div>
-            <p class="note">Critério ilustrativo para instalação mínima do medidor. Confirme em campo o manual do fabricante, o modelo do instrumento e as distâncias aplicáveis antes da instalação.</p>
+            <p class="note">A referência 5D/2D é ilustrativa, não uma especificação universal. O diâmetro em mm segue a tabela nominal fornecida; confirme o diâmetro interno real, a posição das tomadas de referência e as distâncias exigidas no manual do instrumento antes de instalar.</p>
           </article>
         </div>
 
@@ -782,6 +782,11 @@
                 <small>Altura no ponto Hₐ, não na garganta.</small>
               </div>
               <div class="field">
+                <label for="parshallHb">Altura a jusante Hᵦ (mm) — opcional</label>
+                <input id="parshallHb" type="number" inputmode="decimal" step="any" min="0" placeholder="Informe para verificar afogamento">
+                <small>Sem Hᵦ, a condição de escoamento livre não pode ser confirmada.</small>
+              </div>
+              <div class="field">
                 <label for="parshallOutputUnit">Unidade de vazão</label>
                 <select id="parshallOutputUnit">
                   <option value="m3h">m³/h</option>
@@ -881,7 +886,7 @@
       </section>
 
       <footer class="footer-note">
-        Instrumentação PRO · Versão 1.8.1 · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
+        Instrumentação PRO · Versão 1.8.2 · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
       </footer>
     </div>
   </main>
