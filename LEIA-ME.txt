@@ -1,8 +1,20 @@
-INSTRUMENTAÇÃO PRO — 1.7.3
+INSTRUMENTAÇÃO PRO — VERSÃO 1.7.4
+CORREÇÃO DOS RELATÓRIOS DE TODOS OS MÓDULOS
 
-- Campo Função do equipamento imediatamente abaixo do TAG nos módulos 02, 03, 04, 06 e 07; incluído no PDF do módulo.
-- Módulo 05: não possui TAG, nem campos Nome/Função do responsável, inclusive no PDF.
-- Módulo 05: 31 unidades de potência ativa/térmica/aparente, separação de grandezas e fator de potência nos casos necessários.
-- Cache offline atualizado.
+Correção principal:
+O módulo 06 possuía um bloco legado oculto com resultados de faixa hidrostática (exemplo: URV=3000 mmH₂O). A versão anterior do relatório coletava esses resultados ocultos e os misturava com o critério H e L (exemplo: URV=2350 mmH₂O).
 
-Publicação: extrair e substituir todos os arquivos na raiz do repositório GitHub Pages; realizar commit, verificar Actions e atualizar PWA online.
+Nesta versão:
+- Todos os relatórios usam os valores já mostrados na interface do módulo ativo.
+- Campos e resultados ocultos não são incluídos.
+- No módulo 06, "Range de saída do equipamento" e "Critério H e L" são seções distintas.
+- As figuras H/L são capturadas do esquema que já aparece na tela.
+- Resultados de outras calculadoras e de módulos diferentes não são exportados.
+- O módulo 07 continua com curva e tabela; o módulo 05 continua sem identificação do responsável.
+- O relatório segue em aba separada, com impressão ou salvamento como PDF.
+- O cache offline foi atualizado.
+
+Teste realizado: simulações em Chromium dos 7 módulos, geração de relatórios com entradas alteradas e impressão A4 com extração de texto conferida. Recomendável conferir no Edge instalado.
+
+ATUALIZAÇÃO NO GITHUB PAGES
+Extraia o ZIP e envie os arquivos mantendo os nomes na raiz do repositório. Verifique o sucesso da publicação (Actions) e abra o aplicativo online para atualizar o cache offline.

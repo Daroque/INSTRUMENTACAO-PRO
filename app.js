@@ -623,129 +623,177 @@
     updateSignal();
   });
 
-  // Relatório independente por módulo: abrir impressão permite salvar como PDF offline.
-  function reportEscape(text) {
-    return String(text ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  // Relatório independente. A fonte é a UI visível, não cálculos paralelos ou cartões ocultos.
+  function reportEscape(value) {
+    return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  }
+  function isReportVisible(element, panel) {
+    // [hidden] e display:none em qualquer ancestral invalidam o conteúdo para relatório.
+    for (let n=element; n && n !== panel; n=n.parentElement) {
+      if (n.hidden || n.hasAttribute('hidden')) return false;
+      if (window.getComputedStyle(n).display === 'none') return false;
+    }
+    return true;
+  }
+  function reportTable(rows, heading) {
+    return rows.length ? `<h3>${reportEscape(heading)}</h3><table><tbody>${rows.map(([label,value])=>
+      `<tr><th>${reportEscape(label)}</th><td>${reportEscape(value)}</td></tr>`).join('')}</tbody></table>` : '';
+  }
+  function reportSection(title, inputs=[], results=[], visuals='') {
+    if (!inputs.length && !results.length && !visuals) return '';
+    return `<section class="report-section"><h2>${reportEscape(title)}</h2>${reportTable(inputs,'Parâmetros informados')}
+      ${reportTable(results,'Resultados exibidos no aplicativo')}${visuals}</section>`;
+  }
+  function reportInputs(root, panel) {
+    return Array.from(root.querySelectorAll('input,select,textarea')).filter(field => {
+      return field.id && !field.disabled && isReportVisible(field,panel);
+    }).map(field => {
+      const label=root.querySelector(`label[for="${field.id}"]`)?.textContent?.trim() ||
+        panel.querySelector(`label[for="${field.id}"]`)?.textContent?.trim() || field.id;
+      const value = field.tagName==='SELECT' ? field.selectedOptions[0]?.textContent?.trim() : field.value?.trim();
+      return [label,value];
+    }).filter(([,v])=>String(v??'').trim()!=='');
+  }
+  function reportResults(root,panel) {
+    const out=[];
+    root.querySelectorAll('.result-card,.mini-card,.highlight-card').forEach(card => {
+      if (!isReportVisible(card,panel)) return;
+      let label = '',value='';
+      if (card.classList.contains('result-card')) {
+        label=card.querySelector('span')?.textContent?.trim() || '';
+        value=card.querySelector('strong')?.textContent?.trim() || '';
+      } else if (card.classList.contains('mini-card')) {
+        label=card.querySelector('span')?.textContent?.trim() || '';
+        value=card.querySelector('strong')?.textContent?.trim() || '';
+      } else {
+        label=card.querySelector('.result-label')?.textContent?.trim() || 'Valor calculado';
+        value=card.querySelector('.big-result')?.textContent?.trim() || '';
+      }
+      if (label && value) out.push([label,value.replace(/\s+/g,' ')]);
+    });
+    return out;
+  }
+  function reportImages(root,panel) {
+    return Array.from(root.querySelectorAll('img')).filter(img => isReportVisible(img,panel))
+      .map(img => `<figure class="report-figure"><img class="report-image" src="${reportEscape(img.src)}" alt="${reportEscape(img.alt)}"></figure>`).join('');
+  }
+  function reportSvgs(root,panel) {
+    return Array.from(root.querySelectorAll('.tech-diagram, #meterInstallDiagram svg'))
+      .filter(svg=>isReportVisible(svg,panel))
+      .map(svg=>`<div class="report-diagram">${svg.outerHTML}</div>`).join('');
   }
   function createReport() {
-    const tab = document.querySelector('.tab.active');
+    const tab=document.querySelector('.tab.active');
     if (!tab) return;
-    const panelId = tab.dataset.panel;
-    const panel = $(panelId);
-    const moduleName = tab.textContent.trim();
-    const subtitle = moduleName;
-    const sections = Array.from(panel.querySelectorAll('article.card'));
-    const parts = [];
-    sections.forEach((article) => {
-      const title = article.querySelector('h2')?.textContent?.trim() || 'Dados do módulo';
-      const rows = [];
-      article.querySelectorAll('input,select').forEach((field) => {
-        if (field.closest('[hidden]') || field.hidden || field.disabled) return;
-        let label = article.querySelector(`label[for="${field.id}"]`)?.textContent?.trim() || field.id;
-        let value = field.tagName === 'SELECT' ? field.selectedOptions[0]?.textContent?.trim() : field.value;
-        if (!String(value ?? '').trim()) return;
-        rows.push(`<tr><th>${reportEscape(label)}</th><td>${reportEscape(value)}</td></tr>`);
+    const panelId=tab.dataset.panel;
+    const panel=$(panelId);
+    if (!panel) return;
+
+    // Atualiza instantaneamente o módulo solicitado antes de capturar a tela.
+    const refresh={
+      pressure:()=>{updatePressure();updateMetric();},
+      flow:()=>{updateFlow();updateMeterInstall();},
+      temperature:()=>{updateTemp();updatePt100();updateTc();},
+      signal:updateSignal,
+      power:updatePower,
+      range:()=>{updateHLRange();updateDeviceOutput();}
+    };
+    if (refresh[panelId]) refresh[panelId]();
+    // O módulo Parshall mantém seus próprios listeners síncronos.
+    if (panelId==='parshall') $('parshallHead')?.dispatchEvent(new Event('input',{bubbles:true}));
+
+    const moduleName=tab.textContent.trim();
+    const parts=[];
+    if(panelId==='range') {
+      // O range hidrostático legado existe como container oculto para compatibilidade.
+      // NÃO é a origem do critério H/L e nunca deve ser exportado.
+      const overview=panel.querySelector('article.input-card');
+      if(overview) parts.push(reportSection('Identificação e instalação',reportInputs(overview,panel)));
+
+      const device=$('instrumentOutputSection');
+      if(device) parts.push(reportSection('Range de saída do equipamento',reportInputs(device,panel),reportResults(device,panel)));
+
+      const hlFields=[['H em 100%','hlH100'],['L em 100%','hlL100'],['H em 0%','hlH0'],['L em 0%','hlL0'],['Densidade relativa aplicada','hlDensity']];
+      const hlInputs=hlFields.map(([label,id])=>[label,`${$(id)?.value ?? ''}${id==='hlDensity'?'':' mmH₂O'}`]);
+      const hlResults=reportResults($('hlSummary'),panel);
+      const diagram=$('hlDiagram')?.innerHTML ? `<div class="report-diagram">${$('hlDiagram').innerHTML}</div>` : '';
+      parts.push(reportSection('Critério H e L (HP − LP)',hlInputs,hlResults,diagram));
+      const transmitterImage=panel.querySelector('.image-panel img');
+      if (transmitterImage) parts.push(reportSection('Indicação da célula do transmissor',[],[],
+        `<figure class="report-figure"><img class="report-image" src="${reportEscape(transmitterImage.src)}" alt="Indicação da célula do transmissor"></figure>`));
+    } else {
+      // Não confundir resultados de cartões ocultos, etapas diferentes ou módulos vizinhos.
+      panel.querySelectorAll('article.card').forEach(article => {
+        if(!isReportVisible(article,panel)) return;
+        if(panelId==='parshall' && (article.classList.contains('parshall-table-card') || article.classList.contains('parshall-figures-card'))) return;
+        const title=article.querySelector('h2')?.textContent?.trim() || 'Dados do módulo';
+        const fields=reportInputs(article,panel);
+        const results=reportResults(article,panel);
+        const figures=(panelId==='flow'?reportSvgs(article,panel):'') + (panelId==='temperature'?reportImages(article,panel):'');
+        const section=reportSection(title,fields,results,figures);
+        if(section) parts.push(section);
       });
-      const outputs = [];
-      article.querySelectorAll('.result-card,.mini-card,.highlight-card').forEach((r) => {
-        const label = r.querySelector('span,.result-label')?.textContent?.trim();
-        const value = r.querySelector('strong,.big-result')?.textContent?.trim();
-        if (label && value) outputs.push(`<tr><th>${reportEscape(label)}</th><td>${reportEscape(value)}</td></tr>`);
-      });
-      if (!rows.length && !outputs.length && !article.querySelector('img')) return;
-      let visuals = '';
-      if (panelId === 'flow' || panelId === 'range') {
-        visuals = Array.from(article.querySelectorAll('.tech-diagram, #meterInstallDiagram svg'))
-          .map(node => `<div class="report-diagram">${node.outerHTML}</div>`).join('');
+      if(panelId==='parshall') {
+        const chart=$('parshallCurve')?.outerHTML || '';
+        const body=$('parshallTableBody');
+        const unit=$('parshallOutputUnit')?.selectedOptions?.[0]?.textContent || 'm³/h';
+        if(chart) parts.push(`<section class="report-section"><h2>Curva de altura × vazão</h2><div class="report-diagram">${chart}</div></section>`);
+        if(body) {
+          const trs=Array.from(body.querySelectorAll('tr')).map(tr=>Array.from(tr.querySelectorAll('td')).map(td=>td.textContent.trim()));
+          parts.push(`<section class="report-section"><h2>Tabela de altura × vazão</h2>
+            <table><thead><tr><th>Altura Hₐ (mm)</th><th>Vazão (${reportEscape(unit)})</th></tr></thead><tbody>${trs.map(cols=>
+            `<tr>${cols.map(v=>`<td>${reportEscape(v)}</td>`).join('')}</tr>`).join('')}</tbody></table></section>`);
+        }
+        const figureCard=panel.querySelector('.parshall-figures-card');
+        if(figureCard) parts.push(reportSection('Referências visuais',[],[],reportImages(figureCard,panel)));
       }
-      if (panelId === 'range' && article.querySelector('img')) {
-        const img = article.querySelector('img');
-        visuals += `<img class="report-image" src="${img.src}" alt="${reportEscape(img.alt)}">`;
-      }
-      parts.push(`<section class="report-section"><h2>${reportEscape(title)}</h2>
-        ${rows.length ? `<h3>Parâmetros informados</h3><table>${rows.join('')}</table>` : ''}
-        ${outputs.length ? `<h3>Resultados</h3><table>${outputs.join('')}</table>` : ''}
-        ${visuals}</section>`);
-    });
-    // Módulo 07: incluir curva, tabela e ilustrações no relatório individual.
-    if (panelId === 'parshall') {
-      const chart = $('parshallCurve')?.outerHTML || '';
-      const table = $('parshallTableBody')?.innerHTML || '';
-      const fUnit = $('parshallOutputUnit')?.selectedOptions[0]?.textContent || 'm³/h';
-      if (chart) parts.push(`<section class="report-section"><h2>Curva de altura × vazão</h2><div class="report-diagram">${chart}</div></section>`);
-      if (table) parts.push(`<section class="report-section"><h2>Tabela de altura × vazão</h2><table>
-        <thead><tr><th>Altura Hₐ (mm)</th><th>Vazão (${reportEscape(fUnit)})</th></tr></thead><tbody>${table}</tbody></table></section>`);
-      const images = [
-        ['Funcionamento da calha', 'parshall_funcionamento.webp'],
-        ['Geometria e pontos de medição', 'parshall_dimensoes.jpg']
-      ];
-      const figures = images.map(([name,file])=>`<figure><img class="report-image" src="${new URL(file, document.baseURI).href}" alt="${reportEscape(name)}"><figcaption>${reportEscape(name)}</figcaption></figure>`).join('');
-      parts.push(`<section class="report-section"><h2>Referências visuais</h2>${figures}</section>`);
     }
-    // Tabela H/L: coleta e resultados da seção independente do artigo.
-    if (panelId === 'range') {
-      const fields = [['H em 100%', 'hlH100'], ['L em 100%', 'hlL100'], ['H em 0%', 'hlH0'], ['L em 0%', 'hlL0'], ['Densidade aplicada', 'hlDensity']];
-      const rows = fields.map(([label,id]) => `<tr><th>${reportEscape(label)}</th><td>${reportEscape($(id).value)} ${id === 'hlDensity' ? '' : 'mmH₂O'}</td></tr>`).join('');
-      const summary = Array.from($('hlSummary').querySelectorAll('.result-card')).map(e => `<tr><th>${reportEscape(e.querySelector('span')?.textContent || '')}</th><td>${reportEscape(e.querySelector('strong')?.textContent || '')}</td></tr>`).join('');
-      parts.push(`<section class="report-section"><h2>Critério H e L</h2><h3>Dados de entrada</h3><table>${rows}</table>
-      <h3>Resultados</h3><table>${summary}</table><div class="report-diagram">${$('hlDiagram').innerHTML}</div></section>`);
-    }
-    const generatedAt = new Date().toLocaleString('pt-BR');
-    const authorName = panelId === 'power' ? '' : ($('reportAuthorName')?.value?.trim() || '');
-    const authorRole = panelId === 'power' ? '' : ($('reportAuthorRole')?.value?.trim() || '');
-    const report = `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+
+    const generatedAt=new Date().toLocaleString('pt-BR');
+    const authorName=panelId==='power'?'':($('reportAuthorName')?.value?.trim() || '');
+    const authorRole=panelId==='power'?'':($('reportAuthorRole')?.value?.trim() || '');
+    const report=`<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
       <title>Relatório ${reportEscape(moduleName)} — Instrumentação PRO</title>
       <style>
-        * { box-sizing:border-box; }body{font:14px Arial, sans-serif;color:#102b47;margin:0;background:#edf2f7;}
-        .toolbar{background:#0f2d4f;color:#fff;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
-        .toolbar button{background:#2784ce;color:#fff;border:0;border-radius:8px;padding:12px 18px;font-weight:bold;cursor:pointer;}
-        .paper{max-width:850px;margin:20px auto;padding:32px;background:#fff;box-shadow:0 5px 25px #0002;}
-        header{padding:0 0 16px;border-bottom:3px solid #1566a1;}
-        h1{font-size:26px;margin:5px 0 5px;}h2{font-size:17px;color:#123b60;margin:0 0 12px;}
-        h3{font-size:12px;color:#5a7288;text-transform:uppercase;letter-spacing:.06em;margin:14px 0 7px;}
-        p{color:#526a81;line-height:1.6}.report-section{margin-top:22px;break-inside:avoid-page;}
-        table{width:100%;border-collapse:collapse;margin-bottom:12px;font-size:12px;}
-        th,td{border:1px solid #d8e2eb;padding:8px 11px;text-align:left;vertical-align:top;}
-        th{width:48%;font-weight:600;background:#f2f6fb;}td{font-weight:700;overflow-wrap:anywhere;}
-        .report-diagram{margin:12px auto;max-width:720px;break-inside:avoid-page;}
-        .report-diagram svg{width:100%;max-height:310px;display:block;}
-        .tech-diagram{display:flex;gap:22px;align-items:center;border:1px solid #d4e0e9;border-radius:12px;padding:14px;}
-        .tech-diagram svg{width:49%;flex-shrink:0;}
-        .diagram-facts{flex:1;display:flex;flex-direction:column;gap:10px;}
-        .diagram-fact{background:#f0f6fb;padding:8px 12px;border-radius:8px;}
-        .df-label{font-size:11px;display:block;color:#58738b;margin-bottom:3px;}.diagram-fact strong{font-size:13px;display:block;}
-        .diagram-caption{font-size:10px;color:#526a81;}
-        .report-image{max-width:90%;max-height:370px;display:block;margin:10px auto;object-fit:contain;}
-        .report-identification{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:20px 0 12px;}
-        .report-person{font-size:12px;min-width:0;}
-        .report-person-label{display:block;font-weight:700;color:#526a81;margin-bottom:7px;}
-        .report-person-value{border-bottom:1px solid #8ea4b7;min-height:26px;padding:2px 4px 5px;overflow-wrap:anywhere;}
-        footer{border-top:1px solid #d2dee7;padding-top:12px;margin-top:30px;font-size:11px;color:#546b80;}
-        @page{size:A4;margin:15mm 13mm;}@media print{body{background:white;print-color-adjust:exact;-webkit-print-color-adjust:exact;}
-          .toolbar{display:none}.paper{margin:0;max-width:none;padding:0;box-shadow:none;}.report-section{break-inside:auto;}}
+        *{box-sizing:border-box}body{font:14px Arial,sans-serif;color:#102b47;margin:0;background:#edf2f7}
+        .toolbar{background:#0f2d4f;color:#fff;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+        .toolbar button{background:#2784ce;color:#fff;border:0;border-radius:8px;padding:12px 18px;font-weight:bold;cursor:pointer}
+        .paper{max-width:850px;margin:20px auto;padding:32px;background:#fff;box-shadow:0 5px 25px #0002}
+        header{padding:0 0 16px;border-bottom:3px solid #1566a1}
+        h1{font-size:26px;margin:5px 0}h2{font-size:17px;color:#123b60;margin:0 0 12px}
+        h3{font-size:12px;color:#5a7288;text-transform:uppercase;letter-spacing:.06em;margin:14px 0 7px}
+        .report-section{margin-top:22px;break-inside:avoid-page}
+        table{width:100%;border-collapse:collapse;margin-bottom:12px;font-size:12px}
+        th,td{border:1px solid #d8e2eb;padding:8px 11px;text-align:left;vertical-align:top}
+        th{width:48%;font-weight:600;background:#f2f6fb}td{font-weight:700;overflow-wrap:anywhere}
+        .report-diagram{margin:12px auto;max-width:720px;break-inside:avoid-page}
+        .report-diagram svg{width:100%;max-height:310px;display:block}
+        .tech-diagram{display:flex;gap:22px;align-items:center;border:1px solid #d4e0e9;border-radius:12px;padding:14px}
+        .tech-diagram svg{width:49%;flex-shrink:0}
+        .diagram-facts{flex:1;display:flex;flex-direction:column;gap:10px}
+        .diagram-fact{background:#f0f6fb;padding:8px 12px;border-radius:8px}
+        .df-label{font-size:11px;display:block;color:#58738b;margin-bottom:3px}.diagram-fact strong{font-size:13px;display:block}
+        .diagram-caption{font-size:10px;color:#526a81}
+        .report-image{max-width:90%;max-height:370px;display:block;margin:10px auto;object-fit:contain}
+        .report-identification{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:20px 0 12px}
+        .report-person{font-size:12px;min-width:0}.report-person-label{display:block;font-weight:700;color:#526a81;margin-bottom:7px}
+        .report-person-value{border-bottom:1px solid #8ea4b7;min-height:26px;padding:2px 4px 5px;overflow-wrap:anywhere}
+        footer{border-top:1px solid #d2dee7;padding-top:12px;margin-top:30px;font-size:11px;color:#546b80}
+        @page{size:A4;margin:15mm 13mm}@media print{body{background:white;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+          .toolbar{display:none}.paper{margin:0;max-width:none;padding:0;box-shadow:none}.report-section{break-inside:auto}}
       </style></head><body>
       <div class="toolbar"><span>Relatório em aba separada — feche esta aba para retornar ao aplicativo.</span><button onclick="window.print()">Imprimir / Salvar PDF</button></div>
-      <main class="paper"><header><small>INSTRUMENTAÇÃO PRO · RELATÓRIO TÉCNICO</small><h1>${reportEscape(subtitle)}</h1><div>Emitido em ${reportEscape(generatedAt)}</div></header>
-      ${panelId === 'power' ? '' : `<div class="report-identification">
+      <main class="paper"><header><small>INSTRUMENTAÇÃO PRO · RELATÓRIO TÉCNICO</small><h1>${reportEscape(moduleName)}</h1><div>Emitido em ${reportEscape(generatedAt)}</div></header>
+      ${panelId==='power'?'':`<div class="report-identification">
         <div class="report-person"><span class="report-person-label">Nome</span><div class="report-person-value">${reportEscape(authorName)}</div></div>
-        <div class="report-person"><span class="report-person-label">Função</span><div class="report-person-value">${reportEscape(authorRole)}</div></div>
-      </div>`}
+        <div class="report-person"><span class="report-person-label">Função</span><div class="report-person-value">${reportEscape(authorRole)}</div></div></div>`}
       ${parts.join('')}
-      <footer>Relatório gerado no dispositivo pelo Instrumentação PRO. Antes de utilizar em campo, confira os dados de processo, limites dos instrumentos e requisitos de instalação. Não contém equações.</footer>
+      <footer>Relatório gerado com os resultados exibidos no módulo no momento da emissão. Revise as condições de aplicação e os dados de processo antes do uso em campo. As equações não são apresentadas.</footer>
       </main></body></html>`;
-    // Um documento Blob possui URL fora do escopo da PWA e é aberto em aba separada.
-    // A janela principal jamais é substituída pelo relatório.
-    const reportFile = new Blob([report], { type: 'text/html;charset=utf-8' });
-    const reportUrl = URL.createObjectURL(reportFile);
-    const win = window.open(reportUrl, '_blank');
-    if (!win) {
-      URL.revokeObjectURL(reportUrl);
-      alert('O navegador bloqueou a nova aba. Permita pop-ups para o Instrumentação PRO e tente novamente.');
-      return;
-    }
-    try { win.focus(); } catch (_) {}
-    // Evitar revogação imediata: a navegação da nova aba ainda pode estar carregando.
-    // Os URLs temporários são descartados ao encerrar a sessão do aplicativo.
+    const reportUrl=URL.createObjectURL(new Blob([report],{type:'text/html;charset=utf-8'}));
+    const win=window.open(reportUrl,'_blank');
+    if(!win){URL.revokeObjectURL(reportUrl);alert('O navegador bloqueou a nova aba. Permita pop-ups para o Instrumentação PRO.');return;}
+    try{win.focus();}catch(_){}
   }
 
   function initializeAppearance() {
