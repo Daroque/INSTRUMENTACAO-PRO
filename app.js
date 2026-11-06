@@ -168,30 +168,56 @@
     </svg>`;
   }
 
-  function updateMeterInstall() {
-    const raw = valueOrNull('meterDiameter');
-    const d = raw === null ? 0 : raw;
-    if (d < 0) {
-      const html = [
-        resultCard('Diâmetro do tubo', `${fmt(d, 2)} mm`),
-        resultCard('Trecho mínimo antes do medidor', `0,00 mm`),
-        resultCard('Trecho mínimo depois do medidor', `0,00 mm`),
-        resultCard('Aviso', `Informe um diâmetro igual ou maior que zero`)
-      ].join('');
-      setHTML('meterInstallResults', html);
-      setHTML('meterInstallDiagram', meterInstallDiagram(0, 0, 0));
-      return;
+  // Tabela de correspondências fornecida pelo usuário: bitola em polegadas -> diâmetro nominal em mm.
+  // Não é conversão geométrica de polegadas para mm nem uma tabela de diâmetro interno real.
+  const METER_NOMINAL_MM = new Map([
+    [1/12, 2], [1/8, 3], [1/4, 6], [3/8, 10], [1/2, 15],
+    [1, 25], [1.5, 40], [2, 50], [2.5, 65], [3, 80], [4, 100],
+    [5, 125], [6, 150], [8, 200], [10, 250], [12, 300],
+    [14, 350], [16, 400], [18, 450], [20, 500], [24, 600],
+    [28, 700], [30, 750], [32, 800], [36, 900], [40, 1000],
+    [44, 1100], [48, 1200], [54, 1400], [60, 1500],
+    [66, 1600], [72, 1800], [78, 2000]
+  ]);
+
+  function parseNominalInches(input) {
+    const raw = String(input || '').trim().replace(/[″”"]/g, '').replace(/,/g, '.').replace(/\s+/g,' ');
+    if (!raw) return null;
+    // Frações puras: "1/2"; frações mistas: "1 1/2" ou "1-1/2".
+    const mixed = raw.match(/^(\d+)\s*[- ]\s*(\d+)\s*\/\s*(\d+)$/);
+    if (mixed) {
+      const den = Number(mixed[3]);
+      return den > 0 ? Number(mixed[1]) + Number(mixed[2]) / den : NaN;
     }
-    const upstream = 5 * d;
-    const downstream = 2 * d;
-    const summary = d === 0 ? 'Informe um valor maior que zero para uma instalação real' : 'Instalação mínima: 5D antes e 2D depois';
-    const html = [
-      resultCard('Diâmetro do tubo', `${fmt(d, 2)} mm`),
-      resultCard('Trecho mínimo antes do medidor', `${fmt(upstream, 2)} mm`),
-      resultCard('Trecho mínimo depois do medidor', `${fmt(downstream, 2)} mm`),
-      resultCard('Resumo', summary)
-    ].join('');
-    setHTML('meterInstallResults', html);
+    const fraction = raw.match(/^(\d+)\s*\/\s*(\d+)$/);
+    if (fraction) {
+      const den = Number(fraction[2]);
+      return den > 0 ? Number(fraction[1]) / den : NaN;
+    }
+    return /^\d+(?:\.\d+)?$/.test(raw) ? Number(raw) : NaN;
+  }
+
+  function updateMeterInstall() {
+    const raw = $('meterDiameter').value.trim();
+    const inches = parseNominalInches(raw);
+    const size = inches === null ? 0 : inches;
+    const nominalMm = METER_NOMINAL_MM.get(size);
+    const valid = size === 0 || (Number.isFinite(size) && size > 0 && nominalMm !== undefined);
+    // Mantém a ilustração visível mesmo sem preenchimento, com zero ou com valor não tabelado.
+    const d = valid ? (nominalMm || 0) : 0;
+    const upstream = d * 5;
+    const downstream = d * 2;
+    const summary = !valid
+      ? 'Bitola não cadastrada na tabela. Confira a medida em polegadas.'
+      : size === 0
+        ? 'Selecione uma bitola nominal maior que zero para dimensionar.'
+        : 'Instalação de referência: 5D antes e 2D depois';
+    setHTML('meterInstallResults', [
+      resultCard('Diâmetro do tubo', valid ? `${fmt(d, 2)} mm` : '—'),
+      resultCard('Trecho mínimo antes do medidor', valid ? `${fmt(upstream, 2)} mm` : '—'),
+      resultCard('Trecho mínimo depois do medidor', valid ? `${fmt(downstream, 2)} mm` : '—'),
+      resultCard(valid ? 'Resumo' : 'Bitola não identificada', summary)
+    ].join(''));
     setHTML('meterInstallDiagram', meterInstallDiagram(d, upstream, downstream));
   }
 

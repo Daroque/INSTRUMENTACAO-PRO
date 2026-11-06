@@ -1,4 +1,4 @@
-const CACHE_NAME = 'instrumentacao-pro-v1-7-8';
+const CACHE_NAME = 'instrumentacao-pro-v1-8-0';
 const CORE_ASSETS = [
   './index.html',
   './styles.css',
