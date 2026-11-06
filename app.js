@@ -642,7 +642,6 @@
 
 
   // Módulo 09 — relações numéricas definidas pelo usuário.
-  // RPM/Hz não possui dimensão física RPM: a unidade correta é RPM/Hz.
   function updateGearRotation() {
     const teeth = valueOrNull('calcTeeth');
     const rpm = valueOrNull('calcGearRpm');
@@ -657,7 +656,7 @@
     }
     const result = (teeth * rpm) / hz;
     setHTML('calcGearResult', Number.isFinite(result)
-      ? resultCard('Relação calculada (RPM/Hz)', fmt(result, 3) + ' RPM/Hz')
+      ? resultCard('Resultado calculado', fmt(result, 0) + ' RPM')
       : resultCard('Cálculo inválido', 'Valores fora do intervalo numérico permitido.'));
   }
 
@@ -674,7 +673,7 @@
     }
     const result = rpm / hz;
     setHTML('calcHzResult', Number.isFinite(result)
-      ? resultCard('Relação calculada (RPM/Hz)', fmt(result, 3) + ' RPM/Hz')
+      ? resultCard('Relação calculada (RPM/Hz)', fmt(result, 0) + ' RPM/Hz')
       : resultCard('Cálculo inválido', 'Valores fora do intervalo numérico permitido.'));
   }
 
