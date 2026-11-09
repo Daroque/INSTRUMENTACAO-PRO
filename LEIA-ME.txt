@@ -1,3 +1,9 @@
+Instrumentação PRO — v1.8.8
+
+Atualização: indicador permanente da versão ao lado do estado Online/Offline no cabeçalho, inclusive em telas de celular.
+Versão também atualizada no rodapé. Valor centralizado no início do arquivo app.js (APP_VERSION).
+Cache PWA atualizado para instrumentacao-pro-v1-8-8.
+
 Instrumentação PRO v1.8.7
 Módulo 09: removidos os textos explicativos no rodapé dos três cálculos e confirmada a remoção da numeração dos títulos.
 Todos os cálculos e demais módulos preservados.

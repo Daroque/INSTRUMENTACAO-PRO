@@ -1,6 +1,8 @@
 (function () {
   'use strict';
 
+  // Identificador central da versão exibida na interface.
+  const APP_VERSION = '1.8.8';
   const $ = (id) => document.getElementById(id);
   const fmt = (n, dec = 2) => Number(n).toLocaleString('pt-BR', { minimumFractionDigits: dec, maximumFractionDigits: dec });
   const setHTML = (id, html) => { const el = $(id); if (el) el.innerHTML = html; };
@@ -11,6 +13,10 @@
     const n = Number(raw.replace(',', '.'));
     return Number.isFinite(n) ? n : null;
   };
+
+  // Exibe a versão atual ao lado do estado Online/Offline e no rodapé.
+  if ($('app-version')) $('app-version').textContent = 'v' + APP_VERSION;
+  if ($('footer-version')) $('footer-version').textContent = APP_VERSION;
 
   const tabs = Array.from(document.querySelectorAll('.tab'));
   const panels = Array.from(document.querySelectorAll('.panel'));

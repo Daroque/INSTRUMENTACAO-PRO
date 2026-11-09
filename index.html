@@ -28,7 +28,10 @@
             <select id="themeSelect" aria-label="Escolher aparência do aplicativo"><option value="light">Claro</option><option value="dark">Escuro</option></select>
           </label>
           <button class="btn btn-secondary" id="reportBtn" type="button" title="Gerar relatório do módulo atual">Gerar PDF do módulo</button>
-          <span class="status-badge" id="connection-status">Verificando...</span>
+          <div class="app-status-group" aria-label="Conexão e versão do aplicativo">
+            <span class="status-badge" id="connection-status">Verificando...</span>
+            <span class="app-version-badge" id="app-version" aria-label="Versão do aplicativo">v1.8.8</span>
+          </div>
           <button id="installBtn" class="btn btn-secondary" hidden>Instalar app</button>
         </div>
       </div>
@@ -923,7 +926,7 @@
       </section>
 
       <footer class="footer-note">
-        Instrumentação PRO · Versão 1.8.7 · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
+        Instrumentação PRO · Versão <span id="footer-version">1.8.8</span> · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
       </footer>
     </div>
   </main>

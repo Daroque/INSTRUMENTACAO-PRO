@@ -560,3 +560,9 @@ html[data-theme="dark"] .parshall-table tr.parshall-current{background:#245075}
 .calc-result .result-card { min-height: 105px; }
 .calc-result strong { font-size: clamp(1.15rem, 2.3vw, 1.65rem); overflow-wrap: anywhere; }
 @media (max-width: 780px) { .calc-module-grid { grid-template-columns: 1fr; } }
+
+/* v1.8.8 — Versão permanente ao lado do estado de conexão */
+.app-status-group { display: inline-flex; align-items: center; gap: 7px; flex-wrap: nowrap; }
+.app-version-badge { display: inline-flex; align-items: center; padding: 10px 11px; border-radius: 999px; color: #f5faff; background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.20); font-size: .88rem; font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.app-status-group .status-badge { white-space: nowrap; }
+@media (max-width: 420px) { .app-status-group { gap: 5px; } .app-version-badge { padding: 9px 10px; } .app-status-group .status-badge { padding: 9px 10px; } }
