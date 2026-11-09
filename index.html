@@ -30,7 +30,7 @@
           <button class="btn btn-secondary" id="reportBtn" type="button" title="Gerar relatório do módulo atual">Gerar PDF do módulo</button>
           <div class="app-status-group" aria-label="Conexão e versão do aplicativo">
             <span class="status-badge" id="connection-status">Verificando...</span>
-            <span class="app-version-badge" id="app-version" aria-label="Versão do aplicativo">v1.8.9</span>
+            <span class="app-version-badge" id="app-version" aria-label="Versão do aplicativo">v1.9.0</span>
           </div>
           <button id="installBtn" class="btn btn-secondary" hidden>Instalar app</button>
         </div>
@@ -67,6 +67,7 @@
         <button class="tab" data-panel="parshall" data-subtitle="Módulo 07 · Calha Parshall" role="tab" aria-selected="false">Calha Parshall</button>
         <button class="tab" data-panel="passwords" data-subtitle="Módulo 08 · Senhas" role="tab" aria-selected="false">Senhas</button>
         <button class="tab" data-panel="calculations" data-subtitle="Módulo 09 · Cálculos" role="tab" aria-selected="false">Cálculos</button>
+        <button class="tab" data-panel="networks" data-subtitle="Módulo 10 · Redes" role="tab" aria-selected="false">Redes</button>
       </div>
 
       <section class="panel active" id="pressure" role="tabpanel">
@@ -924,8 +925,77 @@
         </div>
       </section>
 
+
+      <section class="panel" id="networks" role="tabpanel" hidden>
+        <div class="network-layout">
+          <article class="card network-intro">
+            <div class="network-title-row"><div><span class="network-eyebrow">COMUNICAÇÃO INDUSTRIAL</span><h2>Redes industriais</h2><p class="note note-no-top">Selecione a rede para consultar os materiais técnicos disponíveis.</p></div></div>
+            <div class="field network-selector"><label for="networkType">Selecione a rede</label>
+              <select id="networkType"><option value="dp">Profibus DP</option><option value="pa">Profibus PA</option><option value="asi">Rede AS-i</option></select>
+            </div>
+          </article>
+          <div id="networkDp" class="network-view">
+            <div class="network-hero"><div><span class="network-eyebrow">GUIA TÉCNICO · MATERIAL ORGANIZADO DO ANEXO</span><h2>Profibus DP</h2><p>Cabeamento, configuração, segmentação e diagnóstico de redes RS-485.</p></div><span class="network-count">8 tópicos</span></div>
+            <nav class="network-quicknav" aria-label="Assuntos do Profibus DP">
+              <a href="#network-overview">Visão geral</a><a href="#network-cables">Cabeamento</a><a href="#network-ground">Blindagem</a><a href="#network-address">Endereçamento</a><a href="#network-rates">Taxas e distâncias</a><a href="#network-stations">Repetidores</a><a href="#network-termination">Terminação</a><a href="#network-diagnosis">Diagnóstico</a>
+            </nav>
+            <div class="network-sections"><details class="network-section" id="network-overview" open>
+<summary><span class="network-section-heading"><small>Fundamentos</small><strong>Visão geral do Profibus DP</strong></span><span class="network-section-toggle" aria-hidden="true">＋</span></summary>
+<div class="network-section-body">
+<p>O <strong>Profibus DP (Periferia Descentralizada)</strong> é apresentado no material como um perfil de comunicação industrial voltado à troca rápida de dados entre sistemas de controle e dispositivos distribuídos de entrada e saída (I/O).</p>
+<div class="network-facts"><div><span>Aplicação principal</span><strong>Controle e I/O distribuído</strong></div><div><span>Meio físico abordado</span><strong>RS-485</strong></div><div><span>Foco da consulta</span><strong>Instalação e diagnóstico</strong></div></div>
+<p>Este guia reorganiza o documento enviado por assuntos. As figuras são reproduzidas do próprio material, preservando as características originais.</p>
+</div></details><details class="network-section" id="network-cables" open>
+<summary><span class="network-section-heading"><small>Instalação</small><strong>Cabeamento RS-485 e conectores</strong></span><span class="network-section-toggle" aria-hidden="true">＋</span></summary>
+<div class="network-section-body">
+<ul><li>Utilize cabo de <strong>par trançado blindado</strong> apropriado ao sistema e conectores compatíveis.</li><li>Mantenha o cabo de comunicação separado de cabos de potência, motores e inversores de frequência, para reduzir o acoplamento de interferências.</li><li>Evite excesso de cabo enrolado e laços desnecessários: o documento mostra exemplos de distorção do sinal.</li><li>Observe a posição do conector terminal e dos conectores intermediários, inclusive a chave de terminação.</li></ul>
+<div class="network-figures"><figure class="network-figure"><img src="./redes_dp_01.webp" loading="lazy" decoding="async" alt="Cabeamento RS-485"><figcaption><strong>Cabeamento RS-485.</strong> Cabo de par trançado blindado, conexão dos dispositivos e referência de aterramento.</figcaption></figure><figure class="network-figure"><img src="./redes_dp_03.webp" loading="lazy" decoding="async" alt="Construção do cabo"><figcaption><strong>Construção do cabo.</strong> Representação das camadas e dos condutores do cabo Profibus.</figcaption></figure><figure class="network-figure"><img src="./redes_dp_04.webp" loading="lazy" decoding="async" alt="Conector Profibus"><figcaption><strong>Conector Profibus.</strong> Região do conector e ligação da blindagem.</figcaption></figure><figure class="network-figure"><img src="./redes_dp_05.webp" loading="lazy" decoding="async" alt="Chave de terminação"><figcaption><strong>Chave de terminação.</strong> Exemplo de conector terminal e de passagem.</figcaption></figure><figure class="network-figure"><img src="./redes_dp_06.webp" loading="lazy" decoding="async" alt="Evitar laços de cabo"><figcaption><strong>Evitar laços de cabo.</strong> Arranjo de cabos e influência de enrolamentos sobre as reflexões.</figcaption></figure></div></div></details><details class="network-section" id="network-ground" >
+<summary><span class="network-section-heading"><small>Proteção contra interferência</small><strong>Blindagem, aterramento e equipotencialização</strong></span><span class="network-section-toggle" aria-hidden="true">＋</span></summary>
+<div class="network-section-body">
+<ul><li>Na entrada de painéis, o material recomenda conectar a malha de blindagem ao aterramento do painel <strong>o mais próximo possível da entrada</strong>, com conexão metálica adequada.</li><li>O documento compara o aterramento da blindagem em uma ou em ambas as extremidades, ressaltando diferenças de desempenho em frequência.</li><li>Se existir diferença de potencial entre pontos da planta, pode haver corrente indesejada pela malha de blindagem. Nesses casos, a <strong>equalização de potencial</strong> deve ser avaliada.</li><li>Para grandes distâncias ou ambientes com interferências intensas, o documento menciona a fibra óptica como alternativa.</li></ul>
+<p class="network-caution">Critérios de aterramento e compatibilidade eletromagnética devem seguir o projeto elétrico, as condições locais e as instruções do fabricante. Não use a figura isoladamente como especificação de montagem.</p>
+<div class="network-figures"><figure class="network-figure"><img src="./redes_dp_10.webp" loading="lazy" decoding="async" alt="Entrada de cabos em painéis"><figcaption><strong>Entrada de cabos em painéis.</strong> Fixação e contato da blindagem com o aterramento do painel.</figcaption></figure><figure class="network-figure"><img src="./redes_dp_13.webp" loading="lazy" decoding="async" alt="Equalização de potencial"><figcaption><strong>Equalização de potencial.</strong> Interligação equipotencial entre dois painéis.</figcaption></figure><figure class="network-figure"><img src="./redes_dp_14.webp" loading="lazy" decoding="async" alt="Oscilogramas: falta de aterramento"><figcaption><strong>Oscilogramas: falta de aterramento.</strong> Exemplos de distorção do sinal observados no documento.</figcaption></figure></div></div></details><details class="network-section" id="network-address" >
+<summary><span class="network-section-heading"><small>Configuração</small><strong>Endereçamento por chaves DIP</strong></span><span class="network-section-toggle" aria-hidden="true">＋</span></summary>
+<div class="network-section-body">
+<p>O material apresenta um exemplo de atribuição local de endereço por <strong>DIP switches</strong>, usando valores binários. O endereço desejado é obtido somando as posições habilitadas.</p>
+<div class="network-example"><span>Exemplo apresentado no anexo</span><strong>Endereço 50 = 32 + 16 + 2</strong><p>Posições 32, 16 e 2 habilitadas; as demais desabilitadas. A interpretação do estado ON/OFF deve seguir o equipamento.</p></div>
+<p>Verifique se o endereço é único no segmento e se o modelo realmente utiliza chaves físicas; diversos dispositivos admitem parametrização por software.</p>
+<div class="network-figures"><figure class="network-figure"><img src="./redes_dp_09.webp" loading="lazy" decoding="async" alt="Exemplo de endereçamento"><figcaption><strong>Exemplo de endereçamento.</strong> Composição de endereço por chaves DIP; exemplo de endereço 50.</figcaption></figure></div></div></details><details class="network-section" id="network-rates" >
+<summary><span class="network-section-heading"><small>Dimensionamento</small><strong>Taxas de comunicação e comprimento</strong></span><span class="network-section-toggle" aria-hidden="true">＋</span></summary>
+<div class="network-section-body">
+<p>A tabela abaixo foi organizada a partir da seção “Taxas de comunicação” do documento. Os limites dependem da taxa configurada, do cabo, de conectores e da topologia efetiva.</p>
+<div class="network-table-wrap"><table class="network-table"><thead><tr><th>Taxa de transmissão</th><th>Comprimento do segmento</th></tr></thead><tbody>
+<tr><td>9,6 / 19,2 / 45,45 / 93,75 / 187,5 kbit/s</td><td>1.000 m</td></tr>
+<tr><td>500 kbit/s</td><td>400 m</td></tr>
+<tr><td>1,5 Mbit/s</td><td>200 m</td></tr>
+<tr><td>3 / 6 / 12 Mbit/s</td><td>100 m</td></tr></tbody></table></div>
+<p>O material também destaca que taxas <strong>acima de 1,5 Mbit/s</strong> exigem atenção especial aos conectores, às derivações e à distância entre dispositivos. Nessa faixa são descritas restrições de derivações.</p>
+<p class="network-caution"><strong>Atenção à fonte:</strong> o anexo contém outra tabela, intitulada “Características básicas”, com alguns comprimentos diferentes. Por segurança, utilize a tabela acima como referência do conteúdo recebido, não como autorização para projeto. Confirme os limites aplicáveis nas normas e no manual do fabricante antes de instalar.</p>
+<div class="network-figures"><figure class="network-figure"><img src="./redes_dp_17.webp" loading="lazy" decoding="async" alt="Velocidade e extensão do segmento"><figcaption><strong>Velocidade e extensão do segmento.</strong> Tabela de velocidades e comprimentos máximos constantes do material.</figcaption></figure><figure class="network-figure"><img src="./redes_dp_19.webp" loading="lazy" decoding="async" alt="Oscilogramas: reflexão"><figcaption><strong>Oscilogramas: reflexão.</strong> Exemplos de sinais deformados por reflexão.</figcaption></figure></div></div></details><details class="network-section" id="network-stations" >
+<summary><span class="network-section-heading"><small>Topologia</small><strong>Estações, segmentos e repetidores</strong></span><span class="network-section-toggle" aria-hidden="true">＋</span></summary>
+<div class="network-section-body">
+<ul><li>O documento considera, em um segmento RS-485, até <strong>32 unidades</strong>, contabilizando estações e repetidores.</li><li>Um repetidor separa segmentos e pode ampliar a rede conforme a arquitetura admissível; não elimina a necessidade de terminação correta em cada segmento.</li><li>Os limites de repetidores em cascata <strong>dependem do fabricante e do atraso permitido</strong>. O próprio material apresenta mais de um cenário, por isso não foi fixado um único número universal.</li><li>Os exemplos ilustram a segmentação de rede e a utilização de repetidores em pontos intermediários.</li></ul>
+<div class="network-figures"><figure class="network-figure"><img src="./redes_dp_21.webp" loading="lazy" decoding="async" alt="Estações e repetidores"><figcaption><strong>Estações e repetidores.</strong> Exemplos de ocupação de segmentos RS-485.</figcaption></figure><figure class="network-figure"><img src="./redes_dp_23.webp" loading="lazy" decoding="async" alt="Arquitetura com repetidores"><figcaption><strong>Arquitetura com repetidores.</strong> Segmentação de rede Profibus DP com repetidores.</figcaption></figure><figure class="network-figure"><img src="./redes_dp_24.webp" loading="lazy" decoding="async" alt="Equipamento repetidor"><figcaption><strong>Equipamento repetidor.</strong> Detalhes ilustrativos de terminação e interfaces do repetidor.</figcaption></figure><figure class="network-figure"><img src="./redes_dp_35.webp" loading="lazy" decoding="async" alt="Regra geral de segmentação"><figcaption><strong>Regra geral de segmentação.</strong> Posições dos terminadores e repetidores na arquitetura da rede.</figcaption></figure></div></div></details><details class="network-section" id="network-termination" >
+<summary><span class="network-section-heading"><small>Integridade do sinal</small><strong>Terminação e reflexões</strong></span><span class="network-section-toggle" aria-hidden="true">＋</span></summary>
+<div class="network-section-body">
+<p>Descontinuidades elétricas, derivações e extremidades não terminadas podem provocar <strong>reflexões</strong> e deformar o sinal de comunicação.</p>
+<ul><li>O documento mostra <strong>terminação ativa</strong> no Profibus DP RS-485, usando resistores associados a uma alimentação de 5 V.</li><li>Em cada segmento, a terminação deve estar posicionada de acordo com as extremidades físicas e a arquitetura dos conectores.</li><li>Terminação incorreta, terminação ausente ou alimentação insuficiente podem prejudicar a integridade da transmissão.</li></ul>
+<div class="network-figures"><figure class="network-figure"><img src="./redes_dp_28.webp" loading="lazy" decoding="async" alt="Rede de terminação ativa"><figcaption><strong>Rede de terminação ativa.</strong> Diagrama ilustrativo dos resistores de terminação e alimentação.</figcaption></figure><figure class="network-figure"><img src="./redes_dp_29.webp" loading="lazy" decoding="async" alt="Terminação em duas extremidades"><figcaption><strong>Terminação em duas extremidades.</strong> Comparativo de formas de onda com terminação correta e somente uma ponta terminada.</figcaption></figure><figure class="network-figure"><img src="./redes_dp_31.webp" loading="lazy" decoding="async" alt="Terminador dedicado"><figcaption><strong>Terminador dedicado.</strong> Exemplo de terminador de barramento apresentado no anexo.</figcaption></figure><figure class="network-figure"><img src="./redes_dp_32.webp" loading="lazy" decoding="async" alt="Terminação incorreta"><figcaption><strong>Terminação incorreta.</strong> Exemplo de sinais observados com terminação inadequada.</figcaption></figure><figure class="network-figure"><img src="./redes_dp_33.webp" loading="lazy" decoding="async" alt="Ausência de terminação"><figcaption><strong>Ausência de terminação.</strong> Exemplo de sinais observados sem terminação.</figcaption></figure></div></div></details><details class="network-section" id="network-diagnosis" >
+<summary><span class="network-section-heading"><small>Falhas típicas</small><strong>Diagnóstico por formas de onda</strong></span><span class="network-section-toggle" aria-hidden="true">＋</span></summary>
+<div class="network-section-body">
+<p>O anexo apresenta formas de onda de comunicação usadas para ilustrar problemas recorrentes:</p>
+<ul><li><strong>Blindagem/aterramento inadequados:</strong> ruídos e perturbações no sinal.</li><li><strong>Cabo excessivamente longo ou enrolado:</strong> alterações de forma e reflexões.</li><li><strong>Terminação incorreta ou ausente:</strong> oscilações e reflexões perceptíveis no osciloscópio.</li><li><strong>Repetidores:</strong> exemplos de recuperação de sinal com filtragem de ruído em determinados modelos.</li></ul>
+<p class="network-caution">As imagens são exemplos qualitativos; não definem, isoladamente, critérios universais de aceitação de sinais.</p>
+<div class="network-figures"><figure class="network-figure"><img src="./redes_dp_14.webp" loading="lazy" decoding="async" alt="Oscilogramas: falta de aterramento"><figcaption><strong>Oscilogramas: falta de aterramento.</strong> Exemplos de distorção do sinal observados no documento.</figcaption></figure><figure class="network-figure"><img src="./redes_dp_15.webp" loading="lazy" decoding="async" alt="Oscilogramas: cabo enrolado"><figcaption><strong>Oscilogramas: cabo enrolado.</strong> Comparativo de sinais associados ao comprimento ou ao enrolamento do cabo.</figcaption></figure><figure class="network-figure"><img src="./redes_dp_37.webp" loading="lazy" decoding="async" alt="Filtragem por repetidor"><figcaption><strong>Filtragem por repetidor.</strong> Comparação entre telegramas com ruído acoplado e ruído filtrado.</figcaption></figure><figure class="network-figure"><img src="./redes_dp_38.webp" loading="lazy" decoding="async" alt="Sinal sem repetidor"><figcaption><strong>Sinal sem repetidor.</strong> Forma de onda demonstrativa antes da utilização de repetidor.</figcaption></figure><figure class="network-figure"><img src="./redes_dp_39.webp" loading="lazy" decoding="async" alt="Sinal com repetidor"><figcaption><strong>Sinal com repetidor.</strong> Forma de onda demonstrativa com repetidor.</figcaption></figure></div></div></details></div>
+            <div class="network-source">Fonte do conteúdo: arquivo <strong>APP.docx</strong> enviado pelo usuário (13 páginas). Texto reorganizado para leitura no aplicativo; ilustrações reproduzidas do anexo. Este guia não substitui normas técnicas nem os manuais dos equipamentos.</div>
+          </div>
+          <div id="networkPa" class="network-view" hidden><div class="card network-placeholder"><div class="network-placeholder-icon">PA</div><h2>Profibus PA</h2><p>Área preparada para receber o material técnico de Profibus PA.</p><small>Nenhum documento de Profibus PA foi fornecido nesta atualização.</small></div></div>
+          <div id="networkAsi" class="network-view" hidden><div class="card network-placeholder"><div class="network-placeholder-icon">AS-i</div><h2>Rede AS-i</h2><p>Área preparada para receber o material técnico de rede AS-i.</p><small>Nenhum documento de rede AS-i foi fornecido nesta atualização.</small></div></div>
+        </div>
+      </section>
+
       <footer class="footer-note">
-        Instrumentação PRO · Versão <span id="footer-version">1.8.9</span> · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
+        Instrumentação PRO · Versão <span id="footer-version">1.9.0</span> · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
       </footer>
     </div>
   </main>
@@ -933,5 +1003,6 @@
   <script src="./app.js"></script>
   <script src="./parshall.js"></script>
   <script src="./passwords.js"></script>
+  <script src="./networks.js"></script>
 </body>
 </html>

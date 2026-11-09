@@ -1,10 +1,11 @@
-const CACHE_NAME = 'instrumentacao-pro-v1-8-9';
+const CACHE_NAME = 'instrumentacao-pro-v1-9-0';
 const CORE_ASSETS = [
   './index.html',
   './styles.css',
   './app.js',
   './parshall.js',
   './passwords.js',
+  './networks.js',
   './manifest.webmanifest'
 ];
 const OPTIONAL_ASSETS = [
@@ -16,7 +17,31 @@ const OPTIONAL_ASSETS = [
   './transmitter_cell_reference.png',
   './app_logo.png',
   './parshall_funcionamento.webp',
-  './parshall_dimensoes.jpg'
+  './parshall_dimensoes.jpg',
+  './redes_dp_01.webp',
+  './redes_dp_03.webp',
+  './redes_dp_04.webp',
+  './redes_dp_05.webp',
+  './redes_dp_06.webp',
+  './redes_dp_09.webp',
+  './redes_dp_10.webp',
+  './redes_dp_13.webp',
+  './redes_dp_14.webp',
+  './redes_dp_15.webp',
+  './redes_dp_17.webp',
+  './redes_dp_19.webp',
+  './redes_dp_21.webp',
+  './redes_dp_23.webp',
+  './redes_dp_24.webp',
+  './redes_dp_28.webp',
+  './redes_dp_29.webp',
+  './redes_dp_31.webp',
+  './redes_dp_32.webp',
+  './redes_dp_33.webp',
+  './redes_dp_35.webp',
+  './redes_dp_37.webp',
+  './redes_dp_38.webp',
+  './redes_dp_39.webp'
 ];
 
 self.addEventListener('install', event => {

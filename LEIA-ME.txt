@@ -1,3 +1,13 @@
+Instrumentação PRO — Versão 1.9.0
+
+NOVO: Módulo 10 - Redes: seletor Profibus DP, Profibus PA e Rede AS-i.
+Profibus DP: guia organizado por oito tópicos a partir do anexo APP.docx (13 páginas); inclui imagens originais convertidas para WebP, tabelas, recomendações e exemplos.
+Profibus PA e AS-i: áreas preparadas para documentos futuros.
+Sem PDF nem campos de identificação neste módulo.
+Cache offline atualizado com os materiais técnicos.
+
+NOTA: O documento recebido possui tabelas de distâncias com divergências internas; os limites técnicos precisam ser confirmados com os fabricantes.
+
 Instrumentação PRO — v1.8.9
 
 Módulo Senhas: removido o texto de aviso abaixo de Códigos e sequências. Não houve alteração nas senhas ou na consulta.
