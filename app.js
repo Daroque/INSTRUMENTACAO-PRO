@@ -2,7 +2,7 @@
   'use strict';
 
   // Identificador central da versão exibida na interface.
-  const APP_VERSION = '1.9.7';
+  const APP_VERSION = '1.9.8';
   const $ = (id) => document.getElementById(id);
   const fmt = (n, dec = 2) => Number(n).toLocaleString('pt-BR', { minimumFractionDigits: dec, maximumFractionDigits: dec });
   const setHTML = (id, html) => { const el = $(id); if (el) el.innerHTML = html; };
@@ -891,6 +891,10 @@
     });
     if ($('ohmInput1Label')) $('ohmInput1Label').textContent = config.label1;
     if ($('ohmInput2Label')) $('ohmInput2Label').textContent = config.label2;
+    if ($('ohmOperator')) {
+      $('ohmOperator').textContent = mode === 'V' ? '×' : '÷';
+      $('ohmOperator').setAttribute('aria-label', mode === 'V' ? 'Multiplicação' : 'Divisão');
+    }
     if ($('ohmInput1')) $('ohmInput1').value = config.defaults[0];
     if ($('ohmInput2')) $('ohmInput2').value = config.defaults[1];
     updateOhmLaw();

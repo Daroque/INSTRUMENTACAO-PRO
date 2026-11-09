@@ -657,3 +657,9 @@ html[data-theme="dark"] .parshall-table tr.parshall-current{background:#245075}
 
 /* v1.9.7: seletores RPM/Polos e entrada no mesmo alinhamento */
 .motor-speed-reference { margin-top: 9px; font-size: .79rem; color: var(--muted); }
+
+/* v1.9.8 — Operador dinâmico na Lei de Ohm, alinhado aos campos. */
+.ohm-fields { display:grid; grid-template-columns:minmax(0,1fr) 30px minmax(0,1fr); gap:6px; align-items:end; }
+.ohm-fields .field { min-width:0; }
+.ohm-operator { display:flex; align-items:center; justify-content:center; height:49px; min-width:30px; color:var(--accent); font-size:2rem; line-height:1; font-weight:800; user-select:none; }
+@media(max-width:420px) { .ohm-fields { grid-template-columns:minmax(0,1fr) 24px minmax(0,1fr); gap:4px; } .ohm-operator { font-size:1.6rem; min-width:24px; } .ohm-fields .field label { font-size:.82rem; } }

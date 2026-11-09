@@ -1,3 +1,11 @@
+INSTRUMENTAÇÃO PRO v1.9.8
+
+- Lei de Ohm: operador matemático exibido entre os campos conforme a grandeza selecionada.
+- Ao calcular tensão (V): multiplicação (×).
+- Ao calcular corrente (I) ou resistência (R): divisão (÷).
+- Preservados os cálculos existentes e os resultados auxiliares apenas no modo I.
+- Atualizado cache offline.
+
 INSTRUMENTAÇÃO PRO v1.9.7
 
 - Módulo 09: removido o campo Frequência do cálculo RPM/Polos.

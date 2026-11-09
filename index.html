@@ -30,7 +30,7 @@
           <button class="btn btn-secondary" id="reportBtn" type="button" title="Gerar relatório do módulo atual">Gerar PDF do módulo</button>
           <div class="app-status-group" aria-label="Conexão e versão do aplicativo">
             <span class="status-badge" id="connection-status">Verificando...</span>
-            <span class="app-version-badge" id="app-version" aria-label="Versão do aplicativo">v1.9.4</span>
+            <span class="app-version-badge" id="app-version" aria-label="Versão do aplicativo">v1.9.8</span>
           </div>
           <button id="installBtn" class="btn btn-secondary" hidden>Instalar app</button>
         </div>
@@ -931,8 +931,9 @@
               <button type="button" class="ohm-node" id="ohmModeR" data-mode="R" aria-pressed="false">R</button>
               <div class="ohm-lines" aria-hidden="true"></div>
             </div>
-            <div class="form-grid two-cols" id="ohmFields">
+            <div class="ohm-fields" id="ohmFields">
               <div class="field"><label id="ohmInput1Label" for="ohmInput1">Corrente (A)</label><input id="ohmInput1" type="number" inputmode="decimal" step="any" value="10"></div>
+              <span class="ohm-operator" id="ohmOperator" role="img" aria-label="Multiplicação">×</span>
               <div class="field"><label id="ohmInput2Label" for="ohmInput2">Resistência (Ω)</label><input id="ohmInput2" type="number" inputmode="decimal" step="any" value="22"></div>
             </div>
             <div class="result-grid calc-result" id="ohmResult" aria-live="polite"></div>
@@ -1081,7 +1082,7 @@
       </section>
 
       <footer class="footer-note">
-        Instrumentação PRO · Versão <span id="footer-version">1.9.4</span> · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
+        Instrumentação PRO · Versão <span id="footer-version">1.9.8</span> · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
       </footer>
     </div>
   </main>
