@@ -1,3 +1,33 @@
+Instrumentação PRO — Versão 1.9.3
+
+Módulo 09 — Cálculo de Motor
+- Novo seletor: Trifásica ou Monofásica; padrão Trifásica.
+- Monofásica: corrente nominal estimada a partir da potência mecânica nominal no eixo, dividida pela tensão nos terminais, fator de potência e rendimento.
+- Trifásica: corrente nominal estimada a partir da potência mecânica nominal no eixo, dividida pela tensão entre fases, fator de potência e rendimento e pelo fator raiz de três.
+- Potência selecionável CV / kW / HP e convertida internamente para W.
+- Label de tensão atualizado automaticamente ao alterar alimentação.
+- Validação de tensão, potência, fator de potência e rendimento.
+- Sem PDF, nome, TAG, função ou fórmula mostrada ao usuário.
+- É uma estimativa em regime nominal; confirmar dados da placa e condições de partida para projeto de proteções, cabos e comandos.
+
+Fontes verificadas (Schneider Electric e Fluke):
+https://productinfo.se.com/tesys_t_user_guides/doca0127-tesys-t-ltmr-motor-management-controller-user-guide/English/BM_TeSys%20T%20LTMR%20User%20Guide_53457272_T001010654.xml/%24/CHP_MeteringandMonitoringFunctions_53457272_T001010660
+https://www.fluke.com/pt-pt/saber-mais/blog/qualidade-de-energia/determinar-a-potencia-de-carga
+https://www.se.com/us/en/faqs/FA101600/
+
+Demais módulos e arquivos preservados. Cache PWA v1.9.3.
+
+Instrumentação PRO — versão 1.9.2
+
+NOVIDADE
+Módulo 09 > Cálculo de Motor (trifásico):
+- Entrada de tensão entre fases (V), potência, fator de potência e rendimento (%).
+- Seleção CV / kW / HP; conversões automáticas internas.
+- Resultado de corrente nominal estimada em amperes (A).
+- Sem equação na tela, PDF ou identificação por TAG/nome/função.
+
+Hipóteses de cálculo: alimentação CA trifásica equilibrada; potência mecânica nominal no eixo; fator de potência e rendimento na condição considerada. Para proteção e dimensionamento, conferir placa, método de partida, regime, norma e fabricante.
+
 Instrumentação PRO — v1.9.1
 Novo: conteúdo Profibus PA integrado ao Módulo Redes em 6 seções, com tradução Automação de Processo, parâmetros e diagramas do Word fornecido.
 Arquivos originais DP e demais módulos preservados. Offline atualizado.

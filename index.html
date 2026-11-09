@@ -30,7 +30,7 @@
           <button class="btn btn-secondary" id="reportBtn" type="button" title="Gerar relatório do módulo atual">Gerar PDF do módulo</button>
           <div class="app-status-group" aria-label="Conexão e versão do aplicativo">
             <span class="status-badge" id="connection-status">Verificando...</span>
-            <span class="app-version-badge" id="app-version" aria-label="Versão do aplicativo">v1.9.1</span>
+            <span class="app-version-badge" id="app-version" aria-label="Versão do aplicativo">v1.9.3</span>
           </div>
           <button id="installBtn" class="btn btn-secondary" hidden>Instalar app</button>
         </div>
@@ -922,6 +922,19 @@
             </div>
             <div class="result-grid calc-result" id="calcBaumeResult" aria-live="polite"></div>
           </article>
+          <article class="card calc-card">
+            <h2>Cálculo de Motor</h2>
+            <p class="note note-no-top">Estime a corrente nominal do motor conforme o tipo de alimentação e os dados informados.</p>
+            <div class="form-grid two-cols">
+              <div class="field"><label for="motorSupplyType">Tipo de alimentação</label><select id="motorSupplyType"><option value="three" selected>Trifásica</option><option value="single">Monofásica</option></select></div>
+              <div class="field"><label for="motorVoltage">Tensão entre fases (V)</label><input id="motorVoltage" type="number" inputmode="decimal" step="any" min="0" value="380"></div>
+              <div class="field"><label for="motorPower">Potência do motor</label><input id="motorPower" type="number" inputmode="decimal" step="any" min="0" value="10"></div>
+              <div class="field"><label for="motorPowerUnit">Unidade de potência</label><select id="motorPowerUnit"><option value="cv" selected>CV — Cavalo-vapor (placa BR)</option><option value="kw">kW — Quilowatt</option><option value="hp">HP — Horsepower (EUA)</option></select></div>
+              <div class="field"><label for="motorPowerFactor">Fator de potência (cos φ)</label><input id="motorPowerFactor" type="number" inputmode="decimal" step="any" min="0" max="1" value="0.85"></div>
+              <div class="field"><label for="motorEfficiency">Rendimento do motor (%)</label><input id="motorEfficiency" type="number" inputmode="decimal" step="any" min="0" max="100" value="90"></div>
+            </div>
+            <div class="result-grid calc-result" id="motorCurrentResult" aria-live="polite"></div>
+          </article>
         </div>
       </section>
 
@@ -1039,7 +1052,7 @@
       </section>
 
       <footer class="footer-note">
-        Instrumentação PRO · Versão <span id="footer-version">1.9.0</span> · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
+        Instrumentação PRO · Versão <span id="footer-version">1.9.3</span> · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
       </footer>
     </div>
   </main>

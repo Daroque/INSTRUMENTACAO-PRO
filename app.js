@@ -2,7 +2,7 @@
   'use strict';
 
   // Identificador central da versão exibida na interface.
-  const APP_VERSION = '1.9.1';
+  const APP_VERSION = '1.9.3';
   const $ = (id) => document.getElementById(id);
   const fmt = (n, dec = 2) => Number(n).toLocaleString('pt-BR', { minimumFractionDigits: dec, maximumFractionDigits: dec });
   const setHTML = (id, html) => { const el = $(id); if (el) el.innerHTML = html; };
@@ -701,6 +701,41 @@
     setHTML('calcBaumeResult', resultCard('Brix estimado', `${fmt(brix, 2)} °Brix`));
   }
 
+  // Módulo 09 — motor CA: potência nominal mecânica no eixo.
+  // Fator de potência e rendimento referem-se à condição de operação considerada.
+  // Para monofásico usa-se a tensão aplicada aos terminais; para trifásico,
+  // a tensão entre fases, pressupondo alimentação e carga equilibradas.
+  function updateMotorCurrent() {
+    const supply = $('motorSupplyType')?.value;
+    const voltageLabel = document.querySelector('label[for="motorVoltage"]');
+    if (voltageLabel) voltageLabel.textContent = supply === 'single'
+      ? 'Tensão nos terminais do motor (V)'
+      : 'Tensão entre fases (V)';
+
+    const voltage = valueOrNull('motorVoltage');
+    const power = valueOrNull('motorPower');
+    const powerFactor = valueOrNull('motorPowerFactor');
+    const efficiencyPct = valueOrNull('motorEfficiency');
+    const unit = $('motorPowerUnit')?.value;
+    if ([voltage, power, powerFactor, efficiencyPct].some(value => value === null)) {
+      setHTML('motorCurrentResult', resultCard('Dados incompletos', 'Preencha todos os campos.'));
+      return;
+    }
+    const wattsPerUnit = {cv: 735.49875, kw: 1000, hp: 745.6998715822702};
+    if (!(voltage > 0) || power < 0 || !(powerFactor > 0 && powerFactor <= 1) ||
+        !(efficiencyPct > 0 && efficiencyPct <= 100) ||
+        !Object.hasOwn(wattsPerUnit, unit) || !['single', 'three'].includes(supply)) {
+      setHTML('motorCurrentResult', resultCard('Dados inválidos', 'Tensão maior que zero; potência não negativa; fator de potência entre 0 e 1; rendimento entre 0% e 100%.'));
+      return;
+    }
+    const mechanicalWatts = power * wattsPerUnit[unit];
+    const phaseFactor = supply === 'three' ? Math.sqrt(3) : 1;
+    const current = mechanicalWatts / (phaseFactor * voltage * powerFactor * (efficiencyPct / 100));
+    setHTML('motorCurrentResult', Number.isFinite(current)
+      ? resultCard('Corrente nominal estimada', `${fmt(current, 2)} A`)
+      : resultCard('Cálculo inválido', 'Verifique a magnitude dos dados informados.'));
+  }
+
   function bindInputs(ids, fn) {
     ids.forEach((id) => {
       const el = $(id);
@@ -725,6 +760,7 @@
   bindInputs(['calcTeeth', 'calcGearRpm', 'calcGearHz'], updateGearRotation);
   bindInputs(['calcRpm', 'calcHz'], updateRpmPerHz);
   bindInputs(['calcBaume'], updateBaumeBrix);
+  bindInputs(['motorSupplyType', 'motorVoltage', 'motorPower', 'motorPowerUnit', 'motorPowerFactor', 'motorEfficiency'], updateMotorCurrent);
 
   $('powerSwap').addEventListener('click', swapPower);
   $('pExampleBtn').addEventListener('click', function () {
@@ -1005,4 +1041,5 @@
   updateGearRotation();
   updateRpmPerHz();
   updateBaumeBrix();
+  updateMotorCurrent();
 })();
