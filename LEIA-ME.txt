@@ -1,3 +1,8 @@
+Instrumentação PRO — v1.8.9
+
+Módulo Senhas: removido o texto de aviso abaixo de Códigos e sequências. Não houve alteração nas senhas ou na consulta.
+Versão do cabeçalho e rodapé atualizada; cache offline renovado.
+
 Instrumentação PRO — v1.8.8
 
 Atualização: indicador permanente da versão ao lado do estado Online/Offline no cabeçalho, inclusive em telas de celular.
