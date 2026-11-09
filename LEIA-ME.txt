@@ -1,4 +1,4 @@
-Instrumentação PRO — Versão 1.9.4
+Instrumentação PRO — Versão: 1.9.5
 
 ALTERAÇÃO NO MÓDULO 09 — CÁLCULO DE MOTOR
 - Pré-dimensionamento ilustrativo do cabo de alimentação e calibre candidato de disjuntor.

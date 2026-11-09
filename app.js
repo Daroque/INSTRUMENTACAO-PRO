@@ -2,7 +2,7 @@
   'use strict';
 
   // Identificador central da versão exibida na interface.
-  const APP_VERSION = '1.9.4';
+  const APP_VERSION = '1.9.5';
   const $ = (id) => document.getElementById(id);
   const fmt = (n, dec = 2) => Number(n).toLocaleString('pt-BR', { minimumFractionDigits: dec, maximumFractionDigits: dec });
   const setHTML = (id, html) => { const el = $(id); if (el) el.innerHTML = html; };
@@ -701,13 +701,10 @@
     setHTML('calcBaumeResult', resultCard('Brix estimado', `${fmt(brix, 2)} °Brix`));
   }
 
-  // Módulo 09 — motor CA: potência nominal mecânica no eixo.
-  // Fator de potência e rendimento referem-se à condição de operação considerada.
-  // Para monofásico usa-se a tensão aplicada aos terminais; para trifásico,
-  // a tensão entre fases, pressupondo alimentação e carga equilibradas.
+  // Módulo 09 — Lei de Ohm e cálculo de motor.
+  // Corrente de motor: I = P / (V * cosφ * η) para monofásico e I = P / (√3 * V * cosφ * η) para trifásico.
+  // Velocidade síncrona aproximada: ns = 120 * f / p, com p = número de polos.
   // Pré-dimensionamento limitado — tabela 36 (NBR 5410), cobre PVC 70°C, métodos B1 e C.
-  // Fonte: NBR 5410 tabelas 36/40, conforme edição indicada no módulo.
-  // Corrente admissível em A; dados de métodos B1/C, 2 ou 3 condutores carregados.
   const MOTOR_CABLES = [
     {s:2.5,b1_2:24,b1_3:21,c_2:27,c_3:24},
     {s:4,b1_2:32,b1_3:28,c_2:36,c_3:32},
@@ -725,48 +722,49 @@
     {s:240,b1_2:415,b1_3:370,c_2:461,c_3:403}
   ];
   const MOTOR_TEMP_FACTORS = {25:1.06,30:1,35:.94,40:.87,45:.79,50:.71};
-  const MOTOR_BREAKER_RATINGS = [6,10,16,20,25,32,40,50,63,80,100,125,160,200,250,315,400];
+  const MOTOR_BREAKER_RATINGS = [2,4,6,10,16,20,25,32,40,50,63,80,100,125,160,200,250,315,400];
+  const STANDARD_POLES = [2,4,6,8,10,12];
+  let ohmMode = 'V';
+  let motorSpeedMode = 'poles';
+
+  function estimateCableAndBreaker(current, options = {}) {
+    const {
+      supply = 'single', voltage = 220, powerFactor = 1,
+      method = 'B1', temp = '30', group = 1, length = 20, maxDrop = 4
+    } = options;
+    const valid = Number.isFinite(current) && current > 0 && Number.isFinite(voltage) && voltage > 0 &&
+      Number.isFinite(powerFactor) && powerFactor > 0 && powerFactor <= 1 &&
+      ['single', 'three'].includes(supply) && ['B1', 'C'].includes(method) &&
+      Object.hasOwn(MOTOR_TEMP_FACTORS, String(temp)) && Number.isFinite(group) && group > 0 && group <= 1 &&
+      Number.isFinite(length) && length > 0;
+    if (!valid) return null;
+    const count = supply === 'three' ? 3 : 2;
+    const key = (method === 'B1' ? 'b1_' : 'c_') + count;
+    const correction = MOTOR_TEMP_FACTORS[String(temp)] * group;
+    const dropFactor = supply === 'three' ? Math.sqrt(3) : 2;
+    const rhoCu70 = 0.0225;
+    return MOTOR_CABLES.map(c => {
+      const iz = c[key] * correction;
+      const dropPct = 100 * dropFactor * current * length * rhoCu70 * powerFactor / (c.s * voltage);
+      const breaker = MOTOR_BREAKER_RATINGS.find(r => r >= current - 1e-9 && r <= iz + 1e-9);
+      return {section:c.s, iz, dropPct, breaker};
+    }).find(r => r.iz >= current && r.dropPct <= maxDrop && r.breaker !== undefined) || null;
+  }
 
   function updateMotorSizing(current, supply, voltage, powerFactor) {
-    const resultId = 'motorSizingResult';
-    const notice = $('motorSizingNotice');
     const method = $('motorInstallMethod')?.value;
     const temp = $('motorAmbientTemp')?.value;
     const group = Number($('motorGroupingFactor')?.value);
     const length = valueOrNull('motorCircuitLength');
-    const invalid = !Number.isFinite(current) || current <= 0 || !(voltage > 0) ||
-      !(powerFactor > 0 && powerFactor <= 1) || !['single','three'].includes(supply) ||
-      !['B1','C'].includes(method) || !Object.hasOwn(MOTOR_TEMP_FACTORS, temp) ||
-      !Number.isFinite(group) || group <= 0 || group > 1 || length === null || length <= 0;
-    if (invalid) {
-      setHTML(resultId, resultCard('Indicações indisponíveis', 'Informe uma corrente positiva e as condições da instalação.'));
-      if (notice) notice.textContent = 'Sem dados válidos, nenhuma seção de cabo ou calibre de disjuntor pode ser indicado.';
-      return;
-    }
-    const count = supply === 'three' ? 3 : 2;
-    const key = (method === 'B1' ? 'b1_' : 'c_') + count;
-    const correction = MOTOR_TEMP_FACTORS[temp] * group;
-    // Estimativa resistiva conservadora em regime; partida exige cálculo próprio.
-    const dropFactor = supply === 'three' ? Math.sqrt(3) : 2;
-    const rhoCu70 = 0.0225; // Ω·mm²/m aproximado a 70°C
-    const selected = MOTOR_CABLES.map(c => {
-      const iz = c[key] * correction;
-      const dropPct = 100 * dropFactor * current * length * rhoCu70 * powerFactor / (c.s * voltage);
-      const breaker = MOTOR_BREAKER_RATINGS.find(r => r >= current - 1e-9 && r <= iz + 1e-9);
-      return {section:c.s,iz,dropPct,breaker};
-    }).find(r => r.iz >= current && r.dropPct <= 4 && r.breaker !== undefined);
+    const selected = estimateCableAndBreaker(current, { supply, voltage, powerFactor, method, temp, group, length, maxDrop:4 });
     if (!selected) {
-      setHTML(resultId, resultCard('Dimensionamento não disponível', 'Nenhuma combinação de cabo e proteção atende aos limites simplificados considerados.'));
-      if (notice) notice.textContent = 'Revise as condições de instalação ou solicite cálculo elétrico específico. Não adote o menor cabo disponível por aproximação.';
+      setHTML('motorSizingResult', resultCard('Estimativa indisponível', 'Confira a corrente e as condições da instalação.'));
       return;
     }
-    setHTML(resultId, [
-      resultCard('Seção preliminar do cabo', `${fmt(selected.section, 1)} mm²`),
-      resultCard('Calibre candidato do disjuntor', `${fmt(selected.breaker, 0)} A`),
-      resultCard('Capacidade corrigida do cabo (Iz)', `${fmt(selected.iz, 1)} A`),
-      resultCard('Queda de tensão estimada no trecho', `${fmt(selected.dropPct, 2)}%`)
+    setHTML('motorSizingResult', [
+      resultCard('Bitola estimada do cabo', `${fmt(selected.section, 1)} mm²`),
+      resultCard('Disjuntor de proteção estimado', `${fmt(selected.breaker, 0)} A`)
     ].join(''));
-    if (notice) notice.textContent = 'PRÉ-DIMENSIONAMENTO — O disjuntor mostrado é apenas um calibre candidato de proteção do circuito, não seleção definitiva para motor. Verifique partida, sobrecarga, curto-circuito (Icu/Icn), coordenação, aterramento/PE, reatância, terminais e condições reais antes de especificar ou instalar.';
   }
 
   function updateMotorCurrent() {
@@ -803,6 +801,135 @@
     updateMotorSizing(current, supply, voltage, powerFactor);
   }
 
+  function nearestStandardPoles(freq, rpm) {
+    return STANDARD_POLES.map(poles => ({ poles, syncRpm: 120 * freq / poles, diff: Math.abs((120 * freq / poles) - rpm) }))
+      .sort((a, b) => a.diff - b.diff)[0] || null;
+  }
+
+  function updateMotorSpeedRelation(source) {
+    if (source) motorSpeedMode = source;
+    const freq = valueOrNull('motorSpeedHz');
+    const poles = valueOrNull('motorPoles');
+    const rpm = valueOrNull('motorRatedRpm');
+    if (!(freq > 0)) {
+      setHTML('motorSpeedResult', resultCard('Dados incompletos', 'Informe a frequência da rede.'));
+      return;
+    }
+    if (motorSpeedMode === 'rpm' && rpm !== null) {
+      if (!(rpm > 0)) {
+        setHTML('motorSpeedResult', resultCard('Dados inválidos', 'Informe uma rotação maior que zero.'));
+        return;
+      }
+      const best = nearestStandardPoles(freq, rpm);
+      if (!best) {
+        setHTML('motorSpeedResult', resultCard('Estimativa indisponível', 'Não foi possível estimar o número de polos.'));
+        return;
+      }
+      if ($('motorPoles')) $('motorPoles').value = String(best.poles);
+      setHTML('motorSpeedResult', [
+        resultCard('Polos estimados', `${fmt(best.poles, 0)} polos`),
+        resultCard('RPM síncrono estimado', `${fmt(best.syncRpm, 0)} RPM`)
+      ].join(''));
+      return;
+    }
+    if (poles === null) {
+      setHTML('motorSpeedResult', resultCard('Dados incompletos', 'Informe o número de polos ou a rotação do motor.'));
+      return;
+    }
+    if (!(poles >= 2) || Math.round(poles) !== poles) {
+      setHTML('motorSpeedResult', resultCard('Dados inválidos', 'O número de polos deve ser inteiro e maior ou igual a 2.'));
+      return;
+    }
+    const syncRpm = 120 * freq / poles;
+    if ($('motorRatedRpm') && motorSpeedMode === 'poles') $('motorRatedRpm').value = fmt(syncRpm, 0).replace(/\./g, '').replace(/,/g, '');
+    setHTML('motorSpeedResult', [
+      resultCard('RPM síncrono estimado', `${fmt(syncRpm, 0)} RPM`),
+      resultCard('Polos informados', `${fmt(poles, 0)} polos`)
+    ].join(''));
+  }
+
+  function getOhmModeConfig(mode) {
+    return {
+      V: {
+        label1: 'Corrente (A)', label2: 'Resistência (Ω)',
+        defaults: ['10', '22'],
+        resultLabel: 'Tensão calculada', unit: 'V',
+        calc: (a, b) => a * b,
+        getCurrent: (a, b, result) => a,
+        getVoltage: (a, b, result) => result
+      },
+      I: {
+        label1: 'Tensão (V)', label2: 'Resistência (Ω)',
+        defaults: ['220', '22'],
+        resultLabel: 'Corrente calculada', unit: 'A',
+        calc: (a, b) => a / b,
+        getCurrent: (a, b, result) => result,
+        getVoltage: (a, b, result) => a
+      },
+      R: {
+        label1: 'Tensão (V)', label2: 'Corrente (A)',
+        defaults: ['220', '10'],
+        resultLabel: 'Resistência calculada', unit: 'Ω',
+        calc: (a, b) => a / b,
+        getCurrent: (a, b, result) => b,
+        getVoltage: (a, b, result) => a
+      }
+    }[mode];
+  }
+
+  function setOhmMode(mode) {
+    ohmMode = mode;
+    const config = getOhmModeConfig(mode);
+    document.querySelectorAll('.ohm-node').forEach((btn) => {
+      const active = btn.dataset.mode === mode;
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-pressed', String(active));
+    });
+    if ($('ohmInput1Label')) $('ohmInput1Label').textContent = config.label1;
+    if ($('ohmInput2Label')) $('ohmInput2Label').textContent = config.label2;
+    if ($('ohmInput1')) $('ohmInput1').value = config.defaults[0];
+    if ($('ohmInput2')) $('ohmInput2').value = config.defaults[1];
+    updateOhmLaw();
+  }
+
+  function updateOhmLaw() {
+    const config = getOhmModeConfig(ohmMode);
+    const a = valueOrNull('ohmInput1');
+    const b = valueOrNull('ohmInput2');
+    if (a === null || b === null) {
+      setHTML('ohmResult', resultCard('Dados incompletos', 'Preencha os dois campos do cálculo selecionado.'));
+      setHTML('ohmProtectionResult', '');
+      return;
+    }
+    if (!(a >= 0) || !(b > 0)) {
+      setHTML('ohmResult', resultCard('Dados inválidos', 'Informe valores positivos e maiores que zero para o divisor.'));
+      setHTML('ohmProtectionResult', '');
+      return;
+    }
+    const result = config.calc(a, b);
+    if (!Number.isFinite(result)) {
+      setHTML('ohmResult', resultCard('Cálculo inválido', 'Verifique os valores informados.'));
+      setHTML('ohmProtectionResult', '');
+      return;
+    }
+    setHTML('ohmResult', resultCard(config.resultLabel, `${fmt(result, 2)} ${config.unit}`));
+    const current = config.getCurrent(a, b, result);
+    const voltage = config.getVoltage(a, b, result);
+    if (!(current >= 1) || !(voltage > 0)) {
+      setHTML('ohmProtectionResult', resultCard('Proteção e cabo', 'Estimativa exibida apenas para correntes a partir de 1 A.'));
+      return;
+    }
+    const selected = estimateCableAndBreaker(current, { supply:'single', voltage, powerFactor:1, method:'B1', temp:'30', group:1, length:20, maxDrop:4 });
+    if (!selected) {
+      setHTML('ohmProtectionResult', resultCard('Proteção e cabo', 'Não foi possível estimar com os critérios simplificados.'));
+      return;
+    }
+    setHTML('ohmProtectionResult', [
+      resultCard('Bitola estimada do cabo', `${fmt(selected.section, 1)} mm²`),
+      resultCard('Disjuntor de proteção estimado', `${fmt(selected.breaker, 0)} A`)
+    ].join(''));
+  }
+
   function bindInputs(ids, fn) {
     ids.forEach((id) => {
       const el = $(id);
@@ -829,7 +956,13 @@
   bindInputs(['calcBaume'], updateBaumeBrix);
   bindInputs(['motorSupplyType', 'motorVoltage', 'motorPower', 'motorPowerUnit', 'motorPowerFactor', 'motorEfficiency'], updateMotorCurrent);
   bindInputs(['motorInstallMethod', 'motorAmbientTemp', 'motorCircuitLength', 'motorGroupingFactor'], updateMotorCurrent);
+  bindInputs(['ohmInput1', 'ohmInput2'], updateOhmLaw);
+  bindInputs(['motorSpeedHz'], () => updateMotorSpeedRelation());
 
+  document.querySelectorAll('.ohm-node').forEach((btn) => btn.addEventListener('click', () => setOhmMode(btn.dataset.mode)));
+  if ($('motorPoles')) $('motorPoles').addEventListener('input', () => updateMotorSpeedRelation('poles'));
+  if ($('motorRatedRpm')) $('motorRatedRpm').addEventListener('input', () => updateMotorSpeedRelation('rpm'));
+  if ($('motorSpeedHz')) $('motorSpeedHz').addEventListener('change', () => updateMotorSpeedRelation());
   $('powerSwap').addEventListener('click', swapPower);
   $('pExampleBtn').addEventListener('click', function () {
     $('pValue').value = '10';
@@ -1109,5 +1242,7 @@
   updateGearRotation();
   updateRpmPerHz();
   updateBaumeBrix();
+  setOhmMode('V');
   updateMotorCurrent();
+  updateMotorSpeedRelation('poles');
 })();

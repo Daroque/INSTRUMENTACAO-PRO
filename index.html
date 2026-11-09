@@ -923,6 +923,23 @@
             <div class="result-grid calc-result" id="calcBaumeResult" aria-live="polite"></div>
           </article>
           <article class="card calc-card">
+            <h2>Lei de Ohm</h2>
+            <p class="note note-no-top">Clique em V, I ou R para escolher a grandeza a calcular e informe os outros dois valores.</p>
+            <div class="ohm-triangle" role="group" aria-label="Seleção do cálculo da Lei de Ohm">
+              <button type="button" class="ohm-node active" id="ohmModeV" data-mode="V" aria-pressed="true">V</button>
+              <button type="button" class="ohm-node" id="ohmModeI" data-mode="I" aria-pressed="false">I</button>
+              <button type="button" class="ohm-node" id="ohmModeR" data-mode="R" aria-pressed="false">R</button>
+              <div class="ohm-lines" aria-hidden="true"></div>
+            </div>
+            <div class="form-grid two-cols" id="ohmFields">
+              <div class="field"><label id="ohmInput1Label" for="ohmInput1">Corrente (A)</label><input id="ohmInput1" type="number" inputmode="decimal" step="any" value="10"></div>
+              <div class="field"><label id="ohmInput2Label" for="ohmInput2">Resistência (Ω)</label><input id="ohmInput2" type="number" inputmode="decimal" step="any" value="22"></div>
+            </div>
+            <div class="result-grid calc-result" id="ohmResult" aria-live="polite"></div>
+            <div class="result-grid calc-result" id="ohmProtectionResult" aria-live="polite"></div>
+            <p class="note">Para a estimativa de disjuntor e cabo, o aplicativo considera circuito monofásico em cobre PVC 70 °C, método B1, 30 °C, sem agrupamento e trecho de 20 m.</p>
+          </article>
+          <article class="card calc-card">
             <h2>Cálculo de Motor</h2>
             <p class="note note-no-top">Estime a corrente nominal do motor conforme o tipo de alimentação e os dados informados.</p>
             <div class="form-grid two-cols">
@@ -934,30 +951,25 @@
               <div class="field"><label for="motorEfficiency">Rendimento do motor (%)</label><input id="motorEfficiency" type="number" inputmode="decimal" step="any" min="0" max="100" value="90"></div>
             </div>
             <div class="result-grid calc-result" id="motorCurrentResult" aria-live="polite"></div>
+            <section class="motor-speed-block" aria-labelledby="motorSpeedTitle">
+              <h3 id="motorSpeedTitle">Relação entre polos e RPM</h3>
+              <div class="form-grid two-cols">
+                <div class="field"><label for="motorSpeedHz">Frequência da rede (Hz)</label><select id="motorSpeedHz"><option value="50">50</option><option value="60" selected>60</option></select></div>
+                <div class="field"><label for="motorPoles">Número de polos do motor</label><input id="motorPoles" type="number" inputmode="numeric" step="1" min="2" value="4"></div>
+                <div class="field"><label for="motorRatedRpm">Rotação do motor (RPM)</label><input id="motorRatedRpm" type="number" inputmode="decimal" step="any" min="0" value=""></div>
+              </div>
+              <div class="result-grid calc-result" id="motorSpeedResult" aria-live="polite"></div>
+            </section>
             <section class="motor-sizing" aria-labelledby="motorSizingTitle">
-              <h3 id="motorSizingTitle">Pré-dimensionamento elétrico</h3>
-              <p class="note note-no-top">Referência para circuito dedicado de motor em baixa tensão, com <strong>cobre e isolação PVC 70 °C</strong>. Informe as condições reais para estimar o cabo e o calibre de proteção.</p>
+              <h3 id="motorSizingTitle">Estimativa de proteção e cabo</h3>
               <div class="form-grid two-cols motor-sizing-fields">
                 <div class="field"><label for="motorInstallMethod">Método de instalação</label><select id="motorInstallMethod"><option value="B1" selected>B1 — condutores em eletroduto sobre/embutido em parede</option><option value="C">C — cabos fixados diretamente à parede</option></select></div>
                 <div class="field"><label for="motorAmbientTemp">Temperatura ambiente</label><select id="motorAmbientTemp"><option value="25">25 °C</option><option value="30" selected>30 °C</option><option value="35">35 °C</option><option value="40">40 °C</option><option value="45">45 °C</option><option value="50">50 °C</option></select></div>
-                <div class="field"><label for="motorCircuitLength">Comprimento do circuito (m)</label><input id="motorCircuitLength" type="number" min="0.1" step="any" inputmode="decimal" value="20"><small>Comprimento de ida, desde a proteção até o motor.</small></div>
-                <div class="field"><label for="motorGroupingFactor">Fator de agrupamento</label><select id="motorGroupingFactor"><option value="1" selected>1,00 — sem redução por agrupamento</option><option value="0.8">0,80 — informado para o projeto</option><option value="0.7">0,70 — informado para o projeto</option><option value="0.65">0,65 — informado para o projeto</option></select><small>Selecione conforme a disposição real dos circuitos e a NBR 5410.</small></div>
+                <div class="field"><label for="motorCircuitLength">Comprimento do circuito (m)</label><input id="motorCircuitLength" type="number" min="0.1" step="any" inputmode="decimal" value="20"></div>
+                <div class="field"><label for="motorGroupingFactor">Fator de agrupamento</label><select id="motorGroupingFactor"><option value="1" selected>1,00 — sem redução por agrupamento</option><option value="0.8">0,80 — informado para o projeto</option><option value="0.7">0,70 — informado para o projeto</option><option value="0.65">0,65 — informado para o projeto</option></select></div>
               </div>
-              <div class="motor-sizing-results" aria-live="polite">
-                <div class="motor-protection-visual" aria-label="Representação esquemática de disjuntor e condutores de alimentação">
-                  <div class="motor-supply-label">REDE ELÉTRICA</div>
-                  <svg class="motor-breaker-symbol" viewBox="0 0 176 110" role="img" aria-label="Símbolo ilustrativo de disjuntor, sem indicação de curva ou modelo">
-                    <path d="M23 53 H55 M121 53 H153" stroke="currentColor" stroke-width="4" fill="none" stroke-linecap="round"/>
-                    <rect x="55" y="14" width="66" height="82" rx="9" fill="none" stroke="currentColor" stroke-width="3"/>
-                    <path d="M72 64 L98 43" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><circle cx="72" cy="64" r="4" fill="currentColor"/><circle cx="105" cy="37" r="4" fill="currentColor"/>
-                    <path d="M68 22 H108" stroke="currentColor" opacity=".45" stroke-width="2"/>
-                  </svg>
-                  <div class="motor-supply-label">MOTOR</div>
-                </div>
-                <div class="motor-sizing-cards" id="motorSizingResult"><div class="result-card"><span>Indicações preliminares</span><strong>Preencha os dados do motor.</strong></div></div>
-              </div>
-              <p id="motorSizingNotice" class="motor-sizing-notice" role="status">Somente pré-dimensionamento. Não substitui análise de partida, curto-circuito, coordenação de proteção, queda de tensão na partida, PE, terminais e projeto elétrico.</p>
-              <details class="motor-sizing-details"><summary>Critérios e limites considerados</summary><p>Tabelas 36 (capacidade de corrente) e 40 (temperatura) da ABNT NBR 5410: cabo de cobre, PVC 70 °C, circuito isolado, métodos B1 ou C e dois condutores carregados (monofásico) ou três (trifásico). O fator de agrupamento é informado pelo usuário. A queda de tensão é estimada com resistência do cobre a 70 °C e desconsidera reatância; aplicada meta de 4% apenas neste trecho.</p><p>Calibre do disjuntor é um candidato padronizado para proteção do circuito, <strong>não uma especificação de disjuntor de motor</strong>. Verificar Ib ≤ In ≤ Iz e I₂ ≤ 1,45 Iz, além da corrente de partida, curva de atuação, Icu/Icn frente ao curto-circuito presumido, proteção térmica de sobrecarga e coordenação com o contator. Não considerar seleção definitiva sem os dados de placa e do local.</p></details>
+              <div class="motor-sizing-cards" id="motorSizingResult" aria-live="polite"><div class="result-card"><span>Estimativa</span><strong>Preencha os dados do motor.</strong></div></div>
+              <p class="note note-no-top motor-sizing-note">Estimativa simplificada conforme critérios do aplicativo: cabo de cobre com isolação PVC 70 °C, capacidade de corrente corrigida e queda de tensão máxima de 4% no trecho informado.</p>
             </section>
           </article>
         </div>
