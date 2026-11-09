@@ -1,4 +1,4 @@
-const CACHE_NAME = 'instrumentacao-pro-v1-9-0';
+const CACHE_NAME = 'instrumentacao-pro-v1-9-1';
 const CORE_ASSETS = [
   './index.html',
   './styles.css',
@@ -18,6 +18,10 @@ const OPTIONAL_ASSETS = [
   './app_logo.png',
   './parshall_funcionamento.webp',
   './parshall_dimensoes.jpg',
+  './redes_pa_cabo.webp',
+  './redes_pa_terminador.webp',
+  './redes_pa_sinal.webp',
+  './redes_pa_topologia.webp',
   './redes_dp_01.webp',
   './redes_dp_03.webp',
   './redes_dp_04.webp',

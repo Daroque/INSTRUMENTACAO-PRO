@@ -30,7 +30,7 @@
           <button class="btn btn-secondary" id="reportBtn" type="button" title="Gerar relatório do módulo atual">Gerar PDF do módulo</button>
           <div class="app-status-group" aria-label="Conexão e versão do aplicativo">
             <span class="status-badge" id="connection-status">Verificando...</span>
-            <span class="app-version-badge" id="app-version" aria-label="Versão do aplicativo">v1.9.0</span>
+            <span class="app-version-badge" id="app-version" aria-label="Versão do aplicativo">v1.9.1</span>
           </div>
           <button id="installBtn" class="btn btn-secondary" hidden>Instalar app</button>
         </div>
@@ -989,7 +989,51 @@
 <div class="network-figures"><figure class="network-figure"><img src="./redes_dp_14.webp" loading="lazy" decoding="async" alt="Oscilogramas: falta de aterramento"><figcaption><strong>Oscilogramas: falta de aterramento.</strong> Exemplos de distorção do sinal observados no documento.</figcaption></figure><figure class="network-figure"><img src="./redes_dp_15.webp" loading="lazy" decoding="async" alt="Oscilogramas: cabo enrolado"><figcaption><strong>Oscilogramas: cabo enrolado.</strong> Comparativo de sinais associados ao comprimento ou ao enrolamento do cabo.</figcaption></figure><figure class="network-figure"><img src="./redes_dp_37.webp" loading="lazy" decoding="async" alt="Filtragem por repetidor"><figcaption><strong>Filtragem por repetidor.</strong> Comparação entre telegramas com ruído acoplado e ruído filtrado.</figcaption></figure><figure class="network-figure"><img src="./redes_dp_38.webp" loading="lazy" decoding="async" alt="Sinal sem repetidor"><figcaption><strong>Sinal sem repetidor.</strong> Forma de onda demonstrativa antes da utilização de repetidor.</figcaption></figure><figure class="network-figure"><img src="./redes_dp_39.webp" loading="lazy" decoding="async" alt="Sinal com repetidor"><figcaption><strong>Sinal com repetidor.</strong> Forma de onda demonstrativa com repetidor.</figcaption></figure></div></div></details></div>
             <div class="network-source">Fonte do conteúdo: arquivo <strong>APP.docx</strong> enviado pelo usuário (13 páginas). Texto reorganizado para leitura no aplicativo; ilustrações reproduzidas do anexo. Este guia não substitui normas técnicas nem os manuais dos equipamentos.</div>
           </div>
-          <div id="networkPa" class="network-view" hidden><div class="card network-placeholder"><div class="network-placeholder-icon">PA</div><h2>Profibus PA</h2><p>Área preparada para receber o material técnico de Profibus PA.</p><small>Nenhum documento de Profibus PA foi fornecido nesta atualização.</small></div></div>
+          <div id="networkPa" class="network-view" hidden>
+<div class="network-hero"><div><span class="network-eyebrow">GUIA TÉCNICO · CONTEÚDO DO ANEXO ORGANIZADO</span><h2>Profibus PA — Automação de Processo</h2><p>Comunicação, mestres, cabeamento, terminação e topologia de redes de processo.</p></div><span class="network-count">6 tópicos</span></div>
+<nav class="network-quicknav" aria-label="Assuntos do Profibus PA">
+<a href="#network-pa-overview">Visão geral</a><a href="#network-pa-communication">Integração DP/PA</a><a href="#network-pa-masters">Mestres</a><a href="#network-pa-cabling">Cabeamento</a><a href="#network-pa-termination">Terminadores</a><a href="#network-pa-topology">Topologia</a>
+</nav><div class="network-sections"><details class="network-section" id="network-pa-overview" open>
+<summary><span class="network-section-heading"><small>Fundamentos</small><strong>Visão geral do Profibus PA</strong></span><span class="network-section-toggle" aria-hidden="true">＋</span></summary>
+<div class="network-section-body">
+<p><strong>Profibus PA significa Profibus Process Automation — Automação de Processo.</strong> É uma solução de comunicação destinada aos equipamentos de campo e às necessidades da automação de processos industriais.</p>
+<p>O conteúdo enviado destaca aplicações com <strong>transmissores de pressão e temperatura, conversores e posicionadores</strong>, além da possibilidade de utilizar comunicação digital em aplicações antes atendidas por sinais de 4–20 mA.</p>
+<div class="network-facts"><div><span>Significado de PA</span><strong>Automação de Processo</strong></div><div><span>Comunicação</span><strong>31,25 kbit/s</strong></div><div><span>Meio abordado</span><strong>Dois fios</strong></div><div><span>Tecnologia citada</span><strong>IEC 61158-2</strong></div></div>
+<p>O mesmo par de fios pode ser utilizado para transmissão de dados e alimentação dos dispositivos de campo, <strong>desde que o equipamento e a arquitetura sejam compatíveis com essa tecnologia</strong>.</p>
+<p class="network-caution">O uso em áreas potencialmente explosivas e procedimentos de conexão durante a operação exigem dispositivos certificados, projeto de segurança intrínseca quando aplicável e observância das instruções do fabricante.</p>
+</div></details><details class="network-section" id="network-pa-communication" open>
+<summary><span class="network-section-heading"><small>Integração</small><strong>Comunicação e acoplamento DP/PA</strong></span><span class="network-section-toggle" aria-hidden="true">＋</span></summary>
+<div class="network-section-body">
+<p>O material descreve a comunicação entre a rede <strong>Profibus PA</strong>, voltada a equipamentos de processo, e a rede <strong>Profibus DP</strong>, utilizada na automação industrial. Essa integração ocorre por meio de dispositivos de acoplamento de segmento.</p>
+<ul><li>Comunicação e controle de instrumentos por barramento de dois fios.</li><li>Transmissão de dados e alimentação no mesmo par de condutores conforme IEC 61158-2.</li><li>Interligação de segmentos PA com a arquitetura DP por acopladores adequados.</li></ul>
+<p class="network-caution">As características elétricas, a fonte de alimentação e a capacidade do segmento dependem da arquitetura e dos módulos de acoplamento adotados.</p>
+</div></details><details class="network-section" id="network-pa-masters">
+<summary><span class="network-section-heading"><small>Controle e manutenção</small><strong>Classes de mestres</strong></span><span class="network-section-toggle" aria-hidden="true">＋</span></summary>
+<div class="network-section-body">
+<p>O documento diferencia duas classes de mestres na rede PA:</p>
+<div class="network-facts"><div><span>Mestre Classe 1</span><strong>Operação cíclica</strong><p>Leitura e escrita dos dados de processo e controle pelo CLP ou sistema de automação.</p></div><div><span>Mestre Classe 2</span><strong>Acesso acíclico</strong><p>Consulta, parametrização e diagnóstico por estação de engenharia ou ferramenta PDM.</p></div></div>
+</div></details><details class="network-section" id="network-pa-cabling">
+<summary><span class="network-section-heading"><small>Instalação</small><strong>Cabeamento e comprimento de segmento</strong></span><span class="network-section-toggle" aria-hidden="true">＋</span></summary>
+<div class="network-section-body">
+<p>O material informa que a taxa de <strong>31,25 kbit/s</strong> permite maior flexibilidade de instalação e segmentos mais extensos em comparação com a rede RS-485 abordada no guia DP.</p>
+<div class="network-example"><span>Condição apresentada no documento</span><strong>Até 1.900 m</strong><p>Valor citado para cabo PA tipo A em área segura. Não deve ser adotado sem análise da alimentação, das derivações, da quantidade de dispositivos e dos requisitos do fabricante.</p></div>
+<ul><li>O comprimento máximo e o número de dispositivos podem ser significativamente reduzidos em instalações com segurança intrínseca.</li><li>O dimensionamento do segmento deve considerar limites elétricos, alimentação e características dos instrumentos instalados.</li></ul>
+<p class="network-caution">O limite de 1.900 m é uma condição de referência apresentada no anexo, não uma garantia para qualquer instalação.</p>
+<div class="network-figures"><figure class="network-figure"><img src="./redes_pa_cabo.webp" loading="lazy" decoding="async" alt="Cabo de dois condutores com blindagem"><figcaption><strong>Cabo Profibus PA.</strong> Exemplo de cabo mostrado no documento, com condutores e blindagem.</figcaption></figure></div></div></details><details class="network-section" id="network-pa-termination">
+<summary><span class="network-section-heading"><small>Integridade de sinal</small><strong>Terminadores de barramento</strong></span><span class="network-section-toggle" aria-hidden="true">＋</span></summary>
+<div class="network-section-body">
+<p>Assim como ocorre no Profibus DP, a rede PA utiliza terminadores para reduzir reflexões no fim do segmento. O <strong>circuito de terminação apresentado no anexo é diferente do utilizado no DP RS-485</strong>.</p>
+<div class="network-facts"><div><span>Resistor mostrado no anexo</span><strong>100 Ω ±2%</strong></div><div><span>Capacitor mostrado no anexo</span><strong>1 µF ±20%</strong></div></div>
+<ul><li>Os terminadores devem ser posicionados nas <strong>duas extremidades do barramento principal</strong>, não nas extremidades das derivações.</li><li>O material informa que acopladores podem incorporar terminadores internos.</li><li>Mais de dois terminadores ativos ou a falta de terminação podem prejudicar o sinal.</li></ul>
+<p class="network-caution">Os valores apresentados reproduzem o diagrama do Word e servem para interpretação técnica. A seleção e instalação do terminador devem seguir o equipamento e a especificação da rede.</p>
+<div class="network-figures"><figure class="network-figure"><img src="./redes_pa_terminador.webp" loading="lazy" decoding="async" alt="Esquema do terminador RC para Profibus PA"><figcaption><strong>Terminação PA.</strong> Diagrama RC apresentado no material.</figcaption></figure><figure class="network-figure"><img src="./redes_pa_sinal.webp" loading="lazy" decoding="async" alt="Comparação de sinais com diferentes condições de terminador de barramento"><figcaption><strong>Efeito da terminação.</strong> Formas de onda ilustrativas do documento com e sem terminação adequada.</figcaption></figure></div></div></details><details class="network-section" id="network-pa-topology">
+<summary><span class="network-section-heading"><small>Arquitetura</small><strong>Topologia e posicionamento dos terminadores</strong></span><span class="network-section-toggle" aria-hidden="true">＋</span></summary>
+<div class="network-section-body">
+<p>O diagrama do anexo ilustra um <strong>acoplador DP/PA</strong>, alimentação, caixas de junção e instrumentos distribuídos ao longo do segmento.</p>
+<ul><li>O segmento principal interliga o acoplador e as caixas de junção.</li><li>As derivações conectam os instrumentos ao barramento principal.</li><li>A terminação pode estar integrada ao acoplador e ao último ponto do barramento, conforme a configuração adotada.</li></ul>
+<div class="network-figures"><figure class="network-figure"><img src="./redes_pa_topologia.webp" loading="lazy" decoding="async" alt="Topologia Profibus PA com acoplador DP/PA, caixas de junção e instrumentos"><figcaption><strong>Arquitetura PA.</strong> Exemplos de posições de terminadores no acoplador, na última caixa de junção ou no fim do barramento.</figcaption></figure></div></div></details></div>
+<div class="network-source">Fonte: <strong>PA.docx</strong> (3 páginas), fornecido pelo usuário. Informações reorganizadas por tema, com diagramas extraídos do arquivo original. Os parâmetros citados dependem das características da instalação, dos fabricantes e dos requisitos de segurança.</div>
+</div>
           <div id="networkAsi" class="network-view" hidden><div class="card network-placeholder"><div class="network-placeholder-icon">AS-i</div><h2>Rede AS-i</h2><p>Área preparada para receber o material técnico de rede AS-i.</p><small>Nenhum documento de rede AS-i foi fornecido nesta atualização.</small></div></div>
         </div>
       </section>

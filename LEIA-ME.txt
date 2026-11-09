@@ -1,3 +1,7 @@
+Instrumentação PRO — v1.9.1
+Novo: conteúdo Profibus PA integrado ao Módulo Redes em 6 seções, com tradução Automação de Processo, parâmetros e diagramas do Word fornecido.
+Arquivos originais DP e demais módulos preservados. Offline atualizado.
+
 Instrumentação PRO — Versão 1.9.0
 
 NOVO: Módulo 10 - Redes: seletor Profibus DP, Profibus PA e Rede AS-i.
