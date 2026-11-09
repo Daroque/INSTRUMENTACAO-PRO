@@ -647,3 +647,13 @@ html[data-theme="dark"] .parshall-table tr.parshall-current{background:#245075}
 .motor-sizing-cards .result-card strong { overflow-wrap:anywhere; font-size:clamp(1rem,2vw,1.36rem); }
 .motor-sizing-note { margin-top:14px; }
 @media(max-width:520px) { .motor-sizing { padding:13px; } .motor-sizing-cards { grid-template-columns:1fr 1fr; } .ohm-triangle { max-width:280px; } }
+
+/* v1.9.6 — tela simplificada, foco nos dois resultados elétricos */
+.motor-sizing { padding:14px 16px; }
+.motor-sizing h3 { margin-bottom:10px; }
+.motor-sizing-cards { margin-top:0; }
+.motor-speed-block .calc-result { margin-top:13px; }
+#ohmProtectionResult[hidden] { display:none !important; }
+
+/* v1.9.7: seletores RPM/Polos e entrada no mesmo alinhamento */
+.motor-speed-reference { margin-top: 9px; font-size: .79rem; color: var(--muted); }

@@ -2,7 +2,7 @@
   'use strict';
 
   // Identificador central da versão exibida na interface.
-  const APP_VERSION = '1.9.5';
+  const APP_VERSION = '1.9.7';
   const $ = (id) => document.getElementById(id);
   const fmt = (n, dec = 2) => Number(n).toLocaleString('pt-BR', { minimumFractionDigits: dec, maximumFractionDigits: dec });
   const setHTML = (id, html) => { const el = $(id); if (el) el.innerHTML = html; };
@@ -725,7 +725,6 @@
   const MOTOR_BREAKER_RATINGS = [2,4,6,10,16,20,25,32,40,50,63,80,100,125,160,200,250,315,400];
   const STANDARD_POLES = [2,4,6,8,10,12];
   let ohmMode = 'V';
-  let motorSpeedMode = 'poles';
 
   function estimateCableAndBreaker(current, options = {}) {
     const {
@@ -751,12 +750,13 @@
     }).find(r => r.iz >= current && r.dropPct <= maxDrop && r.breaker !== undefined) || null;
   }
 
+  // Hipóteses fixas de referência: cobre PVC 70 °C, método B1, ar a 30 °C,
+  // sem agrupamento, comprimento de 20 m e queda máxima de 4% neste trecho.
+  // Não inclui verificação de curto-circuito, partida, coordenação ou PE.
   function updateMotorSizing(current, supply, voltage, powerFactor) {
-    const method = $('motorInstallMethod')?.value;
-    const temp = $('motorAmbientTemp')?.value;
-    const group = Number($('motorGroupingFactor')?.value);
-    const length = valueOrNull('motorCircuitLength');
-    const selected = estimateCableAndBreaker(current, { supply, voltage, powerFactor, method, temp, group, length, maxDrop:4 });
+    const selected = estimateCableAndBreaker(current, {
+      supply, voltage, powerFactor, method:'B1', temp:'30', group:1, length:20, maxDrop:4
+    });
     if (!selected) {
       setHTML('motorSizingResult', resultCard('Estimativa indisponível', 'Confira a corrente e as condições da instalação.'));
       return;
@@ -802,50 +802,54 @@
   }
 
   function nearestStandardPoles(freq, rpm) {
-    return STANDARD_POLES.map(poles => ({ poles, syncRpm: 120 * freq / poles, diff: Math.abs((120 * freq / poles) - rpm) }))
-      .sort((a, b) => a.diff - b.diff)[0] || null;
+    // A rotação informada pode ser nominal, com escorregamento: não presumir exatidão.
+    return STANDARD_POLES.map(poles => ({
+      poles, syncRpm: 120 * freq / poles,
+      difference: Math.abs((120 * freq / poles) - rpm),
+      slip: 1 - rpm / (120 * freq / poles)
+    })).sort((a,b)=> a.difference - b.difference)[0] || null;
   }
 
-  function updateMotorSpeedRelation(source) {
-    if (source) motorSpeedMode = source;
-    const freq = valueOrNull('motorSpeedHz');
-    const poles = valueOrNull('motorPoles');
-    const rpm = valueOrNull('motorRatedRpm');
-    if (!(freq > 0)) {
-      setHTML('motorSpeedResult', resultCard('Dados incompletos', 'Informe a frequência da rede.'));
+  function updateMotorSpeedRelation() {
+    const mode = $('motorSpeedMode')?.value || 'rpm';
+    const freq = 60; // referência fixa, sem campo na interface
+    const value = valueOrNull('motorSpeedInput');
+    const label = $('motorSpeedInputLabel');
+    if (label) label.textContent = mode === 'rpm' ? 'Número de polos' : 'Rotação do motor (RPM)';
+    if (value === null) {
+      setHTML('motorSpeedResult', resultCard('Dados incompletos', 'Informe o valor para realizar o cálculo.'));
       return;
     }
-    if (motorSpeedMode === 'rpm' && rpm !== null) {
-      if (!(rpm > 0)) {
-        setHTML('motorSpeedResult', resultCard('Dados inválidos', 'Informe uma rotação maior que zero.'));
+    if (!Number.isFinite(freq) || ![50,60].includes(freq) || value <= 0) {
+      setHTML('motorSpeedResult', resultCard('Dados inválidos', 'Informe frequência e valor válidos.'));
+      return;
+    }
+    if (mode === 'rpm') {
+      if (!Number.isInteger(value) || value < 2 || value % 2 !== 0 || value > 24) {
+        setHTML('motorSpeedResult', resultCard('Número de polos inválido', 'Informe um número par de polos entre 2 e 24.'));
         return;
       }
-      const best = nearestStandardPoles(freq, rpm);
-      if (!best) {
-        setHTML('motorSpeedResult', resultCard('Estimativa indisponível', 'Não foi possível estimar o número de polos.'));
-        return;
-      }
-      if ($('motorPoles')) $('motorPoles').value = String(best.poles);
-      setHTML('motorSpeedResult', [
-        resultCard('Polos estimados', `${fmt(best.poles, 0)} polos`),
-        resultCard('RPM síncrono estimado', `${fmt(best.syncRpm, 0)} RPM`)
-      ].join(''));
+      setHTML('motorSpeedResult', resultCard('Rotação síncrona', `${fmt(120 * freq / value, 0)} RPM`));
       return;
     }
-    if (poles === null) {
-      setHTML('motorSpeedResult', resultCard('Dados incompletos', 'Informe o número de polos ou a rotação do motor.'));
+    const best = nearestStandardPoles(freq, value);
+    if (!best || value > 120 * freq / 2) {
+      setHTML('motorSpeedResult', resultCard('Rotação fora da faixa', 'Verifique o RPM e a frequência informados.'));
       return;
     }
-    if (!(poles >= 2) || Math.round(poles) !== poles) {
-      setHTML('motorSpeedResult', resultCard('Dados inválidos', 'O número de polos deve ser inteiro e maior ou igual a 2.'));
+    // Em motores de indução, o RPM de placa é menor que o síncrono.
+    // Sem escorregamento informado, a identificação de polos é apenas provável.
+    if (best.slip < -0.01 || best.slip > 0.15) {
+      setHTML('motorSpeedResult', resultCard('Polos indeterminados', 'A rotação informada não corresponde com segurança a um motor comum. Confira os dados de placa.'));
       return;
     }
-    const syncRpm = 120 * freq / poles;
-    if ($('motorRatedRpm') && motorSpeedMode === 'poles') $('motorRatedRpm').value = fmt(syncRpm, 0).replace(/\./g, '').replace(/,/g, '');
-    setHTML('motorSpeedResult', [
-      resultCard('RPM síncrono estimado', `${fmt(syncRpm, 0)} RPM`),
-      resultCard('Polos informados', `${fmt(poles, 0)} polos`)
-    ].join(''));
+    setHTML('motorSpeedResult', resultCard('Número provável de polos', `${fmt(best.poles, 0)} polos`));
+  }
+
+  function changeMotorSpeedMode() {
+    const mode = $('motorSpeedMode')?.value;
+    if ($('motorSpeedInput')) $('motorSpeedInput').value = mode === 'rpm' ? '4' : '1750';
+    updateMotorSpeedRelation();
   }
 
   function getOhmModeConfig(mode) {
@@ -893,6 +897,8 @@
   }
 
   function updateOhmLaw() {
+    const protectionBox = $('ohmProtectionResult');
+    if (protectionBox) protectionBox.hidden = true;
     const config = getOhmModeConfig(ohmMode);
     const a = valueOrNull('ohmInput1');
     const b = valueOrNull('ohmInput2');
@@ -913,20 +919,31 @@
       return;
     }
     setHTML('ohmResult', resultCard(config.resultLabel, `${fmt(result, 2)} ${config.unit}`));
-    const current = config.getCurrent(a, b, result);
-    const voltage = config.getVoltage(a, b, result);
-    if (!(current >= 1) || !(voltage > 0)) {
-      setHTML('ohmProtectionResult', resultCard('Proteção e cabo', 'Estimativa exibida apenas para correntes a partir de 1 A.'));
+    const box = $('ohmProtectionResult');
+    // Proteção só é exibida ao selecionar I (cálculo de corrente).
+    if (ohmMode !== 'I') {
+      if (box) box.hidden = true;
+      setHTML('ohmProtectionResult', '');
       return;
     }
-    const selected = estimateCableAndBreaker(current, { supply:'single', voltage, powerFactor:1, method:'B1', temp:'30', group:1, length:20, maxDrop:4 });
+    const current = result;
+    const voltage = a;
+    if (!(current >= 1) || !(voltage > 0)) {
+      if (box) box.hidden = true;
+      setHTML('ohmProtectionResult', '');
+      return;
+    }
+    const selected = estimateCableAndBreaker(current, {
+      supply:'single', voltage, powerFactor:1, method:'B1', temp:'30', group:1, length:20, maxDrop:4
+    });
+    if (box) box.hidden = false;
     if (!selected) {
-      setHTML('ohmProtectionResult', resultCard('Proteção e cabo', 'Não foi possível estimar com os critérios simplificados.'));
+      setHTML('ohmProtectionResult', resultCard('Estimativa indisponível', 'O circuito não atende aos critérios simplificados.'));
       return;
     }
     setHTML('ohmProtectionResult', [
       resultCard('Bitola estimada do cabo', `${fmt(selected.section, 1)} mm²`),
-      resultCard('Disjuntor de proteção estimado', `${fmt(selected.breaker, 0)} A`)
+      resultCard('Disjuntor estimado', `${fmt(selected.breaker, 0)} A`)
     ].join(''));
   }
 
@@ -955,14 +972,11 @@
   bindInputs(['calcRpm', 'calcHz'], updateRpmPerHz);
   bindInputs(['calcBaume'], updateBaumeBrix);
   bindInputs(['motorSupplyType', 'motorVoltage', 'motorPower', 'motorPowerUnit', 'motorPowerFactor', 'motorEfficiency'], updateMotorCurrent);
-  bindInputs(['motorInstallMethod', 'motorAmbientTemp', 'motorCircuitLength', 'motorGroupingFactor'], updateMotorCurrent);
   bindInputs(['ohmInput1', 'ohmInput2'], updateOhmLaw);
-  bindInputs(['motorSpeedHz'], () => updateMotorSpeedRelation());
+  bindInputs(['motorSpeedInput'], updateMotorSpeedRelation);
 
   document.querySelectorAll('.ohm-node').forEach((btn) => btn.addEventListener('click', () => setOhmMode(btn.dataset.mode)));
-  if ($('motorPoles')) $('motorPoles').addEventListener('input', () => updateMotorSpeedRelation('poles'));
-  if ($('motorRatedRpm')) $('motorRatedRpm').addEventListener('input', () => updateMotorSpeedRelation('rpm'));
-  if ($('motorSpeedHz')) $('motorSpeedHz').addEventListener('change', () => updateMotorSpeedRelation());
+  if ($('motorSpeedMode')) $('motorSpeedMode').addEventListener('change', changeMotorSpeedMode);
   $('powerSwap').addEventListener('click', swapPower);
   $('pExampleBtn').addEventListener('click', function () {
     $('pValue').value = '10';
@@ -1244,5 +1258,5 @@
   updateBaumeBrix();
   setOhmMode('V');
   updateMotorCurrent();
-  updateMotorSpeedRelation('poles');
+  updateMotorSpeedRelation();
 })();

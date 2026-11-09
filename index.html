@@ -936,8 +936,7 @@
               <div class="field"><label id="ohmInput2Label" for="ohmInput2">Resistência (Ω)</label><input id="ohmInput2" type="number" inputmode="decimal" step="any" value="22"></div>
             </div>
             <div class="result-grid calc-result" id="ohmResult" aria-live="polite"></div>
-            <div class="result-grid calc-result" id="ohmProtectionResult" aria-live="polite"></div>
-            <p class="note">Para a estimativa de disjuntor e cabo, o aplicativo considera circuito monofásico em cobre PVC 70 °C, método B1, 30 °C, sem agrupamento e trecho de 20 m.</p>
+            <div class="result-grid calc-result" id="ohmProtectionResult" aria-live="polite" hidden></div>
           </article>
           <article class="card calc-card">
             <h2>Cálculo de Motor</h2>
@@ -952,24 +951,17 @@
             </div>
             <div class="result-grid calc-result" id="motorCurrentResult" aria-live="polite"></div>
             <section class="motor-speed-block" aria-labelledby="motorSpeedTitle">
-              <h3 id="motorSpeedTitle">Relação entre polos e RPM</h3>
+              <h3 id="motorSpeedTitle">RPM e polos do motor</h3>
               <div class="form-grid two-cols">
-                <div class="field"><label for="motorSpeedHz">Frequência da rede (Hz)</label><select id="motorSpeedHz"><option value="50">50</option><option value="60" selected>60</option></select></div>
-                <div class="field"><label for="motorPoles">Número de polos do motor</label><input id="motorPoles" type="number" inputmode="numeric" step="1" min="2" value="4"></div>
-                <div class="field"><label for="motorRatedRpm">Rotação do motor (RPM)</label><input id="motorRatedRpm" type="number" inputmode="decimal" step="any" min="0" value=""></div>
+                <div class="field"><label for="motorSpeedMode">Calcular</label><select id="motorSpeedMode"><option value="rpm" selected>RPM</option><option value="poles">Polos</option></select></div>
+                <div class="field"><label id="motorSpeedInputLabel" for="motorSpeedInput">Número de polos</label><input id="motorSpeedInput" type="number" inputmode="decimal" step="any" min="0" value="4"></div>
               </div>
               <div class="result-grid calc-result" id="motorSpeedResult" aria-live="polite"></div>
+              <p class="note note-no-top motor-speed-reference">Referência interna: 60 Hz · rotação síncrona.</p>
             </section>
             <section class="motor-sizing" aria-labelledby="motorSizingTitle">
               <h3 id="motorSizingTitle">Estimativa de proteção e cabo</h3>
-              <div class="form-grid two-cols motor-sizing-fields">
-                <div class="field"><label for="motorInstallMethod">Método de instalação</label><select id="motorInstallMethod"><option value="B1" selected>B1 — condutores em eletroduto sobre/embutido em parede</option><option value="C">C — cabos fixados diretamente à parede</option></select></div>
-                <div class="field"><label for="motorAmbientTemp">Temperatura ambiente</label><select id="motorAmbientTemp"><option value="25">25 °C</option><option value="30" selected>30 °C</option><option value="35">35 °C</option><option value="40">40 °C</option><option value="45">45 °C</option><option value="50">50 °C</option></select></div>
-                <div class="field"><label for="motorCircuitLength">Comprimento do circuito (m)</label><input id="motorCircuitLength" type="number" min="0.1" step="any" inputmode="decimal" value="20"></div>
-                <div class="field"><label for="motorGroupingFactor">Fator de agrupamento</label><select id="motorGroupingFactor"><option value="1" selected>1,00 — sem redução por agrupamento</option><option value="0.8">0,80 — informado para o projeto</option><option value="0.7">0,70 — informado para o projeto</option><option value="0.65">0,65 — informado para o projeto</option></select></div>
-              </div>
               <div class="motor-sizing-cards" id="motorSizingResult" aria-live="polite"><div class="result-card"><span>Estimativa</span><strong>Preencha os dados do motor.</strong></div></div>
-              <p class="note note-no-top motor-sizing-note">Estimativa simplificada conforme critérios do aplicativo: cabo de cobre com isolação PVC 70 °C, capacidade de corrente corrigida e queda de tensão máxima de 4% no trecho informado.</p>
             </section>
           </article>
         </div>

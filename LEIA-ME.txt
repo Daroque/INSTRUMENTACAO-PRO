@@ -1,3 +1,24 @@
+INSTRUMENTAÇÃO PRO v1.9.7
+
+- Módulo 09: removido o campo Frequência do cálculo RPM/Polos.
+- Frequência de referência fixa em 60 Hz para ambas as operações; referência indicada discretamente junto aos resultados.
+- Mantidos o campo Calcular (RPM/Polos), o campo de entrada e os demais cálculos.
+
+INSTRUMENTAÇÃO PRO v1.9.6
+
+Alterações no Módulo 09:
+- Motor: exibir apenas bitola de cabo e calibre estimado do disjuntor.
+- Parâmetros usados somente no cálculo interno: cabo de cobre PVC 70 °C, B1,
+  ar a 30 °C, sem agrupamento, 20 m e limite simplificado de queda de tensão de 4%.
+  IMPORTANTE: por esses parâmetros estarem fixos, a indicação não substitui
+  a verificação das condições reais nem o dimensionamento para execução conforme
+  ABNT NBR 5410 e critérios específicos de proteção de motores.
+- Relação RPM/polos: seleção da grandeza a calcular, valor de entrada único,
+  com frequência de referência 50 ou 60 Hz. Resultados para velocidade síncrona,
+  sem considerar escorregamento; polos inferidos de RPM de placa são aproximação.
+- Lei de Ohm: cabo e disjuntor aparecem apenas ao selecionar I (Corrente),
+  e somente quando há corrente >=1 A e condição calculável.
+
 Instrumentação PRO — Versão: 1.9.5
 
 ALTERAÇÃO NO MÓDULO 09 — CÁLCULO DE MOTOR
