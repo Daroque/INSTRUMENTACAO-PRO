@@ -2,7 +2,7 @@
   'use strict';
 
   // Identificador central da versão exibida na interface.
-  const APP_VERSION = '1.9.8';
+  const APP_VERSION = '1.9.9';
   const $ = (id) => document.getElementById(id);
   const fmt = (n, dec = 2) => Number(n).toLocaleString('pt-BR', { minimumFractionDigits: dec, maximumFractionDigits: dec });
   const setHTML = (id, html) => { const el = $(id); if (el) el.innerHTML = html; };
@@ -72,8 +72,8 @@
     }
     const bar = val * pressureToBar[unit];
     const out = bar / pressureToBar[target];
-    if (!Number.isFinite(out)) {
-      setHTML('pressureResults', resultCard('Valor fora do limite', 'Reduza a magnitude do valor informado.'));
+    if (!Number.isFinite(out) || (val !== 0 && out === 0)) {
+      setHTML('pressureResults', resultCard('Valor fora do limite', 'Valor fora da precisão numérica; ajuste a unidade ou a magnitude informada.'));
       return;
     }
     const shown = out !== 0 && (Math.abs(out) < 0.000001 || Math.abs(out) >= 1e12)
@@ -120,8 +120,8 @@
       return;
     }
     const out = val * (metricToM[from] / metricToM[to]);
-    if (!Number.isFinite(out)) {
-      setHTML('metricResults', resultCard('Valor fora do limite', 'Reduza a magnitude do valor informado.'));
+    if (!Number.isFinite(out) || (val !== 0 && out === 0)) {
+      setHTML('metricResults', resultCard('Valor fora do limite', 'Valor fora da precisão numérica; ajuste a unidade ou a magnitude informada.'));
       return;
     }
     setHTML('metricResults', resultCard('Resultado · ' + metricLabels[to],
@@ -245,6 +245,10 @@
     if (unit === 'k') c = value - 273.15;
     const f = (c * 9 / 5) + 32;
     const k = c + 273.15;
+    if (![c, f, k].every(Number.isFinite)) {
+      setHTML('tempResults', resultCard('Valor fora do limite', 'Informe uma temperatura de magnitude menor.'));
+      return;
+    }
     if (k < 0) {
       setHTML('tempResults', resultCard('Temperatura impossível', 'A temperatura não pode ser inferior ao zero absoluto (0 K).'));
       return;
@@ -365,7 +369,7 @@
       return;
     }
     const span = urv - lrv;
-    if (!(span > 0)) {
+    if (!Number.isFinite(span) || !(span > 0)) {
       $('sPv').textContent = '—'; $('sPvUnit').textContent = unit; $('sStatus').textContent = 'Verifique a faixa: URV deve superar LRV.'; $('sStatus').style.color = 'var(--danger)';
       $('sPercent').textContent = '—'; $('sInputEcho').textContent = '—'; $('sSpan').textContent = '—'; $('sReverse').textContent = '—'; $('sScaleText').textContent = '—'; $('sBar').style.width = '0%';
       return;
@@ -373,9 +377,13 @@
     const percent = ((signal - cfg.min) / (cfg.max - cfg.min)) * 100;
     const pv = lrv + ((signal - cfg.min) / (cfg.max - cfg.min)) * span;
     const reverse = cfg.min + ((processWanted - lrv) / span) * (cfg.max - cfg.min);
-    if (![percent,pv,reverse].every(Number.isFinite)) {
-      $('sPv').textContent = '—'; $('sStatus').textContent = 'Resultado fora do limite numérico.';
-      $('sPercent').textContent = '—'; $('sReverse').textContent = '—'; $('sSpan').textContent = '—'; $('sBar').style.width='0%';
+    if (![span, percent, pv, reverse].every(Number.isFinite)) {
+      $('sPv').textContent = '—'; $('sPvUnit').textContent = unit;
+      $('sStatus').textContent = 'Resultado fora do limite numérico.';
+      $('sStatus').style.color = 'var(--danger)';
+      $('sPercent').textContent = '—'; $('sInputEcho').textContent = '—';
+      $('sReverse').textContent = '—'; $('sSpan').textContent = '—';
+      $('sScaleText').textContent = '—'; $('sBar').style.width = '0%';
       return;
     }
     const within = signal >= cfg.min && signal <= cfg.max;
@@ -405,7 +413,7 @@
   const apparentVA = { va: 1, kva: 1000, mva: 1e6, gva: 1e9 };
   const powerLabels = {
     pw:'pW', nw:'nW', uw:'µW', mwatt:'mW', w:'W', kw:'kW', mw:'MW', gw:'GW', tw:'TW',
-    hp:'hp mecânico', cv:'cv', hpe:'hp elétrico', hpb:'hp de caldeira',
+    hp:'HP (EUA)', cv:'CV (Brasil)', hpe:'hp elétrico', hpb:'hp de caldeira',
     ftlbfs:'ft·lbf/s', ftlbfmin:'ft·lbf/min', kgfms:'kgf·m/s',
     btuh:'BTU/h', btumin:'BTU/min', btus:'BTU/s', kcalh:'kcal/h', kcals:'kcal/s', cals:'cal/s',
     kjh:'kJ/h', kjs:'kJ/s', mjh:'MJ/h', tr:'TR', ergs:'erg/s',
@@ -441,8 +449,8 @@
     } else {
       out = value * powerWatts[from] / powerWatts[to];
     }
-    if (!Number.isFinite(out)) {
-      setHTML('powerResults', resultCard('Valor fora do limite', 'Reduza a magnitude da potência ou revise o fator de potência.'));
+    if (!Number.isFinite(out) || (value !== 0 && out === 0)) {
+      setHTML('powerResults', resultCard('Valor fora do limite', 'Valor fora da precisão numérica; ajuste a escala ou reduza a magnitude informada.'));
       $('powerNotice').textContent = 'Não foi possível calcular um resultado finito.';
       return;
     }
@@ -544,6 +552,13 @@
     const minD = min * density;
     const maxD = max * density;
     const spanD = span * density;
+    if (![span, minD, maxD, spanD].every(Number.isFinite)) {
+      $('rangeDiagram').innerHTML = hlDiagramInvalid(mode, 'Valores fora do limite de cálculo.');
+      setHTML('rangeResults', resultCard('Valores fora do limite', 'Reduza a magnitude dos valores informados.'));
+      setHTML('rangeChecks', '');
+      $('rangeNotice').textContent = 'Faixa não calculada por exceder os limites numéricos.';
+      return;
+    }
 
     $('rangeDiagram').innerHTML = rangeDiagram(mode, min, max, density);
     setHTML('rangeResults', [
@@ -763,7 +778,7 @@
     }
     setHTML('motorSizingResult', [
       resultCard('Bitola estimada do cabo', `${fmt(selected.section, 1)} mm²`),
-      resultCard('Disjuntor de proteção estimado', `${fmt(selected.breaker, 0)} A`)
+      resultCard('Calibre candidato de disjuntor', `${fmt(selected.breaker, 0)} A`)
     ].join(''));
   }
 
@@ -947,7 +962,7 @@
     }
     setHTML('ohmProtectionResult', [
       resultCard('Bitola estimada do cabo', `${fmt(selected.section, 1)} mm²`),
-      resultCard('Disjuntor estimado', `${fmt(selected.breaker, 0)} A`)
+      resultCard('Calibre candidato de disjuntor', `${fmt(selected.breaker, 0)} A`)
     ].join(''));
   }
 

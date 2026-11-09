@@ -30,7 +30,7 @@
           <button class="btn btn-secondary" id="reportBtn" type="button" title="Gerar relatório do módulo atual">Gerar PDF do módulo</button>
           <div class="app-status-group" aria-label="Conexão e versão do aplicativo">
             <span class="status-badge" id="connection-status">Verificando...</span>
-            <span class="app-version-badge" id="app-version" aria-label="Versão do aplicativo">v1.9.8</span>
+            <span class="app-version-badge" id="app-version" aria-label="Versão do aplicativo">v1.9.9</span>
           </div>
           <button id="installBtn" class="btn btn-secondary" hidden>Instalar app</button>
         </div>
@@ -449,10 +449,10 @@
                   <option value="tw">TW (terawatt)</option>
                 </optgroup>
                 <optgroup label="Potência mecânica">
-                  <option value="hp">hp mecânico</option>
-                  <option value="cv">cv métrico / PS</option>
-                  <option value="hpe">hp elétrico</option>
-                  <option value="hpb">hp de caldeira</option>
+                  <option value="hp">HP — Horsepower (EUA)</option>
+                  <option value="cv">CV — Cavalo-vapor (Brasil)</option>
+                  <option value="hpe">hp elétrico (outra definição)</option>
+                  <option value="hpb">hp de caldeira (outra definição)</option>
                   <option value="ftlbfs">ft·lbf/s</option>
                   <option value="ftlbfmin">ft·lbf/min</option>
                   <option value="kgfms">kgf·m/s</option>
@@ -490,10 +490,10 @@
                   <option value="tw">TW (terawatt)</option>
                 </optgroup>
                 <optgroup label="Potência mecânica">
-                  <option value="hp" selected>hp mecânico</option>
-                  <option value="cv">cv métrico / PS</option>
-                  <option value="hpe">hp elétrico</option>
-                  <option value="hpb">hp de caldeira</option>
+                  <option value="hp" selected>HP — Horsepower (EUA)</option>
+                  <option value="cv">CV — Cavalo-vapor (Brasil)</option>
+                  <option value="hpe">hp elétrico (outra definição)</option>
+                  <option value="hpb">hp de caldeira (outra definição)</option>
                   <option value="ftlbfs">ft·lbf/s</option>
                   <option value="ftlbfmin">ft·lbf/min</option>
                   <option value="kgfms">kgf·m/s</option>
@@ -521,7 +521,7 @@
               <div class="field" id="powerPfField" hidden><label for="powerPf">Fator de potência (FP)</label><input id="powerPf" type="number" inputmode="decimal" step="any" value="0.9" min="0" max="1"><small>Necessário para conversões com kVA.</small></div>
             </div>
             <div class="button-row"><button id="powerSwap" class="btn">Inverter unidades</button></div>
-            <p class="note">Conversão de potência ativa e térmica. hp mecânico, hp elétrico, hp de caldeira e cv têm definições diferentes. VA, kVA, MVA e GVA são potência aparente: a conversão para potência ativa requer fator de potência (FP). kWh é energia, não potência.</p>
+            <p class="note">Conversão de potência ativa e térmica. CV (cavalo-vapor brasileiro) e HP (horsepower mecânico dos EUA) têm conversões diferentes. hp elétrico e hp de caldeira são definições adicionais distintas. VA, kVA, MVA e GVA são potência aparente: a conversão para potência ativa requer fator de potência (FP). kWh é energia, não potência.</p>
           </article>
           <article class="card output-card"><h2>Resultado</h2><div class="result-grid" id="powerResults"></div><p class="note" id="powerNotice"></p></article>
         </div>
@@ -1082,7 +1082,7 @@
       </section>
 
       <footer class="footer-note">
-        Instrumentação PRO · Versão <span id="footer-version">1.9.8</span> · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
+        Instrumentação PRO · Versão <span id="footer-version">1.9.9</span> · Aplicativo offline · Antes de usar os resultados em campo, confirme dados de processo, limites do instrumento e critérios de engenharia.
       </footer>
     </div>
   </main>

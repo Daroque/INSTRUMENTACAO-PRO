@@ -157,7 +157,7 @@
       const current=Math.abs(h0-head)<.05?' class="parshall-current"':'';
       return `<tr${current}><td>${fmt(h0,1)}</td><td>${fmt(q,q<1?4:2)}</td></tr>`;
     }).join('');
-    $('parshallTableNote').textContent=`Tabela para garganta W = ${fmt(r.widthMm,1)} mm, de ${fmt(r.minHaMm,1)} a ${fmt(r.maxHaMm,1)} mm de altura Hₐ. ${limit?'Exibição limitada a 150 linhas; aumente o intervalo para visualizar toda a faixa.':'A altura informada é destacada quando está na faixa.'}`;
+    $('parshallTableNote').textContent=`Tabela teórica de escoamento livre para garganta W = ${fmt(r.widthMm,1)} mm, de ${fmt(r.minHaMm,1)} a ${fmt(r.maxHaMm,1)} mm de altura Hₐ. ${limit?'Exibição limitada a 150 linhas; aumente o intervalo para visualizar toda a faixa.':'A altura informada é destacada quando está na faixa.'}`;
   }
   sizeEl.addEventListener('change',()=>{
     $('parshallWidth').value=String(sizes[Number(sizeEl.value)].widthMm);

@@ -1,4 +1,4 @@
-INSTRUMENTAÇÃO PRO v1.9.8
+INSTRUMENTAÇÃO PRO v1.9.9
 
 - Lei de Ohm: operador matemático exibido entre os campos conforme a grandeza selecionada.
 - Ao calcular tensão (V): multiplicação (×).
@@ -105,3 +105,17 @@ Cache PWA atualizado para instrumentacao-pro-v1-8-8.
 Instrumentação PRO v1.8.7
 Módulo 09: removidos os textos explicativos no rodapé dos três cálculos e confirmada a remoção da numeração dos títulos.
 Todos os cálculos e demais módulos preservados.
+
+
+ATUALIZAÇÃO 1.9.9 — UNIDADES E AUDITORIA
+- Módulo 05: CV — Cavalo-vapor (Brasil) e HP — Horsepower (EUA) destacados e identificados nas duas listas.
+- Conversões conservadas: 1 CV = 735,49875 W; 1 HP mecânico EUA = 745,6998715822702 W.
+- Módulo 03: proteção contra temperatura fora do intervalo numérico finito.
+- Módulo 04: limpeza de todos os indicadores quando os valores de sinais transbordam numericamente; bloqueio de span infinito.
+- Módulo 06: bloqueio de transbordamento em faixa/densidade sem apresentar leituras infinitas.
+- Módulo 07: tabela identificada expressamente como curva teórica de escoamento livre.
+- Módulo 09: disjuntores indicados como calibres candidatos, não seleção final de proteção.
+- Cache offline atualizado, demais funcionalidades mantidas.
+- Limites: cabo/disjuntor são apenas pré-dimensionamento sob hipóteses fixas; verificar normas e projeto.
+
+- Conversões de potência, pressão e comprimento agora bloqueiam subfluxo numérico que produziria falso resultado zero.

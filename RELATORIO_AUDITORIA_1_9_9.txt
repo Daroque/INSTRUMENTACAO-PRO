@@ -1,0 +1,33 @@
+INSTRUMENTAÇÃO PRO v1.9.9 — REGISTRO DE AUDITORIA
+Data: 09/11/2026
+
+ALTERAÇÕES
+- Módulo 05: entradas e saídas explicitamente identificadas como CV — Cavalo-vapor (Brasil) e HP — Horsepower (EUA).
+- Conversões preservadas: 1 CV = 735,49875 W; 1 HP mecânico = 745,6998715822702 W.
+- Módulo 03: bloqueio de resultados de temperatura não finitos.
+- Módulo 04: bloqueio e limpeza integral dos indicadores quando o span ou outros resultados excedem limites numéricos.
+- Módulo 06: bloqueio de resultado com overflow de faixa e densidade.
+- Módulo 07: a tabela foi identificada como escoamento livre, pois não se aplica à condição de afogamento.
+- Módulo 09: saída de disjuntor intitulada calibre candidato, evitando parecer especificação final.
+- Conversões de pressão, comprimento e potência: resultado zero por subfluxo numérico deixa de ser apresentado como válido.
+- Versão 1.9.9, recursos de cache offline atualizados.
+
+VALIDAÇÕES REALIZADAS
+- 85 verificações automatizadas em cálculos e unidades, incluindo conversões de potência, pressão, vazão, temperatura, Pt100, sinais, faixa de transmissores, motor mono/trifásico, polos/RPM, Lei de Ohm e Baumé/Brix.
+- 8 verificações automatizadas na calha Parshall (21 tamanhos, condições de submergência, garganta inválida, falta de Hb e intervalo inválido).
+- Sintaxe validada em app.js, parshall.js, networks.js, passwords.js, sw.js.
+- Estrutura: 10 módulos, 181 IDs únicos sem duplicação, referências HTML presentes, 46 arquivos de cache existentes, dimensões dos ícones 192×192 e 512×512.
+- Arquivo ZIP conferido após geração.
+
+LIMITAÇÕES E RISCOS RESIDUAIS
+- A inspeção visual com navegador Chromium automatizado não foi possível: ERR_BLOCKED_BY_ADMINISTRATOR no ambiente local. A interação em Chrome Android e a instalação PWA devem ser testadas na publicação.
+- O pré-dimensionamento de condutores e disjuntores mantém hipóteses fixas de cálculo. Não é projeto elétrico, nem garante seletividade, capacidade de interrupção, proteção térmica, condições reais de instalação e partida do motor.
+- O inverso RPM->polos estima polos de motor de indução; considera escorregamento e não substitui a placa.
+- A calha Parshall calcula escoamento livre apenas sob condições de aplicação indicadas.
+- As relações solicitadas para cálculos de rotação e Baumé/Brix têm limitações dimensionais/empíricas e não são certificação metrológica.
+- O módulo de senhas utiliza material cadastrado pelo usuário em um repositório potencialmente público. Verificar política local antes de publicar.
+
+REFERÊNCIAS DE ENGENHARIA UTILIZADAS
+- Conversões de horsepower métrico e mecânico: definições tradicionais SI de CV (75 kgf·m/s) e HP mecânico (550 ft·lbf/s).
+- ABNT NBR 5410: critérios de capacidade de corrente, proteção de circuito, queda de tensão e condicionantes da instalação.
+- Siemens, documentação de motores de indução: rotação síncrona, pares de polos e escorregamento.
