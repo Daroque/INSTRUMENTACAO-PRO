@@ -1,3 +1,23 @@
+Instrumentação PRO — Versão 1.9.4
+
+ALTERAÇÃO NO MÓDULO 09 — CÁLCULO DE MOTOR
+- Pré-dimensionamento ilustrativo do cabo de alimentação e calibre candidato de disjuntor.
+- Condutores de cobre com isolação PVC 70°C, métodos de referência B1/C.
+- Correntes para dois (monofásico) ou três (trifásico) condutores carregados segundo NBR 5410 tabela 36.
+- Correção por temperatura segundo NBR 5410 tabela 40; fator de agrupamento informado pelo usuário.
+- Verificação preliminar de ampacidade e queda de tensão resistiva de 4% no trecho informado.
+- Sem fórmula exposta no APP; não gera PDF, nome, TAG ou função.
+- Símbolo ilustrativo de disjuntor na tela, sem recomendação de modelo/curva.
+
+IMPORTANTE: NÃO É PROJETO ELÉTRICO, NEM ESPECIFICAÇÃO DE COMPRA/INSTALAÇÃO.
+O calibre do disjuntor é apenas candidato para proteção do circuito. Não foi verificada corrente de partida, curva instantânea, curto-circuito presumido/Icu/Icn, I²t, proteção térmica de motor, coordenação com contator, PE, condições de terminação, harmônicas, reatância e queda de tensão durante partida. Todos devem ser verificados antes de executar.
+
+BASE TÉCNICA
+- ABNT NBR 5410, tabelas 36 e 40, coordenação de proteção e queda de tensão.
+- Prysmian Group, Manual de Instalações Elétricas: dimensionamento e coordenação da proteção.
+- https://appeng.com.br/app-eng/principal/eletrica/tabelas5410.jsp
+- https://br.prysmiangroup.com/sites/default/files/atoms/files/Manual_Instalacoes_Eletricas.pdf
+
 Instrumentação PRO — Versão 1.9.3
 
 Módulo 09 — Cálculo de Motor

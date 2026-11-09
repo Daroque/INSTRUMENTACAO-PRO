@@ -621,3 +621,21 @@ html[data-theme="dark"] .parshall-table tr.parshall-current{background:#245075}
 .network-placeholder p { color:var(--text); }
 .network-placeholder small { color:var(--muted); }
 @media(max-width:640px){.network-intro,.network-hero{padding:17px}.network-section summary{padding:16px}.network-section-body{padding:16px}.network-figures{grid-template-columns:1fr}}
+
+
+/* v1.9.4 — pré-dimensionamento visual do circuito do motor */
+.motor-sizing { margin-top:21px; padding:18px; border:1px solid var(--border); border-radius:15px; background:var(--card-alt); min-width:0; }
+.motor-sizing h3 { font-size:1.03rem; margin:0 0 9px; }
+.motor-sizing-fields { margin-top:17px; }
+.motor-sizing-results { display:grid; grid-template-columns:110px minmax(0,1fr); gap:12px; align-items:stretch; margin-top:16px; }
+.motor-protection-visual { border:1px solid var(--border); border-radius:13px; background:var(--card); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; padding:8px 3px; }
+.motor-breaker-symbol { width:100%; height:100px; color:var(--accent); }
+.motor-supply-label { font-size:.65rem; letter-spacing:.025em; font-weight:750; color:var(--muted); text-align:center; }
+.motor-sizing-cards { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; }
+.motor-sizing-cards .result-card { min-width:0; }
+.motor-sizing-cards .result-card strong { overflow-wrap:anywhere; font-size:clamp(1rem,2vw,1.36rem); }
+.motor-sizing-notice { font-size:.85rem; line-height:1.5; padding:11px 13px; border:1px solid var(--border); border-left:3px solid #c98b32; border-radius:9px; margin:14px 0 0; }
+.motor-sizing-details { margin-top:12px; font-size:.83rem; color:var(--muted); }
+.motor-sizing-details summary { cursor:pointer; font-weight:750; }
+.motor-sizing-details p { line-height:1.5; }
+@media(max-width:520px) { .motor-sizing { padding:13px; } .motor-sizing-results { grid-template-columns:1fr; } .motor-protection-visual { flex-direction:row; height:94px; } .motor-breaker-symbol { width:112px; height:85px; } .motor-sizing-cards { grid-template-columns:1fr 1fr; } }
