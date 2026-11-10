@@ -663,3 +663,16 @@ html[data-theme="dark"] .parshall-table tr.parshall-current{background:#245075}
 .ohm-fields .field { min-width:0; }
 .ohm-operator { display:flex; align-items:center; justify-content:center; height:49px; min-width:30px; color:var(--accent); font-size:2rem; line-height:1; font-weight:800; user-select:none; }
 @media(max-width:420px) { .ohm-fields { grid-template-columns:minmax(0,1fr) 24px minmax(0,1fr); gap:4px; } .ohm-operator { font-size:1.6rem; min-width:24px; } .ohm-fields .field label { font-size:.82rem; } }
+
+/* Módulo 11 — Procedimentos técnicos FY303 */
+.procedure-layout {display:flex;flex-direction:column;gap:14px;min-width:0}
+.procedure-content p {margin:0 0 14px;line-height:1.7}
+.procedure-subtitle {font-size:1.08rem;margin:23px 0 12px;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:9px}
+.procedure-point {padding:8px 12px;background:var(--card-alt);border-left:3px solid var(--accent);border-radius:7px}
+.procedure-parameter {font-weight:700;color:var(--text)}
+.procedure-warning {padding:12px 14px;border:1px solid var(--border);border-left:4px solid #d49d40;background:var(--card-alt);border-radius:9px}
+.procedure-figures {display:flex;flex-wrap:wrap;gap:12px;margin:16px 0 22px;align-items:flex-start}
+.procedure-figure {flex:1 1 135px;max-width:280px;min-width:110px;margin:0;padding:8px;border-radius:12px;background:var(--card-alt);border:1px solid var(--border)}
+.procedure-figure img {width:100%;height:auto;object-fit:contain;display:block;border-radius:7px;background:#fff}
+.procedure-figure figcaption {font-size:.75rem;color:var(--muted);margin-top:6px}
+@media(max-width:480px){.procedure-figures{gap:8px}.procedure-figure{flex-basis:100px;min-width:96px;padding:5px}.procedure-content{padding:14px}}

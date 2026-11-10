@@ -1,4 +1,4 @@
-const CACHE_NAME = 'instrumentacao-pro-v1-10-0';
+const CACHE_NAME = 'instrumentacao-pro-v1-11-0';
 const CORE_ASSETS = [
   './index.html',
   './styles.css',
@@ -6,9 +6,34 @@ const CORE_ASSETS = [
   './parshall.js',
   './passwords.js',
   './networks.js',
+  './procedures.js',
   './manifest.webmanifest'
 ];
 const OPTIONAL_ASSETS = [
+  './fy303_image1.webp',
+  './fy303_image10.webp',
+  './fy303_image11.webp',
+  './fy303_image12.webp',
+  './fy303_image13.webp',
+  './fy303_image14.webp',
+  './fy303_image15.webp',
+  './fy303_image16.webp',
+  './fy303_image17.webp',
+  './fy303_image18.webp',
+  './fy303_image19.webp',
+  './fy303_image2.webp',
+  './fy303_image20.webp',
+  './fy303_image21.webp',
+  './fy303_image22.webp',
+  './fy303_image23.webp',
+  './fy303_image3.webp',
+  './fy303_image4.webp',
+  './fy303_image5.webp',
+  './fy303_image6.webp',
+  './fy303_image7.webp',
+  './fy303_image8.webp',
+  './fy303_image9.webp',
+
   './redes_asi_cabo.webp',
   './redes_asi_modulos.webp',
   './redes_asi_segmentos.webp',
