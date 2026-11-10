@@ -1,4 +1,4 @@
-const CACHE_NAME = 'instrumentacao-pro-v1-9-9';
+const CACHE_NAME = 'instrumentacao-pro-v1-10-0';
 const CORE_ASSETS = [
   './index.html',
   './styles.css',
@@ -9,6 +9,17 @@ const CORE_ASSETS = [
   './manifest.webmanifest'
 ];
 const OPTIONAL_ASSETS = [
+  './redes_asi_cabo.webp',
+  './redes_asi_modulos.webp',
+  './redes_asi_segmentos.webp',
+  './redes_asi_repetidor.webp',
+  './redes_asi_extensor.webp',
+  './redes_asi_extensao.webp',
+  './redes_asi_combinacao.webp',
+  './redes_asi_terminador.webp',
+  './redes_asi_rede_terminada.webp',
+  './redes_asi_programador.webp',
+  './redes_asi_comunicacao.webp',
   './icon-192.png',
   './icon-512.png',
   './optiflux_page2.png',

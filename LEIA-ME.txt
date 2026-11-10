@@ -1,3 +1,13 @@
+INSTRUMENTAÇÃO PRO — VERSÃO 1.10.0
+
+Atualização: Módulo 10 — Rede AS-i.
+Ordem preservada do documento ASI.docx (5 páginas):
+Características; Módulos; Principais características; AS-i — Limitações; Terminador de rede; Dispositivo de programação; Comunicação AS-i.
+11 diagramas do material incluídos em formato WebP, disponíveis offline.
+Valores de referência do anexo exigem verificação com o fabricante e as condições reais da instalação.
+Sem formulários de identificação ou geração de PDF neste módulo.
+
+VERSÃO ANTERIOR
 INSTRUMENTAÇÃO PRO v1.9.9
 
 - Lei de Ohm: operador matemático exibido entre os campos conforme a grandeza selecionada.
